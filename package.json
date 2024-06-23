@@ -1,4 +1,12 @@
 {
-  "name": "tsp-rizzle",
-  "packageManager": "yarn@4.3.1"
+  "name": "main",
+  "packageManager": "yarn@4.3.1",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "@typespec/compiler": "^0.57.0",
+    "typescript": "^5.5.2"
+  }
 }
