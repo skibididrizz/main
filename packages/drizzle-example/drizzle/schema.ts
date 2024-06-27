@@ -1,23 +1,35 @@
-import { pgTable, uuid, text, integer, relations } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 export const UserTable = pgTable("users", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   rank: integer("rank").notNull(),
   coolScore: integer("cool_score").notNull(),
 });
 export type User = typeof UserTable.$inferSelect; // return type when queried
 
+/**This is the blog **/
 export const BlogTable = pgTable("blogs", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: serial("id").primaryKey(),
   name: text("name").notNull().unique(),
 });
 export type Blog = typeof BlogTable.$inferSelect; // return type when queried
+export const BlogRelations = relations(BlogTable, ({ many }) => ({
+  posts: many(PostTable),
+}));
 
 export const PostTable = pgTable("posts", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: serial("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  blog: uuid("blog_id").references(() => BlogTable.id),
+  blogId: integer("blog_id").notNull(),
 });
 export type Post = typeof PostTable.$inferSelect; // return type when queried
+export const PostRelations = relations(PostTable, ({ one }) => ({
+  blog: one(BlogTable, {
+    relationName: "blog",
+    fields: [PostTable.blogId],
+    references: [BlogTable.id],
+  }),
+}));

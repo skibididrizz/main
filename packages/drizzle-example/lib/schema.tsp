@@ -4,23 +4,27 @@ using Drizzle;
 
 @table("users") 
 model User {
- @uuid @id id: string;
+ @id id: numeric;
  @unique email: string;
  rank: int32;
  @map("cool_score") coolScore: int32;
 };
 
+/**
+ * This is the blog
+ */
 @table("blogs") 
 model Blog {
-  @uuid @id id: string;
+  @id id: numeric;
   @unique name: string;
   posts: Post[];
 };
 
 @table("posts") 
 model Post {
-  @uuid @id id: string;
+  @id id: numeric;
   title: string;
   content: string;
-  @map("blog_id") @relation blog: Blog;
+  @map("blog_id") blogId:integer;
+  @relation(#{fields:#["blogId"]}) blog: Blog;
 };
