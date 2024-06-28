@@ -2,6 +2,7 @@ import "@drizz/drizzle";
 
 using Drizzle;
 
+namespace ExamplePostgres;
 @table("users") 
 model User {
  @id id: numeric;
