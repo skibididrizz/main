@@ -1,0 +1,44 @@
+{
+  "name": "@drizz/drizzle",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "tspMain": "lib/main.tsp",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./testing": {
+      "types": "./dist/src/testing/index.d.ts",
+      "default": "./dist/src/testing/index.js"
+    }
+  },
+  "dependencies": {
+    "@typespec/compiler": "latest",
+    "tsx": "^4.15.6"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@typespec/library-linter": "^0.57.0",
+    "drizzle-orm": "^0.31.2",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.5.2"
+  },
+  "scripts": {
+    "build": "tsc && npm run build:tsp",
+    "watch": "tsc --watch",
+    "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
+    "test:watch": "tsx --watch --test ./test/**/*.test.ts",
+    "test": "node --test ./dist/test/**/*.test.js",
+    "lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
+    "lint:fix": "eslint . --report-unused-disable-directives --fix",
+    "format": "prettier .  --write",
+    "format:check": "prettier --check ."
+  },
+  "private": true,
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
