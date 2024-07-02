@@ -7,9 +7,11 @@ I liked Prisma's schema, but disliked Prisma.   I was annoyed you couldn't add y
 
 
 ## Setup.
+`This hasn't been published yet,so the best way to use it is to clone this repo and build it locally.`
+
 To setup Drizz Drizzle, you need to install it. 
 ```
-$ yarn install @drizz/drizzle
+$ yarn install @drizz/drizzle 
 ```
 And then add the following to scripts in your package.json.  This will overwrite the 'schema.ts' in `drizzle/schema.ts` so be careful.
 ```

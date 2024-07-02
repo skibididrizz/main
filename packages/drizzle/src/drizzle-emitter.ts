@@ -44,7 +44,7 @@ export const intrensicToDrizzle = new Map<string, string>([
   ["int64", "bigint"],
   ["boolean", "boolean"],
   ["null", "null"],
-  ["Date", "timestamp"],
+  ["plainDate", "timestamp"],
   ["numeric", "numeric"],
 ]);
 
@@ -255,7 +255,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     const typeSb = new StringBuilder();
     const id = this.state('id', property) as IdRef | undefined;
     const isUuid = this.has('uuid', property);
-    let type = isUuid ? 'uuid' : this.typeToDrizzle(property);
+    const type = isUuid ? 'uuid' : this.typeToDrizzle(property);
 
     typeSb.push(`${type}('${colName}')`);
     if (isUuid){
@@ -296,6 +296,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
         this.addDrizzleDbImport(type);
       }
       switch (property.type.name) {
+
         case "numeric": {
           if (this.state('id', property)) {
             return `serial`;

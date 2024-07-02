@@ -8,7 +8,16 @@ describe("@table", () => {
     beforeEach(async () => {
         runner = await createDrizzleTestRunner();
     })
-    it.only('should work with defaults', async ()=>{
+    it.only('should work with timestamps', async ()=>{
+      await debugWithDiagnostics(
+        `
+    @table model Time {
+      timestamp1:Date;
+      @default("now()") timestamp2:Date;
+    };
+    `);
+    });
+    it('should work with defaults', async ()=>{
       await debugWithDiagnostics(
         `
     @table model Uuid {
