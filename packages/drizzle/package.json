@@ -1,6 +1,6 @@
 {
   "name": "@drizz/drizzle",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "type": "module",
   "main": "dist/src/index.js",
   "tspMain": "lib/main.tsp",
