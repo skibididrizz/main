@@ -1,4 +1,4 @@
-import "@drizz/drizzle";
+import "@skibididrizz/drizzle";
 
 using Drizzle;
 

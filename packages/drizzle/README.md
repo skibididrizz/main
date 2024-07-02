@@ -7,17 +7,21 @@ I liked Prisma's schema, but disliked Prisma.   I was annoyed you couldn't add y
 
 
 ## Setup.
-`This hasn't been published yet,so the best way to use it is to clone this repo and build it locally.`
 
-To setup Drizz Drizzle, you need to install it. 
-```
-$ yarn install @drizz/drizzle 
+To setup Drizz Drizzle, you need to install it as tsp plugin. 
+```sh
+$ yarn install @skibididrizz/drizzle @typespec/compiler -D 
 ```
 And then add the following to scripts in your package.json.  This will overwrite the 'schema.ts' in `drizzle/schema.ts` so be careful.
-```
-    "build": "tsp compile --emit @drizz/drizzle ./lib/schema.tsp --option \"@drizz/drizzle.emitter-output-dir={project-root}/drizzle\"",
+
+```js package.json
+"scripts":{
+    "build": "tsp compile --emit @skibididrizz/drizzle ./lib/schema.tsp --option \"@skibididrizz/drizzle.emitter-output-dir={project-root}/drizzle\"",
+    ...
+}
 ```
 Create a 'lib/schema.tsp' file and add your models.   The decorators are not well documented yet, but you can look at the tests to see how they work.  Feel free to contribute patches.
 
 
 
+## 

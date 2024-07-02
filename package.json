@@ -1,5 +1,5 @@
 {
-  "name": "main",
+  "name": "@skibididrizz/main",
   "packageManager": "yarn@4.3.1",
   "private": true,
   "workspaces": [
@@ -11,6 +11,6 @@
   },
   "scripts": {
     "fix": "echo \"npmAuthToken: \"${NPM_TOKEN}\"\" >> .yarnrc.yml",
-    "bump": "yarn version ${0} && yarn workspace @drizz/drizzle version ${0} && git commit -am 'v${0}' && git tag v${0}"
+    "bump": "yarn version ${0} && yarn workspace @drizz/drizzle version ${0} && git commit -am \"v${0}\" && git tag v${0}"
   }
 }

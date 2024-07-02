@@ -43,7 +43,7 @@ export async function emitWithDiagnostics(
     throw e;
   }
   try {
-  const f = await runner.program.host.readFile("/test/tsp-output/@drizz/drizzle/schema.ts");
+  const f = await runner.program.host.readFile("/test/tsp-output/@skibididrizz/drizzle/schema.ts");
 
   return [f.text, runner.program.diagnostics];
   }catch(e){

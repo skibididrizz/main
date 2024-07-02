@@ -2266,35 +2266,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@drizz/drizzle-example@workspace:packages/drizzle-example":
-  version: 0.0.0-use.local
-  resolution: "@drizz/drizzle-example@workspace:packages/drizzle-example"
-  dependencies:
-    "@drizz/drizzle": "workspace:^"
-    "@typespec/compiler": "npm:^0.57.0"
-    drizzle-kit: "npm:^0.22.7"
-    drizzle-orm: "npm:^0.31.2"
-    pg: "npm:^8.12.0"
-  languageName: unknown
-  linkType: soft
-
-"@drizz/drizzle@workspace:^, @drizz/drizzle@workspace:packages/drizzle":
-  version: 0.0.0-use.local
-  resolution: "@drizz/drizzle@workspace:packages/drizzle"
-  dependencies:
-    "@types/node": "npm:latest"
-    "@typescript-eslint/eslint-plugin": "npm:^6.0.0"
-    "@typescript-eslint/parser": "npm:^6.0.0"
-    "@typespec/compiler": "npm:latest"
-    "@typespec/library-linter": "npm:^0.57.0"
-    drizzle-orm: "npm:^0.31.2"
-    eslint: "npm:^8.45.0"
-    prettier: "npm:^3.0.3"
-    tsx: "npm:^4.15.6"
-    typescript: "npm:^5.5.2"
-  languageName: unknown
-  linkType: soft
-
 "@esbuild-kit/core-utils@npm:^3.3.2":
   version: 3.3.2
   resolution: "@esbuild-kit/core-utils@npm:3.3.2"
@@ -3153,6 +3124,44 @@ __metadata:
   checksum: 10c0/69ee906f3125fb2c6bb6ec5cdd84e8827d93b49b3892bce8b62267116cc7e197b5cccf20c160a1d32c26014ecd14470a72a5e3ee37a58f1d6dadc0db1ccf3894
   languageName: node
   linkType: hard
+
+"@skibididrizz/drizzle@workspace:^, @skibididrizz/drizzle@workspace:packages/drizzle":
+  version: 0.0.0-use.local
+  resolution: "@skibididrizz/drizzle@workspace:packages/drizzle"
+  dependencies:
+    "@types/node": "npm:latest"
+    "@typescript-eslint/eslint-plugin": "npm:^6.0.0"
+    "@typescript-eslint/parser": "npm:^6.0.0"
+    "@typespec/compiler": "npm:latest"
+    "@typespec/library-linter": "npm:^0.57.0"
+    drizzle-orm: "npm:^0.31.2"
+    eslint: "npm:^8.45.0"
+    prettier: "npm:^3.0.3"
+    tsx: "npm:^4.15.6"
+    typescript: "npm:^5.5.2"
+  languageName: unknown
+  linkType: soft
+
+"@skibididrizz/example@workspace:packages/example":
+  version: 0.0.0-use.local
+  resolution: "@skibididrizz/example@workspace:packages/example"
+  dependencies:
+    "@skibididrizz/drizzle": "workspace:^"
+    "@typespec/compiler": "npm:^0.57.0"
+    drizzle-kit: "npm:^0.22.7"
+    drizzle-orm: "npm:^0.31.2"
+    pg: "npm:^8.12.0"
+  languageName: unknown
+  linkType: soft
+
+"@skibididrizz/main@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@skibididrizz/main@workspace:."
+  dependencies:
+    "@typespec/compiler": "npm:^0.57.0"
+    typescript: "npm:^5.5.2"
+  languageName: unknown
+  linkType: soft
 
 "@slorber/remark-comment@npm:^1.0.0":
   version: 1.0.0
@@ -8621,15 +8630,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"main@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "main@workspace:."
-  dependencies:
-    "@typespec/compiler": "npm:^0.57.0"
-    typescript: "npm:^5.5.2"
-  languageName: unknown
-  linkType: soft
-
 "make-fetch-happen@npm:^13.0.0":
   version: 13.0.1
   resolution: "make-fetch-happen@npm:13.0.1"
@@ -9740,9 +9740,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"my-website@workspace:packages/web":
+"my-website@workspace:packages/site":
   version: 0.0.0-use.local
-  resolution: "my-website@workspace:packages/web"
+  resolution: "my-website@workspace:packages/site"
   dependencies:
     "@docusaurus/core": "npm:3.4.0"
     "@docusaurus/module-type-aliases": "npm:3.4.0"
