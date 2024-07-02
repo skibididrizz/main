@@ -22,7 +22,9 @@ jobs:
       - run: yarn set version 4.3.1 --yarn-path
       - run: yarn 
       - run: yarn workspace @drizz/drizzle build
-      - run: yarn workspace @drizz/drizzle npm publish --access public
+      - name: Publish to npm
+        run: yarn workspace @drizz/drizzle npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           npm_config__authtoken: ${{secrets.NPM_TOKEN}}
