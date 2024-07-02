@@ -75,7 +75,8 @@ export async function emit(code: string): Promise<string> {
 
 
 async function compile(source:string, options: ts.CompilerOptions = {}) {
-  const result = await ts.transpileModule(source, { compilerOptions: { ...options, module: ts.ModuleKind.CommonJS }});
+  const result =  
+  await ts.transpileModule(source, { compilerOptions: { ...options, module: ts.ModuleKind.CommonJS }});
   if (result?.diagnostics?.length ) {
     console.log(result.diagnostics);
     return false;

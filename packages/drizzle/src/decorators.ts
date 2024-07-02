@@ -1,6 +1,7 @@
 import type { DecoratorContext, Model, ModelProperty, Program, Type} from "@typespec/compiler";
 import { StateKeys } from "./lib.js";
 import { FieldRef } from "./types.js";
+import { camelToSnake } from "./string.js";
 
 export const namespace = "Drizzle";
 
@@ -16,9 +17,10 @@ export function $id(context: DecoratorContext, target: ModelProperty | Model, na
   }
 }
 
-export function $index(context: DecoratorContext, target: ModelProperty) {
-  context.program.stateMap(StateKeys.index).set(target, 'index');
+export function $index(context: DecoratorContext, target: ModelProperty, name?:string, sql?:string) {
+  context.program.stateMap(StateKeys.index).set(target, {name:name || `${target.name}Idx`, sql:sql?.replaceAll('{column}', `\${table.${target.name}}`)});
 }
+
 export function $sql(context: DecoratorContext, target: ModelProperty, sql: string) {
   context.program.stateMap(StateKeys.sql).set(target, sql);
 }
@@ -32,8 +34,8 @@ export function $unique(context: DecoratorContext, target: ModelProperty | Type,
 
 }
 
-export function $uuid(context: DecoratorContext, target: ModelProperty) {
-  context.program.stateMap(StateKeys.uuid).set(target, 'uuid');
+export function $uuid(context: DecoratorContext, target: ModelProperty, name:string) {
+  context.program.stateMap(StateKeys.uuid).set(target, name);
 }
 
 

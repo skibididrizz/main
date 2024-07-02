@@ -8,7 +8,41 @@ describe("@table", () => {
     beforeEach(async () => {
         runner = await createDrizzleTestRunner();
     })
-    it.only('should handle multiple relationships', async ()=>{
+    it.only('should work with defaults', async ()=>{
+      await debugWithDiagnostics(
+        `
+    @table model Uuid {
+      @default(int32(42)) int1:integer; 
+      @default("'42'::integer'") int2:integer;
+      @uuid(true) uuid1: string;
+      @uuid @default("gen_random_uuid()")  uuid2: string;
+    };
+    `);
+
+    });
+    it('should work with indexes', async ()=>{
+      await debugWithDiagnostics(
+        `
+    @table model User {
+      @id id: integer;
+      name:string;
+      @index @unique email:string;
+    };
+    `);
+
+    });
+    it('should work with indexes unique', async ()=>{
+      await debugWithDiagnostics(
+        `
+    @table model User {
+      @id id: integer;
+      name:string;
+      @index("email", "lower({column})") @unique  email:string;
+    };
+    `);
+
+    });
+    it('should handle multiple relationships', async ()=>{
         await debugWithDiagnostics(
             `
         @table model User {
