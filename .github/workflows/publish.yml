@@ -26,11 +26,11 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Drizzle    
-        run: yarn workspace @drizz/drizzle build       
+        run: yarn workspace @skibididrizz/drizzle build       
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish to npm
-        run: yarn npm login --always-auth && yarn workspace @drizz/drizzle npm publish --access public
+        run: yarn npm login --always-auth && yarn workspace @skibididrizz/drizzle npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         
