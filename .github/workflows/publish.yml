@@ -22,7 +22,7 @@ jobs:
       - name: Run Yarn
         run: yarn 
       - name: Install Token Fix
-        run: ./publish.sh
+        run: yarn fix
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Drizzle    
