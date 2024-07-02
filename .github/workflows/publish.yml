@@ -14,16 +14,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           # Defaults to the user or organization that owns the workflow file
           scope: '@octocat'
-      - name: Config npm
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: yarn npm login --always-auth    
       - run: yarn set version 4.3.1 --yarn-path
       - run: yarn 
       - run: yarn workspace @drizz/drizzle build
       - name: Publish to npm
-        run: yarn workspace @drizz/drizzle npm publish --access public
+        run: yarn npm login --always-auth && yarn workspace @drizz/drizzle npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
