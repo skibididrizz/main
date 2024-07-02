@@ -14,7 +14,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           # Defaults to the user or organization that owns the workflow file
           scope: '@octocat'
-      - run: yarn set version 4.3.1
+      - run: yarn set version 4.3.1 --yarn-path
       - run: yarn 
       - run: cd packages/drizzle && yarn npm publish 
         env:
