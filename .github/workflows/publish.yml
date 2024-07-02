@@ -18,6 +18,7 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: yarn npm login --always-auth    
       - run: yarn set version 4.3.1 --yarn-path
       - run: yarn 
       - run: yarn workspace @drizz/drizzle build
