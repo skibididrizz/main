@@ -1,5 +1,5 @@
-### Drizz Drizzle
-Drizz Drizzle is a schema for Drizzle, that is based on [TypeSpec](https://typespec.io).  This is an experimental implementation, and is not yet ready for production use.  It is inspired by [Prisma](https://prisma.io)'s schema layout.   From a schema.tsp file it
+### Skibididrizz 
+Skibididrizz is a schema for Drizzle, that is based on [TypeSpec](https://typespec.io).  This is an experimental implementation, and is not yet ready for production use.  It is inspired by [Prisma](https://prisma.io)'s schema layout.   From a schema.tsp file it
 will generate a drizzle schema.  Currently only the postgres client is supported, but the idea is to support other clients.  This should ease the transition between clients.  In theory this could support a variety of ORM's. 
 
 ## Why?
@@ -9,7 +9,7 @@ I liked Prisma's schema, but disliked Prisma.   I was annoyed you couldn't add y
 ## Setup.
 `This hasn't been published yet,so the best way to use it is to clone this repo and build it locally.`
 
-To setup Drizz Drizzle, you need to install it. 
+To setup Skibididriz Drizzle, you need to install it. 
 ```
 $ yarn install @skibididrizz/drizzle 
 ```
