@@ -88,18 +88,10 @@ export function $uuid(
 
 /**
  * 
- * The `@default` decorator allows for columns to have values by default.  These can be literals or SQL queries.
+ * The `default` decorator allows for columns to have values by default.  These can be literals or SQL queries.
  * 
- * <code>
- *  @table model Stuff {
- *    @id @default("seq_name") id:numberic;
- *    @default("now()") createdDate:Date;
- *    
- *  }
  * 
- * </code>
- * 
- * @param context - @ignore
+ * @param context - context to use on.
  * @param target  - use on model properties.
  * @param name - The SQL query that will be used to create the column.
  */
