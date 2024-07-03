@@ -12,6 +12,7 @@
   "scripts": {
     "fix": "echo \"npmAuthToken: \"${NPM_TOKEN}\"\" >> .yarnrc.yml",
     "build": "yarn workspaces foreach --all run build",
-    "bump": "yarn version ${0} && yarn workspace @skibididrizz/drizzle version ${0} && git commit -am \"v${0}\" && git tag v${0}"
+    "bump": "yarn version ${0} && yarn workspace @skibididrizz/drizzle version ${0} && git commit -am \"v${0}\" && git tag v${0}",
+    "site":"yarn workspace @skibididrizz/site build"
   }
 }
