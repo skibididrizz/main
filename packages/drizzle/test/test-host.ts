@@ -13,7 +13,7 @@ import type { TestContext } from "node:test";
 import { snapshot } from "node:test";
 
 snapshot.setDefaultSnapshotSerializers([
-  (v:unknown) =>
+  (v: unknown) =>
     typeof v == "string" ? v.replace(/\/\/.*\n/g, "") : JSON.stringify(v),
 ]);
 

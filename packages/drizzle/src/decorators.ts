@@ -34,12 +34,10 @@ export function $index(
   name?: string,
   sql?: string,
 ) {
-  context.program
-    .stateMap(StateKeys.index)
-    .set(target, {
-      name: name || `${target.name}Idx`,
-      sql: sql?.replaceAll("{column}", `\${table.${target.name}}`),
-    });
+  context.program.stateMap(StateKeys.index).set(target, {
+    name: name || `${target.name}Idx`,
+    sql: sql?.replaceAll("{column}", `\${table.${target.name}}`),
+  });
 }
 
 export function $sql(

@@ -30,7 +30,8 @@
     "typescript": "^5.5.2"
   },
   "scripts": {
-    "build": "tsc && npm run build:tsp",
+    "envo": "env",
+    "build": "tsc && $npm_execpath run build:tsp && $npm_execpath run format",
     "watch": "tsc --watch",
     "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
     "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test ./test/**/*.test.ts",
