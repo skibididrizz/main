@@ -205,7 +205,9 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       export const ${name}Table = pgTable('${tableName}', {
         ${this.emitter.emitModelProperties(model)}
       } ${selfRef ? code`,(table)=>(${this.objectToString(selfRef)})` : ""});
+
       export export type ${name} = typeof ${name}Table.$inferSelect; // return type when queried 
+
       ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${this.objectToString(relTo)}))` : ""}
       `,
     );

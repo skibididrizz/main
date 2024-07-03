@@ -8,12 +8,15 @@ export const UserTable = pgTable("users", {
   rank: integer("rank").notNull(),
   coolScore: integer("cool_score").notNull(),
 });
+
 export type User = typeof UserTable.$inferSelect; 
 export const BlogTable = pgTable("blogs", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull().unique(),
 });
-export type Blog = typeof BlogTable.$inferSelect; export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
+
+export type Blog = typeof BlogTable.$inferSelect; 
+export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
   posts: many(PostTable),
 }));
 
@@ -22,7 +25,9 @@ export const PostTable = pgTable("posts", {
   title: text("title").notNull(),
   content: text("content").notNull(),
 });
-export type Post = typeof PostTable.$inferSelect; export const PostTableRelations = relations(PostTable, ({ one }) => ({
+
+export type Post = typeof PostTable.$inferSelect; 
+export const PostTableRelations = relations(PostTable, ({ one }) => ({
   blog: one(BlogTable, {
     relationName: "blog",
     fields: [undefinedTable.undefined],
@@ -40,7 +45,9 @@ export const UserTable = pgTable("User", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
 });
-export type User = typeof UserTable.$inferSelect; export const UserTableRelations = relations(UserTable, ({ many, many }) => ({
+
+export type User = typeof UserTable.$inferSelect; 
+export const UserTableRelations = relations(UserTable, ({ many, many }) => ({
   followedBy: many(FollowTable),
   follows: many(FollowTable),
 }));
@@ -58,7 +65,9 @@ export const FollowTable = pgTable(
     }),
   }),
 );
-export type Follow = typeof FollowTable.$inferSelect; export const FollowTableRelations = relations(FollowTable, ({ one, one }) => ({
+
+export type Follow = typeof FollowTable.$inferSelect; 
+export const FollowTableRelations = relations(FollowTable, ({ one, one }) => ({
   followedBy: one(UserTable, {
     relationName: "followedBy",
     fields: [FollowTable.followedById],
@@ -80,11 +89,14 @@ import { relations } from "drizzle-orm";
 export const BlogBOTable = pgTable("BlogBO", {
   name: text("name").notNull(),
 });
+
 export type BlogBO = typeof BlogBOTable.$inferSelect; 
 export const PostBOTable = pgTable("PostBO", {
   blogId: text("blog_id").notNull(),
 });
-export type PostBO = typeof PostBOTable.$inferSelect; export const PostBOTableRelations = relations(PostBOTable, ({ one }) => ({
+
+export type PostBO = typeof PostBOTable.$inferSelect; 
+export const PostBOTableRelations = relations(PostBOTable, ({ one }) => ({
   blog: one(BlogBOTable, {
     relationName: "blog",
     fields: [PostBOTable.blogId],
@@ -101,7 +113,9 @@ import { relations } from "drizzle-orm";
 export const UserTable = pgTable("users", {
   _id: serial("_id").primaryKey(),
 });
-export type User = typeof UserTable.$inferSelect; export const UserTableRelations = relations(UserTable, ({ many }) => ({
+
+export type User = typeof UserTable.$inferSelect; 
+export const UserTableRelations = relations(UserTable, ({ many }) => ({
   comments: many(CommentTable),
 }));
 
@@ -111,7 +125,9 @@ export const CommentTable = pgTable("comments", {
   authorId: numeric("author_id").notNull(),
   postId: numeric("post_id").notNull(),
 });
-export type Comment = typeof CommentTable.$inferSelect; export const CommentTableRelations = relations(
+
+export type Comment = typeof CommentTable.$inferSelect; 
+export const CommentTableRelations = relations(
   CommentTable,
   ({ one, one }) => ({
     post: one(PostTable, {
@@ -131,7 +147,9 @@ export const PostTable = pgTable("posts", {
   id: text("id").primaryKey(),
   blogId: text("blog_id").notNull(),
 });
-export type Post = typeof PostTable.$inferSelect; export const PostTableRelations = relations(PostTable, ({ one }) => ({
+
+export type Post = typeof PostTable.$inferSelect; 
+export const PostTableRelations = relations(PostTable, ({ one }) => ({
   blog: one(BlogTable, {
     relationName: "blog",
     fields: [PostTable.blogId],
@@ -144,7 +162,9 @@ export const BlogTable = pgTable("blogs", {
   content: text("content").notNull(),
   authorId: numeric("author_id").notNull(),
 });
-export type Blog = typeof BlogTable.$inferSelect; export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
+
+export type Blog = typeof BlogTable.$inferSelect; 
+export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
   posts: many(PostTable),
 }));
 
@@ -157,11 +177,13 @@ export const UserTable = pgTable("User", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
 });
+
 export type User = typeof UserTable.$inferSelect; 
 export const BookTable = pgTable("Book", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
 });
+
 export type Book = typeof BookTable.$inferSelect; 
 export const BooksToAuthorsTable = pgTable(
   "books_to_authors",
@@ -176,6 +198,7 @@ export const BooksToAuthorsTable = pgTable(
     }),
   }),
 );
+
 export type BooksToAuthors = typeof BooksToAuthorsTable.$inferSelect; 
 `;
 
@@ -193,6 +216,7 @@ export const UuidTable = pgTable("Uuid", {
     .notNull()
     .default(sql\`gen_random_uuid()\`),
 });
+
 export type Uuid = typeof UuidTable.$inferSelect; 
 `;
 
@@ -203,6 +227,7 @@ export const ActionTable = pgTable("Action", {
   id: uuid("id").defaultRandom().primaryKey(),
   state: StateEnum("state"),
 });
+
 export type Action = typeof ActionTable.$inferSelect; 
 export const StateEnum = pgEnum("State", ["do", "doing", "done", "failed"]);
 
@@ -223,6 +248,7 @@ export const UserTable = pgTable(
     emailIdx: uniqueIndex("email_idx").on(table.email),
   }),
 );
+
 export type User = typeof UserTable.$inferSelect; 
 `;
 
@@ -241,6 +267,7 @@ export const UserTable = pgTable(
     email: uniqueIndex("email").on(sql\`lower(\${table.email})\`),
   }),
 );
+
 export type User = typeof UserTable.$inferSelect; 
 `;
 
@@ -254,5 +281,6 @@ export const TimeTable = pgTable("Time", {
     .notNull()
     .default(sql\`now()\`),
 });
+
 export type Time = typeof TimeTable.$inferSelect; 
 `;
