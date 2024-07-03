@@ -38,25 +38,24 @@ In addition [@default](/docs/tsdocs/functions/$default) can be used for default 
 
 ```tsp
 
-  @table model Stuff {
-     @id id: numeric;
-     @default("now()") createdDate: Date;
-     @default(int32(42)) answer:int32;
-  };
+  @table("blogs") model Blog {
+        @map("_id") @id id: string;
+        name: string;
+        @map("note") description?: string;    
+  }
             
 ```
 
 Will result in a **drizzle/schema.ts** like:
 
 ```ts
-import { pgTable, numeric, timestamp, integer } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { pgTable, text } from "drizzle-orm/pg-core";
 
-export const StuffTable = pgTable("Stuff", {
-  id: serial("id").primaryKey(),
-  createdDate: timestamp("createdDate").notNull().default(sql\`now()\`),
-  answer: integer("answer").notNull().default(42),
+export const BlogTable = pgTable("blogs", {
+  id: text("_id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("note"),
 });
 
-export type Stuff = typeof StuffTable.$inferSelect; 
+export type Blog = typeof BlogTable.$inferSelect; 
 ```
