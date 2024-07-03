@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+title: API Documentation
+---
 ### Drizz Drizzle
 
 Drizz Drizzle is a schema for Drizzle, that is based on [TypeSpec](https://typespec.io). This is an experimental implementation, and is not yet ready for production use. It is inspired by [Prisma](https://prisma.io)'s schema layout. From a schema.tsp file it
