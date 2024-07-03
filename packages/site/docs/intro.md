@@ -6,6 +6,9 @@ sidebar_position: 1
 
 Let's discover **Skibididrizz in less than 5 minutes**.
 
+Skibididrizz is a project to use [typespec.io](https://typespec.io) to do type safe database access in typescript.   It uses [drizzle](https://orm.drizzle.team/), to do the DB access.  Currently only
+postgres is supported, but if its useful, we can create others.  
+
 ## Getting Started
 
 Get started by **installing @skibididrizz/drizzle**.
