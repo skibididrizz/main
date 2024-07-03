@@ -1,6 +1,6 @@
 {
   "name": "@skibididrizz/drizzle",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "type": "module",
   "main": "dist/src/index.js",
   "tspMain": "lib/main.tsp",
@@ -45,6 +45,5 @@
     "format": "prettier .  --write",
     "format:check": "prettier --check .",
     "docs": "typedoc --plugin typedoc-plugin-markdown --out ../site/docs/tsdocs src/decorators.ts"
-
   }
 }
