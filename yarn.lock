@@ -3132,13 +3132,15 @@ __metadata:
     "@types/node": "npm:^20.14.9"
     "@typescript-eslint/eslint-plugin": "npm:^6.0.0"
     "@typescript-eslint/parser": "npm:^6.0.0"
-    "@typespec/compiler": "npm:latest"
+    "@typespec/compiler": "npm:0.57.0"
     "@typespec/library-linter": "npm:^0.57.0"
     drizzle-orm: "npm:^0.31.2"
     eslint: "npm:^8.45.0"
     prettier: "npm:^3.0.3"
     tsx: "npm:^4.15.6"
     typescript: "npm:^5.5.2"
+  peerDependencies:
+    "@typespec/compiler": "*"
   languageName: unknown
   linkType: soft
 
@@ -3173,6 +3175,7 @@ __metadata:
     "@docusaurus/tsconfig": "npm:3.4.0"
     "@docusaurus/types": "npm:3.4.0"
     "@mdx-js/react": "npm:^3.0.0"
+    "@types/react": "npm:^18.3.3"
     clsx: "npm:^2.0.0"
     prism-react-renderer: "npm:^2.3.0"
     react: "npm:^18.0.0"
@@ -3687,7 +3690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*":
+"@types/react@npm:*, @types/react@npm:^18.3.3":
   version: 18.3.3
   resolution: "@types/react@npm:18.3.3"
   dependencies:
@@ -3921,7 +3924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typespec/compiler@npm:^0.57.0, @typespec/compiler@npm:latest":
+"@typespec/compiler@npm:0.57.0, @typespec/compiler@npm:^0.57.0":
   version: 0.57.0
   resolution: "@typespec/compiler@npm:0.57.0"
   dependencies:

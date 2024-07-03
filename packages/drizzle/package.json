@@ -15,18 +15,19 @@
       "default": "./dist/src/testing/index.js"
     }
   },
-  "dependencies": {
-    "@typespec/compiler": "latest",
-    "tsx": "^4.15.6"
+  "peerDependencies": {
+    "@typespec/compiler": "*"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@typespec/compiler": "0.57.0",
     "@typespec/library-linter": "^0.57.0",
     "drizzle-orm": "^0.31.2",
     "eslint": "^8.45.0",
     "prettier": "^3.0.3",
+    "tsx": "^4.15.6",
     "typescript": "^5.5.2"
   },
   "scripts": {
