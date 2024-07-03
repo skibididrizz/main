@@ -1,5 +1,5 @@
-import {EmitContext} from "@typespec/compiler";
-import {DrizzleEmitter} from "./drizzle-emitter.js";
+import { EmitContext } from "@typespec/compiler";
+import { DrizzleEmitter } from "./drizzle-emitter.js";
 
 export async function $onEmit(context: EmitContext) {
   const assetEmitter = context.getAssetEmitter(DrizzleEmitter);

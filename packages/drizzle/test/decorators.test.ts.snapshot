@@ -1,39 +1,258 @@
 exports[`@table > set alternate name on operation 1`] = `
-"import { pgTable, text, integer } from \\"drizzle-orm/pg-core\\";\\nimport { relations } from \\"drizzle-orm\\";\\n\\nexport const UserTable = pgTable(\\"users\\", {\\n  id: uuid(\\"id\\").defaultRandom().primaryKey(),\\n  email: text(\\"email\\").notNull().unique(),\\n  rank: integer(\\"rank\\").notNull(),\\n  coolScore: integer(\\"cool_score\\").notNull(),\\n});\\nexport type User = typeof UserTable.$inferSelect; // return type when queried\\n\\nexport const BlogTable = pgTable(\\"blogs\\", {\\n  id: uuid(\\"id\\").defaultRandom().primaryKey(),\\n  name: text(\\"name\\").notNull().unique(),\\n});\\nexport type Blog = typeof BlogTable.$inferSelect; // return type when queried\\nexport const BlogTableRelations = relations(BlogTable, ({ many }) => ({\\n  posts: many(PostTable),\\n}));\\n\\nexport const PostTable = pgTable(\\"posts\\", {\\n  id: uuid(\\"id\\").defaultRandom().primaryKey(),\\n  title: text(\\"title\\").notNull(),\\n  content: text(\\"content\\").notNull(),\\n});\\nexport type Post = typeof PostTable.$inferSelect; // return type when queried\\nexport const PostTableRelations = relations(PostTable, ({ one }) => ({\\n  blog: one(BlogTable, {\\n    relationName: \\"blog\\",\\n    fields: [undefinedTable.undefined],\\n    references: [BlogTable.id],\\n  }),\\n}));\\n"
+import { pgTable, text, integer } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+export const UserTable = pgTable("users", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: text("email").notNull().unique(),
+  rank: integer("rank").notNull(),
+  coolScore: integer("cool_score").notNull(),
+});
+export type User = typeof UserTable.$inferSelect; 
+export const BlogTable = pgTable("blogs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull().unique(),
+});
+export type Blog = typeof BlogTable.$inferSelect; export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
+  posts: many(PostTable),
+}));
+
+export const PostTable = pgTable("posts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+});
+export type Post = typeof PostTable.$inferSelect; export const PostTableRelations = relations(PostTable, ({ one }) => ({
+  blog: one(BlogTable, {
+    relationName: "blog",
+    fields: [undefinedTable.undefined],
+    references: [BlogTable.id],
+  }),
+}));
+
 `;
 
 exports[`@table > should handle multiple relationships 1`] = `
-"import { pgTable, text, pgIndex, primaryKey } from \\"drizzle-orm/pg-core\\";\\nimport { relations } from \\"drizzle-orm\\";\\n\\nexport const UserTable = pgTable(\\"User\\", {\\n  id: integer(\\"id\\").primaryKey(),\\n  name: text(\\"name\\").notNull(),\\n});\\nexport type User = typeof UserTable.$inferSelect; // return type when queried\\nexport const UserTableRelations = relations(UserTable, ({ many, many }) => ({\\n  followedBy: many(FollowTable),\\n  follows: many(FollowTable),\\n}));\\n\\nexport const FollowTable = pgTable(\\n  \\"Follow\\",\\n  {\\n    followedById: integer(\\"followedById\\").notNull(),\\n    followingId: integer(\\"followingId\\").notNull(),\\n  },\\n  (table) => ({\\n    pkFollows_followedby_user: primaryKey({\\n      name: \\"follows_followedby_user\\",\\n      columns: [table.followedById, table.followingId],\\n    }),\\n  }),\\n);\\nexport type Follow = typeof FollowTable.$inferSelect; // return type when queried\\nexport const FollowTableRelations = relations(FollowTable, ({ one, one }) => ({\\n  followedBy: one(UserTable, {\\n    relationName: \\"followedBy\\",\\n    fields: [FollowTable.followedById],\\n    references: [UserTable.id],\\n  }),\\n  following: one(UserTable, {\\n    relationName: \\"follows\\",\\n    fields: [FollowTable.followingId],\\n    references: [UserTable.id],\\n  }),\\n}));\\n"
+import { pgTable, text, pgIndex, primaryKey } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+export const UserTable = pgTable("User", {
+  id: integer("id").primaryKey(),
+  name: text("name").notNull(),
+});
+export type User = typeof UserTable.$inferSelect; export const UserTableRelations = relations(UserTable, ({ many, many }) => ({
+  followedBy: many(FollowTable),
+  follows: many(FollowTable),
+}));
+
+export const FollowTable = pgTable(
+  "Follow",
+  {
+    followedById: integer("followedById").notNull(),
+    followingId: integer("followingId").notNull(),
+  },
+  (table) => ({
+    pkFollows_followedby_user: primaryKey({
+      name: "follows_followedby_user",
+      columns: [table.followedById, table.followingId],
+    }),
+  }),
+);
+export type Follow = typeof FollowTable.$inferSelect; export const FollowTableRelations = relations(FollowTable, ({ one, one }) => ({
+  followedBy: one(UserTable, {
+    relationName: "followedBy",
+    fields: [FollowTable.followedById],
+    references: [UserTable.id],
+  }),
+  following: one(UserTable, {
+    relationName: "follows",
+    fields: [FollowTable.followingId],
+    references: [UserTable.id],
+  }),
+}));
+
 `;
 
 exports[`@table > should parse base objects 1`] = `
-"import { pgTable, text } from \\"drizzle-orm/pg-core\\";\\nimport { relations } from \\"drizzle-orm\\";\\n\\nexport const BlogBOTable = pgTable(\\"BlogBO\\", {\\n  name: text(\\"name\\").notNull(),\\n});\\nexport type BlogBO = typeof BlogBOTable.$inferSelect; // return type when queried\\n\\nexport const PostBOTable = pgTable(\\"PostBO\\", {\\n  blogId: text(\\"blog_id\\").notNull(),\\n});\\nexport type PostBO = typeof PostBOTable.$inferSelect; // return type when queried\\nexport const PostBOTableRelations = relations(PostBOTable, ({ one }) => ({\\n  blog: one(BlogBOTable, {\\n    relationName: \\"blog\\",\\n    fields: [PostBOTable.blogId],\\n    references: [BaseModelTable.id],\\n  }),\\n}));\\n"
+import { pgTable, text } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+export const BlogBOTable = pgTable("BlogBO", {
+  name: text("name").notNull(),
+});
+export type BlogBO = typeof BlogBOTable.$inferSelect; 
+export const PostBOTable = pgTable("PostBO", {
+  blogId: text("blog_id").notNull(),
+});
+export type PostBO = typeof PostBOTable.$inferSelect; export const PostBOTableRelations = relations(PostBOTable, ({ one }) => ({
+  blog: one(BlogBOTable, {
+    relationName: "blog",
+    fields: [PostBOTable.blogId],
+    references: [BaseModelTable.id],
+  }),
+}));
+
 `;
 
 exports[`@table > should parse objects 1`] = `
-"import { pgTable, numeric, text } from \\"drizzle-orm/pg-core\\";\\nimport { relations } from \\"drizzle-orm\\";\\n\\nexport const UserTable = pgTable(\\"users\\", {\\n  _id: serial(\\"_id\\").primaryKey(),\\n});\\nexport type User = typeof UserTable.$inferSelect; // return type when queried\\nexport const UserTableRelations = relations(UserTable, ({ many }) => ({\\n  comments: many(CommentTable),\\n}));\\n\\nexport const CommentTable = pgTable(\\"comments\\", {\\n  id: serial(\\"id\\").primaryKey(),\\n  text: text(\\"text\\").notNull(),\\n  authorId: numeric(\\"author_id\\").notNull(),\\n  postId: numeric(\\"post_id\\").notNull(),\\n});\\nexport type Comment = typeof CommentTable.$inferSelect; // return type when queried\\nexport const CommentTableRelations = relations(\\n  CommentTable,\\n  ({ one, one }) => ({\\n    post: one(PostTable, {\\n      relationName: \\"post\\",\\n      fields: [CommentTable.postId],\\n      references: [PostTable.id],\\n    }),\\n    author: one(UserTable, {\\n      relationName: \\"author\\",\\n      fields: [CommentTable.authorId],\\n      references: [UserTable._id],\\n    }),\\n  }),\\n);\\n\\nexport const PostTable = pgTable(\\"posts\\", {\\n  id: text(\\"id\\").primaryKey(),\\n  blogId: text(\\"blog_id\\").notNull(),\\n});\\nexport type Post = typeof PostTable.$inferSelect; // return type when queried\\nexport const PostTableRelations = relations(PostTable, ({ one }) => ({\\n  blog: one(BlogTable, {\\n    relationName: \\"blog\\",\\n    fields: [PostTable.blogId],\\n    references: [BlogTable.id],\\n  }),\\n}));\\n\\nexport const BlogTable = pgTable(\\"blogs\\", {\\n  id: serial(\\"id\\").primaryKey(),\\n  content: text(\\"content\\").notNull(),\\n  authorId: numeric(\\"author_id\\").notNull(),\\n});\\nexport type Blog = typeof BlogTable.$inferSelect; // return type when queried\\nexport const BlogTableRelations = relations(BlogTable, ({ many }) => ({\\n  posts: many(PostTable),\\n}));\\n"
+import { pgTable, numeric, text } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+export const UserTable = pgTable("users", {
+  _id: serial("_id").primaryKey(),
+});
+export type User = typeof UserTable.$inferSelect; export const UserTableRelations = relations(UserTable, ({ many }) => ({
+  comments: many(CommentTable),
+}));
+
+export const CommentTable = pgTable("comments", {
+  id: serial("id").primaryKey(),
+  text: text("text").notNull(),
+  authorId: numeric("author_id").notNull(),
+  postId: numeric("post_id").notNull(),
+});
+export type Comment = typeof CommentTable.$inferSelect; export const CommentTableRelations = relations(
+  CommentTable,
+  ({ one, one }) => ({
+    post: one(PostTable, {
+      relationName: "post",
+      fields: [CommentTable.postId],
+      references: [PostTable.id],
+    }),
+    author: one(UserTable, {
+      relationName: "author",
+      fields: [CommentTable.authorId],
+      references: [UserTable._id],
+    }),
+  }),
+);
+
+export const PostTable = pgTable("posts", {
+  id: text("id").primaryKey(),
+  blogId: text("blog_id").notNull(),
+});
+export type Post = typeof PostTable.$inferSelect; export const PostTableRelations = relations(PostTable, ({ one }) => ({
+  blog: one(BlogTable, {
+    relationName: "blog",
+    fields: [PostTable.blogId],
+    references: [BlogTable.id],
+  }),
+}));
+
+export const BlogTable = pgTable("blogs", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(),
+  authorId: numeric("author_id").notNull(),
+});
+export type Blog = typeof BlogTable.$inferSelect; export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
+  posts: many(PostTable),
+}));
+
 `;
 
 exports[`@table > should work with composite keys 1`] = `
-"import { pgTable, text, pgIndex, primaryKey } from \\"drizzle-orm/pg-core\\";\\n\\nexport const UserTable = pgTable(\\"User\\", {\\n  id: integer(\\"id\\").primaryKey(),\\n  name: text(\\"name\\").notNull(),\\n});\\nexport type User = typeof UserTable.$inferSelect; // return type when queried\\n\\nexport const BookTable = pgTable(\\"Book\\", {\\n  id: integer(\\"id\\").primaryKey(),\\n  name: text(\\"name\\").notNull(),\\n});\\nexport type Book = typeof BookTable.$inferSelect; // return type when queried\\n\\nexport const BooksToAuthorsTable = pgTable(\\n  \\"books_to_authors\\",\\n  {\\n    authorId: integer(\\"authorId\\").notNull(),\\n    bookId: integer(\\"bookId\\").notNull(),\\n  },\\n  (table) => ({\\n    pkBooksToAuthor: primaryKey({\\n      name: \\"books_to_author\\",\\n      columns: [table.authorId, table.bookId],\\n    }),\\n  }),\\n);\\nexport type BooksToAuthors = typeof BooksToAuthorsTable.$inferSelect; // return type when queried\\n"
+import { pgTable, text, pgIndex, primaryKey } from "drizzle-orm/pg-core";
+
+export const UserTable = pgTable("User", {
+  id: integer("id").primaryKey(),
+  name: text("name").notNull(),
+});
+export type User = typeof UserTable.$inferSelect; 
+export const BookTable = pgTable("Book", {
+  id: integer("id").primaryKey(),
+  name: text("name").notNull(),
+});
+export type Book = typeof BookTable.$inferSelect; 
+export const BooksToAuthorsTable = pgTable(
+  "books_to_authors",
+  {
+    authorId: integer("authorId").notNull(),
+    bookId: integer("bookId").notNull(),
+  },
+  (table) => ({
+    pkBooksToAuthor: primaryKey({
+      name: "books_to_author",
+      columns: [table.authorId, table.bookId],
+    }),
+  }),
+);
+export type BooksToAuthors = typeof BooksToAuthorsTable.$inferSelect; 
 `;
 
 exports[`@table > should work with defaults 1`] = `
-"import { pgTable } from \\"drizzle-orm/pg-core\\";\\nimport { sql } from \\"drizzle-orm\\";\\n\\nexport const UuidTable = pgTable(\\"Uuid\\", {\\n  int1: integer(\\"int1\\").notNull().default(42),\\n  int2: integer(\\"int2\\")\\n    .notNull()\\n    .default(sql\`'42'::integer'\`),\\n  uuid1: uuid(\\"uuid1\\").defaultRandom().notNull(),\\n  uuid2: uuid(\\"uuid2\\")\\n    .notNull()\\n    .default(sql\`gen_random_uuid()\`),\\n});\\nexport type Uuid = typeof UuidTable.$inferSelect; // return type when queried\\n"
+import { pgTable } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+export const UuidTable = pgTable("Uuid", {
+  int1: integer("int1").notNull().default(42),
+  int2: integer("int2")
+    .notNull()
+    .default(sql\`'42'::integer'\`),
+  uuid1: uuid("uuid1").defaultRandom().notNull(),
+  uuid2: uuid("uuid2")
+    .notNull()
+    .default(sql\`gen_random_uuid()\`),
+});
+export type Uuid = typeof UuidTable.$inferSelect; 
 `;
 
 exports[`@table > should work with enums 1`] = `
-"import { pgTable, pgEnum } from \\"drizzle-orm/pg-core\\";\\n\\nexport const ActionTable = pgTable(\\"Action\\", {\\n  id: uuid(\\"id\\").defaultRandom().primaryKey(),\\n  state: StateEnum(\\"state\\"),\\n});\\nexport type Action = typeof ActionTable.$inferSelect; // return type when queried\\n\\nexport const StateEnum = pgEnum(\\"State\\", [\\"do\\", \\"doing\\", \\"done\\", \\"failed\\"]);\\n"
+import { pgTable, pgEnum } from "drizzle-orm/pg-core";
+
+export const ActionTable = pgTable("Action", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  state: StateEnum("state"),
+});
+export type Action = typeof ActionTable.$inferSelect; 
+export const StateEnum = pgEnum("State", ["do", "doing", "done", "failed"]);
+
 `;
 
 exports[`@table > should work with indexes 1`] = `
-"import { pgTable, uniqueIndex, text } from \\"drizzle-orm/pg-core\\";\\nimport {} from \\"drizzle-orm\\";\\n\\nexport const UserTable = pgTable(\\n  \\"User\\",\\n  {\\n    id: integer(\\"id\\").primaryKey(),\\n    name: text(\\"name\\").notNull(),\\n    email: text(\\"email\\").notNull(),\\n  },\\n  (table) => ({\\n    emailIdx: uniqueIndex(\\"email_idx\\").on(table.email),\\n  }),\\n);\\nexport type User = typeof UserTable.$inferSelect; // return type when queried\\n"
+import { pgTable, uniqueIndex, text } from "drizzle-orm/pg-core";
+import {} from "drizzle-orm";
+
+export const UserTable = pgTable(
+  "User",
+  {
+    id: integer("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+  },
+  (table) => ({
+    emailIdx: uniqueIndex("email_idx").on(table.email),
+  }),
+);
+export type User = typeof UserTable.$inferSelect; 
 `;
 
 exports[`@table > should work with indexes unique 1`] = `
-"import { pgTable, uniqueIndex, text } from \\"drizzle-orm/pg-core\\";\\nimport { sql } from \\"drizzle-orm\\";\\n\\nexport const UserTable = pgTable(\\n  \\"User\\",\\n  {\\n    id: integer(\\"id\\").primaryKey(),\\n    name: text(\\"name\\").notNull(),\\n    email: text(\\"email\\").notNull(),\\n  },\\n  (table) => ({\\n    email: uniqueIndex(\\"email\\").on(sql\`lower(\${table.email})\`),\\n  }),\\n);\\nexport type User = typeof UserTable.$inferSelect; // return type when queried\\n"
+import { pgTable, uniqueIndex, text } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+export const UserTable = pgTable(
+  "User",
+  {
+    id: integer("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+  },
+  (table) => ({
+    email: uniqueIndex("email").on(sql\`lower(\${table.email})\`),
+  }),
+);
+export type User = typeof UserTable.$inferSelect; 
 `;
 
 exports[`@table > should work with timestamps 1`] = `
-"import { pgTable, timestamp } from \\"drizzle-orm/pg-core\\";\\nimport { sql } from \\"drizzle-orm\\";\\n\\nexport const TimeTable = pgTable(\\"Time\\", {\\n  timestamp1: timestamp(\\"timestamp1\\").notNull(),\\n  timestamp2: timestamp(\\"timestamp2\\")\\n    .notNull()\\n    .default(sql\`now()\`),\\n});\\nexport type Time = typeof TimeTable.$inferSelect; // return type when queried\\n"
+import { pgTable, timestamp } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+export const TimeTable = pgTable("Time", {
+  timestamp1: timestamp("timestamp1").notNull(),
+  timestamp2: timestamp("timestamp2")
+    .notNull()
+    .default(sql\`now()\`),
+});
+export type Time = typeof TimeTable.$inferSelect; 
 `;

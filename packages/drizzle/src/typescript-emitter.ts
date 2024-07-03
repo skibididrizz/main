@@ -31,7 +31,6 @@ import {
   StringBuilder,
 } from "@typespec/compiler/emitter-framework";
 
-
 export const intrinsicNameToTSType = new Map<string, string>([
   ["unknown", "unknown"],
   ["string", "string"],
@@ -45,7 +44,7 @@ export const intrinsicNameToTSType = new Map<string, string>([
   ["int64", "bigint"],
   ["boolean", "boolean"],
   ["null", "null"],
-  ["void", "unknown"]
+  ["void", "unknown"],
 ]);
 
 export class TypeScriptEmitter extends CodeTypeEmitter {
@@ -81,9 +80,10 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
   }
 
   modelLiteral(model: Model): EmitterOutput<string> {
-    return this.emitter.result.rawCode(code`{ ${this.emitter.emitModelProperties(model)}}`);
+    return this.emitter.result.rawCode(
+      code`{ ${this.emitter.emitModelProperties(model)}}`,
+    );
   }
-
 
   modelDeclaration(model: Model, name: string): EmitterOutput<string> {
     let extendsClause;
@@ -108,7 +108,7 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
       name,
       code`${commentCode}\nexport interface ${name} ${extendsClause} {
         ${this.emitter.emitModelProperties(model)}
-      }`
+      }`,
     );
   }
 
@@ -135,37 +135,49 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
 
     return this.emitter.result.rawCode(
       code`${docString}${name}${property.optional ? "?" : ""}: ${this.emitter.emitTypeReference(
-        property.type
-      )}`
+        property.type,
+      )}`,
     );
   }
 
-  arrayDeclaration(array: Model, name: string, elementType: Type): EmitterOutput<string> {
+  arrayDeclaration(
+    array: Model,
+    name: string,
+    elementType: Type,
+  ): EmitterOutput<string> {
     return this.emitter.result.declaration(
       name,
-      code`interface ${name} extends Array<${this.emitter.emitTypeReference(elementType)}> { };`
+      code`interface ${name} extends Array<${this.emitter.emitTypeReference(elementType)}> { };`,
     );
   }
 
   arrayLiteral(array: Model, elementType: Type): EmitterOutput<string> {
     // we always parenthesize here as prettier will remove the unneeded parens.
-    return this.emitter.result.rawCode(code`(${this.emitter.emitTypeReference(elementType)})[]`);
+    return this.emitter.result.rawCode(
+      code`(${this.emitter.emitTypeReference(elementType)})[]`,
+    );
   }
 
-  operationDeclaration(operation: Operation, name: string): EmitterOutput<string> {
+  operationDeclaration(
+    operation: Operation,
+    name: string,
+  ): EmitterOutput<string> {
     return this.emitter.result.declaration(
       name,
       code`interface ${name} {
       ${this.#operationSignature(operation)}
-    }`
+    }`,
     );
   }
 
-  operationParameters(operation: Operation, parameters: Model): EmitterOutput<string> {
+  operationParameters(
+    operation: Operation,
+    parameters: Model,
+  ): EmitterOutput<string> {
     const cb = new StringBuilder();
     for (const prop of parameters.properties.values()) {
       cb.push(
-        code`${prop.name}${prop.optional ? "?" : ""}: ${this.emitter.emitTypeReference(prop.type)},`
+        code`${prop.name}${prop.optional ? "?" : ""}: ${this.emitter.emitTypeReference(prop.type)},`,
       );
     }
     return cb;
@@ -173,11 +185,14 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
 
   #operationSignature(operation: Operation) {
     return code`(${this.emitter.emitOperationParameters(
-      operation
+      operation,
     )}): ${this.emitter.emitOperationReturnType(operation)}`;
   }
 
-  operationReturnType(operation: Operation, returnType: Type): EmitterOutput<string> {
+  operationReturnType(
+    operation: Operation,
+    returnType: Type,
+  ): EmitterOutput<string> {
     return this.emitter.emitTypeReference(returnType);
   }
 
@@ -188,11 +203,14 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
       export interface ${name} {
         ${this.emitter.emitInterfaceOperations(iface)}
       }
-    `
+    `,
     );
   }
 
-  interfaceOperationDeclaration(operation: Operation, name: string): EmitterOutput<string> {
+  interfaceOperationDeclaration(
+    operation: Operation,
+    name: string,
+  ): EmitterOutput<string> {
     return code`${name}${this.#operationSignature(operation)}`;
   }
 
@@ -201,7 +219,7 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
       name,
       code`export enum ${name} {
         ${this.emitter.emitEnumMembers(en)}
-      }`
+      }`,
     );
   }
 
@@ -221,7 +239,7 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
   unionDeclaration(union: Union, name: string): EmitterOutput<string> {
     return this.emitter.result.declaration(
       name,
-      code`export type ${name} = ${this.emitter.emitUnionVariants(union)}`
+      code`export type ${name} = ${this.emitter.emitUnionVariants(union)}`,
     );
   }
 
@@ -238,7 +256,9 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
     let i = 0;
     for (const variant of union.variants.values()) {
       i++;
-      builder.push(code`${this.emitter.emitType(variant)}${i < union.variants.size ? "|" : ""}`);
+      builder.push(
+        code`${this.emitter.emitType(variant)}${i < union.variants.size ? "|" : ""}`,
+      );
     }
     return this.emitter.result.rawCode(builder.reduce());
   }
@@ -255,12 +275,14 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
     targetDeclaration: Declaration<string>,
     pathUp: Scope<string>[],
     pathDown: Scope<string>[],
-    commonScope: Scope<string> | null
+    commonScope: Scope<string> | null,
   ) {
     if (!commonScope) {
       const sourceSf = (pathUp[0] as SourceFileScope<string>).sourceFile;
       const targetSf = (pathDown[0] as SourceFileScope<string>).sourceFile;
-      sourceSf.imports.set(`./${targetSf.path.replace(".js", ".ts")}`, [targetDeclaration.name]);
+      sourceSf.imports.set(`./${targetSf.path.replace(".js", ".ts")}`, [
+        targetDeclaration.name,
+      ]);
     }
 
     return super.reference(targetDeclaration, pathUp, pathDown, commonScope);
@@ -280,10 +302,12 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
       emittedSourceFile.contents += decl.value + "\n";
     }
 
-    emittedSourceFile.contents = await prettier.format(emittedSourceFile.contents, {
-      parser: "typescript",
-    });
-    
+    emittedSourceFile.contents = await prettier.format(
+      emittedSourceFile.contents,
+      {
+        parser: "typescript",
+      },
+    );
 
     return emittedSourceFile;
   }

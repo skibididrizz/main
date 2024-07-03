@@ -72,11 +72,11 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   get program() {
     return this.emitter.getProgram();
   }
-  state(decorator:keyof typeof StateKeys, v:Type){
+  state(decorator: keyof typeof StateKeys, v: Type) {
     return this.program.stateMap(StateKeys[decorator]).get(v);
   }
-  has(decorator:keyof typeof StateKeys, v:Type){
-      return this.program.stateMap(StateKeys[decorator]).has(v);
+  has(decorator: keyof typeof StateKeys, v: Type) {
+    return this.program.stateMap(StateKeys[decorator]).has(v);
   }
   modelDeclaration(model: Model, name: string) {
     if (!hasTable(this.program, model)) {
@@ -97,7 +97,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             relTo.set(prop.name, `many(${arrType.name}Table)`);
             args.push("many");
           }
-        } else if (prop.model ) {
+        } else if (prop.model) {
           if (prop.model.name == prop.type.name) {
             const tableRef = "table";
 
@@ -142,21 +142,24 @@ export class DrizzleEmitter extends TypeScriptEmitter {
               `one(${prop.type.name}Table, ${this.objectToString(pkObj)})`,
             );
           }
-        } 
-      }else if(prop.type.kind === "Scalar"){
-        const index = this.state('index', prop)  as ({name:string, sql?:string}) | undefined;
-        const isUnique = this.state('unique', prop) as boolean | undefined;
-        if(index?.name){
-          const idxType = isUnique ? "uniqueIndex" : "index";
-          if (isUnique){
-            this.addDrizzleDbImport( isUnique ? "uniqueIndex" : "index")
-          }
-          this.addImport('drizzle-orm', index.sql ? 'sql' : undefined);
-          selfRef = selfRef || new ObjectBuilder();
-          selfRef.set(index.name, `${idxType}("${camelToSnake(index.name)}")${index.sql ? `.on(sql\`${index.sql}\`)` : `.on(table.${prop.name})`}`);
-        
         }
-
+      } else if (prop.type.kind === "Scalar") {
+        const index = this.state("index", prop) as
+          | { name: string; sql?: string }
+          | undefined;
+        const isUnique = this.state("unique", prop) as boolean | undefined;
+        if (index?.name) {
+          const idxType = isUnique ? "uniqueIndex" : "index";
+          if (isUnique) {
+            this.addDrizzleDbImport(isUnique ? "uniqueIndex" : "index");
+          }
+          this.addImport("drizzle-orm", index.sql ? "sql" : undefined);
+          selfRef = selfRef || new ObjectBuilder();
+          selfRef.set(
+            index.name,
+            `${idxType}("${camelToSnake(index.name)}")${index.sql ? `.on(sql\`${index.sql}\`)` : `.on(table.${prop.name})`}`,
+          );
+        }
 
         console.log("not handing primitives yet");
       }
@@ -167,26 +170,34 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     }
 
     //handle composite keys
-    const primaryKey = this.state('id', model) as IdRef | undefined;
+    const primaryKey = this.state("id", model) as IdRef | undefined;
     if (primaryKey && primaryKey.fields) {
-        this.addDrizzleDbImport("pgIndex", "primaryKey");
-        const indexBuilder = new ObjectBuilder();
-        if (primaryKey.name)
-          indexBuilder.set('name', `"${camelToSnake(primaryKey.name)}"`);
-        indexBuilder.set('columns',`[${primaryKey.fields?.map((v) =>{
-          if (!this.findModelPropertyByName(model, v)){
-            this.program.reportDiagnostic({
-              message: `Field ${v} does not exist on model ${model.name} can not be used as a composite key.`,
-              target:model,
-              severity:'warning',
-              code: 'index-field-does-not-exist',
-            });
-          }
-          return `table.${v}`
-      }).join(", ")}]`);      
+      this.addDrizzleDbImport("pgIndex", "primaryKey");
+      const indexBuilder = new ObjectBuilder();
+      if (primaryKey.name)
+        indexBuilder.set("name", `"${camelToSnake(primaryKey.name)}"`);
+      indexBuilder.set(
+        "columns",
+        `[${primaryKey.fields
+          ?.map((v) => {
+            if (!this.findModelPropertyByName(model, v)) {
+              this.program.reportDiagnostic({
+                message: `Field ${v} does not exist on model ${model.name} can not be used as a composite key.`,
+                target: model,
+                severity: "warning",
+                code: "index-field-does-not-exist",
+              });
+            }
+            return `table.${v}`;
+          })
+          .join(", ")}]`,
+      );
 
-        selfRef = selfRef?? new ObjectBuilder();
-        selfRef.set(`pk${capitalize(primaryKey.name ?? '')}`, `primaryKey(${this.objectToString(indexBuilder)})`);
+      selfRef = selfRef ?? new ObjectBuilder();
+      selfRef.set(
+        `pk${capitalize(primaryKey.name ?? "")}`,
+        `primaryKey(${this.objectToString(indexBuilder)})`,
+      );
     }
 
     return this.emitter.result.declaration(
@@ -222,10 +233,10 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     const pType = property.type;
     if (!isModel(pType)) {
       this.program.reportDiagnostic({
-        code:'only-model-properties-relationships',
-        target:property,
-        severity:'warning',
-        message:'only model properties can have relationships',
+        code: "only-model-properties-relationships",
+        target: property,
+        severity: "warning",
+        message: "only model properties can have relationships",
       });
       return {
         name: undefined,
@@ -234,10 +245,14 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       };
     }
     const relation = getRelation(this.program, property);
-    const fields = arrayOrUndefined(relation?.fields)?.map((v) => this.propertyFor(property.model, v)) ?? [property];
-    const references = arrayOrUndefined(arrayOrUndefined(relation?.references)?.map((v) => {
-        return (typeof v === "string") ? this.propertyFor(pType.name, v) : v;
-      })) ?? [this.primaryKeyFor(pType)];
+    const fields = arrayOrUndefined(relation?.fields)?.map((v) =>
+      this.propertyFor(property.model, v),
+    ) ?? [property];
+    const references = arrayOrUndefined(
+      arrayOrUndefined(relation?.references)?.map((v) => {
+        return typeof v === "string" ? this.propertyFor(pType.name, v) : v;
+      }),
+    ) ?? [this.primaryKeyFor(pType)];
 
     const name = relation?.name ?? property.name;
     return {
@@ -251,35 +266,35 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   typeToDrizzleDecl(property: ModelProperty, ref?: string) {
     const colName = ref ?? getMap(this.program, property);
     const typeSb = new StringBuilder();
-    const id = this.state('id', property) as IdRef | undefined;
-    const isUuid = this.has('uuid', property);
-    const type = isUuid ? 'uuid' : this.typeToDrizzle(property);
+    const id = this.state("id", property) as IdRef | undefined;
+    const isUuid = this.has("uuid", property);
+    const type = isUuid ? "uuid" : this.typeToDrizzle(property);
 
     typeSb.push(`${type}('${colName}')`);
-    if (isUuid){
+    if (isUuid) {
       //a uuid type that's an ID we will make random.
-      if (id || this.state('uuid', property)) {
+      if (id || this.state("uuid", property)) {
         typeSb.push(".defaultRandom()");
       }
     }
- 
+
     if (id) {
       typeSb.push(".primaryKey()");
     } else {
       if (!property.optional) {
         typeSb.push(".notNull()");
       }
-      if (this.state('unique', property) && !this.state('index', property)) {
+      if (this.state("unique", property) && !this.state("index", property)) {
         typeSb.push(".unique()");
       }
-     
-      const def = this.state('default', property);
+
+      const def = this.state("default", property);
       if (def) {
         if (typeof def === "string") {
-          this.addImport('drizzle-orm','sql');
+          this.addImport("drizzle-orm", "sql");
           typeSb.push(`.default(sql\`${def}\`)`);
-        }else{
-         typeSb.push(`.default(${def})`);
+        } else {
+          typeSb.push(`.default(${def})`);
         }
       }
     }
@@ -290,20 +305,19 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   typeToDrizzle(property: ModelProperty) {
     if (property.type.kind === "Scalar") {
       let type = intrensicToDrizzle.get(property.type.name);
-      if (type){
+      if (type) {
         this.addDrizzleDbImport(type);
       }
       switch (property.type.name) {
-
         case "numeric": {
-          if (this.state('id', property)) {
+          if (this.state("id", property)) {
             return `serial`;
           }
           return type;
         }
         case "string": {
-          const uid = this.state('uuid', property);
-          if (uid){
+          const uid = this.state("uuid", property);
+          if (uid) {
             return `uuid`;
           }
           return type;
@@ -325,8 +339,13 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     } else if (property.type.kind === "Enum") {
       typeSb.push(`${property.type.name}Enum('${colName}')`);
     } else {
-      this.program.reportDiagnostic({ code: "unknown-literal", target: property, message: "unknown literal", severity: "error" });
-      return '';
+      this.program.reportDiagnostic({
+        code: "unknown-literal",
+        target: property,
+        message: "unknown literal",
+        severity: "error",
+      });
+      return "";
     }
 
     return this.emitter.result.rawCode(
@@ -335,10 +354,11 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   }
 
   private modelFor(modelName: string | Model) {
-    return typeof modelName == "string" ? this.program.getGlobalNamespaceType().models.get(modelName)
-        : modelName;
+    return typeof modelName == "string"
+      ? this.program.getGlobalNamespaceType().models.get(modelName)
+      : modelName;
   }
-  
+
   private findModelPropertyBy(
     modelName: string | Model,
     check: (v: ModelProperty) => boolean,
@@ -355,8 +375,14 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       return this.findModelPropertyBy(model.baseModel, check);
     }
   }
-  private findModelPropertyByName(modelName: string | Model, propertyName: string): ModelProperty | undefined {
-    return this.findModelPropertyBy(modelName, ({ name }) => name === propertyName);
+  private findModelPropertyByName(
+    modelName: string | Model,
+    propertyName: string,
+  ): ModelProperty | undefined {
+    return this.findModelPropertyBy(
+      modelName,
+      ({ name }) => name === propertyName,
+    );
   }
 
   private primaryKeyFor(modelName: string | Model): ModelProperty | undefined {
@@ -365,7 +391,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     );
   }
 
-  addDrizzleDbImport(...decl: (string|undefined)[]) {
+  addDrizzleDbImport(...decl: (string | undefined)[]) {
     if (!decl.length) {
       return this;
     }
@@ -375,7 +401,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   addImport(pkgName: string, ...decl: (string | undefined)[]) {
     const sourceFile = this.emitter.getContext().sourceFile;
     const impts = new Set(sourceFile.imports.get(pkgName) ?? []);
-    decl.forEach((v) =>v && impts.add(v));
+    decl.forEach((v) => v && impts.add(v));
     sourceFile?.imports.set(pkgName, [...impts]);
     return this;
   }

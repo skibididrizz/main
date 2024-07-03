@@ -1,59 +1,73 @@
-import {describe, it, beforeEach} from "node:test";
-import {BasicTestRunner, expectDiagnostics, extractCursor} from "@typespec/compiler/testing";
-import {createDrizzleTestRunner, snapshotEmittedTypescript, emitWithDiagnostics} from "./test-host.js";
+import { describe, it, beforeEach } from "node:test";
+import {
+  BasicTestRunner,
+  expectDiagnostics,
+  extractCursor,
+} from "@typespec/compiler/testing";
+import {
+  createDrizzleTestRunner,
+  snapshotEmittedTypescript,
+  emitWithDiagnostics,
+} from "./test-host.js";
 
 describe("@table", () => {
-    let runner: BasicTestRunner;
+  let runner: BasicTestRunner;
 
-    beforeEach(async () => {
-        runner = await createDrizzleTestRunner();
-    })
-    it('should work with timestamps', async (t)=>{
-      await snapshotEmittedTypescript(t,
-        `
+  beforeEach(async () => {
+    runner = await createDrizzleTestRunner();
+  });
+  it("should work with timestamps", async (t) => {
+    await snapshotEmittedTypescript(
+      t,
+      `
     @table model Time {
       timestamp1:Date;
       @default("now()") timestamp2:Date;
     };
-    `);
-    });
-    it('should work with defaults', async (t)=>{
-      await snapshotEmittedTypescript(t,
-        `
+    `,
+    );
+  });
+  it("should work with defaults", async (t) => {
+    await snapshotEmittedTypescript(
+      t,
+      `
     @table model Uuid {
       @default(int32(42)) int1:integer; 
       @default("'42'::integer'") int2:integer;
       @uuid(true) uuid1: string;
       @uuid @default("gen_random_uuid()")  uuid2: string;
     };
-    `);
-
-    });
-    it('should work with indexes', async (t)=>{
-      await snapshotEmittedTypescript(t,
-        `
+    `,
+    );
+  });
+  it("should work with indexes", async (t) => {
+    await snapshotEmittedTypescript(
+      t,
+      `
     @table model User {
       @id id: integer;
       name:string;
       @index @unique email:string;
     };
-    `);
-
-    });
-    it('should work with indexes unique', async (t)=>{
-      await snapshotEmittedTypescript(t,
-        `
+    `,
+    );
+  });
+  it("should work with indexes unique", async (t) => {
+    await snapshotEmittedTypescript(
+      t,
+      `
     @table model User {
       @id id: integer;
       name:string;
       @index("email", "lower({column})") @unique  email:string;
     };
-    `);
-
-    });
-    it('should handle multiple relationships', async (t)=>{
-        await snapshotEmittedTypescript(t,
-            `
+    `,
+    );
+  });
+  it("should handle multiple relationships", async (t) => {
+    await snapshotEmittedTypescript(
+      t,
+      `
         @table model User {
           @id id: integer;
           name:string;
@@ -72,12 +86,13 @@ describe("@table", () => {
         };
        
 
-        `
-        );
-    })
-    it('should work with composite keys', async (t)=>{
-       await snapshotEmittedTypescript(t,
-            `
+        `,
+    );
+  });
+  it("should work with composite keys", async (t) => {
+    await snapshotEmittedTypescript(
+      t,
+      `
         @table model User {
           @id id: integer;
           name:string;
@@ -93,12 +108,13 @@ describe("@table", () => {
           bookId: integer;
         };
  
-        `
-        );
-    })
-    it('should work with enums', async (t) => {
-        const result = (await snapshotEmittedTypescript(t,
-            `
+        `,
+    );
+  });
+  it("should work with enums", async (t) => {
+    const result = await snapshotEmittedTypescript(
+      t,
+      `
         enum State {
           do,
           doing,
@@ -109,11 +125,13 @@ describe("@table", () => {
           @uuid @id id: string; 
           state:State;
         };
-        `));
-    });
-    it('should parse base objects', async (t) => {
-        const result = (await snapshotEmittedTypescript(t,
-            `model BaseModel {
+        `,
+    );
+  });
+  it("should parse base objects", async (t) => {
+    const result = await snapshotEmittedTypescript(
+      t,
+      `model BaseModel {
           @uuid @id id: string; 
         };
 
@@ -127,12 +145,13 @@ describe("@table", () => {
         } 
   
    
-        `));
-
-    });
-    it('should parse objects', async (t) => {
-        const result = (await snapshotEmittedTypescript(t,
-            `
+        `,
+    );
+  });
+  it("should parse objects", async (t) => {
+    const result = await snapshotEmittedTypescript(
+      t,
+      `
         @table("users") model User {
           @id _id: numeric;    
           comments:Comment[];   
@@ -161,12 +180,13 @@ describe("@table", () => {
         } 
         
    
-        `));
-    });
-    it("set alternate name on operation", async (t) => {
-
-        const [code, diagnostics] = (await snapshotEmittedTypescript(t,
-            `@table("users") model User {
+        `,
+    );
+  });
+  it("set alternate name on operation", async (t) => {
+    const [code, diagnostics] = await snapshotEmittedTypescript(
+      t,
+      `@table("users") model User {
           @uuid @id id: string; 
           @unique email: string;
           rank: int32;
@@ -183,32 +203,32 @@ describe("@table", () => {
           content: string;
           @relation(#{fields:#["blogId"]}) blog: Blog;
         };
-        `
-        ));
-    })
+        `,
+    );
+  });
 
-    // it("emit diagnostic if not used on an operation", async () => {
-    //   const diagnostics = await runner.diagnose(
-    //     `@alternateName("bar") model Test {}`
-    //   );
-    //   expectDiagnostics(diagnostics, {
-    //     severity: "error",
-    //     code: "decorator-wrong-target",
-    //     message: "Cannot apply @alternateName decorator to Test since it is not assignable to Operation"
-    //   })
-    // });
-    //
-    //
-    // it("emit diagnostic if using banned name", async () => {
-    //   const {pos, source} = extractCursor(`@alternateName(┆"banned") op test(): void;`)
-    //   const diagnostics = await runner.diagnose(
-    //     source
-    //   );
-    //   expectDiagnostics(diagnostics, {
-    //     severity: "error",
-    //     code: "drizzle-decorator/banned-alternate-name",
-    //     message: `Banned alternate name "banned".`,
-    //     pos: pos + runner.autoCodeOffset
-    //   })
-    // });
+  // it("emit diagnostic if not used on an operation", async () => {
+  //   const diagnostics = await runner.diagnose(
+  //     `@alternateName("bar") model Test {}`
+  //   );
+  //   expectDiagnostics(diagnostics, {
+  //     severity: "error",
+  //     code: "decorator-wrong-target",
+  //     message: "Cannot apply @alternateName decorator to Test since it is not assignable to Operation"
+  //   })
+  // });
+  //
+  //
+  // it("emit diagnostic if using banned name", async () => {
+  //   const {pos, source} = extractCursor(`@alternateName(┆"banned") op test(): void;`)
+  //   const diagnostics = await runner.diagnose(
+  //     source
+  //   );
+  //   expectDiagnostics(diagnostics, {
+  //     severity: "error",
+  //     code: "drizzle-decorator/banned-alternate-name",
+  //     message: `Banned alternate name "banned".`,
+  //     pos: pos + runner.autoCodeOffset
+  //   })
+  // });
 });
