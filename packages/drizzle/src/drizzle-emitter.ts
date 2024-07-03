@@ -22,11 +22,12 @@ import {
   $map,
   $unique,
   $uuid,
-  getMap,
+
+} from "./decorators.js";
+import {  getMap,
   getRelation,
   getTableName,
-  hasTable,
-} from "./decorators.js";
+  hasTable} from './decorators-util.js'
 import { FieldRef, IdRef } from "./types.js";
 import { camelToSnake, capitalize } from "./string.js";
 import { arrayOrUndefined } from "./array.js";

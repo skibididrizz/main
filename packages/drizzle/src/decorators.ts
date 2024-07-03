@@ -11,7 +11,7 @@ import { camelToSnake } from "./string.js";
 
 export const namespace = "Drizzle";
 /**
- * This function marks a model to be used as a table.  If an argument is
+ * Marks a model to be used as a table.  If an argument is
  * passed it will be used as the name of the table.  Otherwise the name of the
  * name of the model will be used.
  * 
@@ -27,7 +27,7 @@ export function $table(context: DecoratorContext, target: Type, name: string) {
  * if on a model as a columns that are the keys.   This can be a string or an array.
  * 
  * Depending on the type of property different output will be created.
- * 
+
  * @param context 
  * @param target 
  * @param name 
@@ -45,7 +45,15 @@ export function $id(
     context.program.stateMap(StateKeys.id).set(target, { name, fields });
   }
 }
-
+/**
+ * Allows for columns to be indexed.   If using `@id` then this is not needed, as an index will be 
+ * created.
+ * 
+ * @param context 
+ * @param target 
+ * @param name - Name of the index, defaults to the name of the property with Idx appendded.
+ * @param sql - The SQL query to use on the index.
+ */
 export function $index(
   context: DecoratorContext,
   target: ModelProperty,
@@ -66,18 +74,25 @@ export function $sql(
   context.program.stateMap(StateKeys.sql).set(target, sql);
 }
 
-export function getSql(program: Program, property: ModelProperty) {
-  return program.stateMap(StateKeys.sql).get(property);
-}
-
+/**
+ * Ensures that column or columns are unique.  
+ * @param context 
+ * @param target 
+ * @param string 
+ */
 export function $unique(
   context: DecoratorContext,
-  target: ModelProperty | Type,
+  target: ModelProperty | Model,
   ...string: string[]
 ) {
   context.program.stateMap(StateKeys.unique).set(target, "unique");
 }
-
+/**
+ * Marks a column to use uuid.  If the column is marked `@id` then the uuid will be used as the primary key.  
+ * @param context 
+ * @param target 
+ * @param name 
+ */
 export function $uuid(
   context: DecoratorContext,
   target: ModelProperty,
@@ -103,6 +118,16 @@ export function $default(
   context.program.stateMap(StateKeys.default).set(target, name);
 }
 
+/**
+ * Defines a property as a relation.   If supplied the name will match the opposing sides relation, if
+ * it is not an array than an unique will be added to that column(s). The fields are the fields in the
+ * current model context, while the references are the column(s) that match on the other side.
+ * 
+ * 
+ * @param context 
+ * @param target 
+ * @param relation 
+ */
 export function $relation(
   context: DecoratorContext,
   target: ModelProperty,
@@ -111,28 +136,17 @@ export function $relation(
   context.program.stateMap(StateKeys.relation).set(target, relation);
 }
 
+/**
+ * Rename the column of a model property.   If the name is not supplied the name of the property will be used.
+ * 
+ * @param context 
+ * @param target 
+ * @param name 
+ */
 export function $map(
   context: { program: Program },
   target: ModelProperty,
   name: string,
 ) {
   context.program.stateMap(StateKeys.map).set(target, name);
-}
-export function hasTable(program: Program, entity: Type) {
-  return program.stateMap(StateKeys.table).has(entity);
-}
-export function getTableName(program: Program, entity: Type) {
-  const state = program.stateMap(StateKeys.table).get(entity);
-  return state ?? (entity.kind == "Model" ? entity.name : undefined);
-}
-
-export function getMap(program: Program, property: ModelProperty) {
-  return program.stateMap(StateKeys.map).get(property) ?? property.name;
-}
-
-export function getRelation(
-  program: Program,
-  property: ModelProperty,
-): FieldRef | undefined {
-  return program.stateMap(StateKeys.relation).get(property) as any;
 }
