@@ -212,7 +212,6 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       `,
     );
   }
-
   modelProperties(model: Model) {
     const builder = new StringBuilder();
 
@@ -349,7 +348,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     }
 
     return this.emitter.result.rawCode(
-      code`${this.doc(property)}${name}${property.optional ? "?" : ""}: ${typeSb}`,
+      code`${this.doc(property)}${name}: ${typeSb}`,
     );
   }
 

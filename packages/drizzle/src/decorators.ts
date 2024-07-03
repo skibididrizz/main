@@ -86,6 +86,23 @@ export function $uuid(
   context.program.stateMap(StateKeys.uuid).set(target, name);
 }
 
+/**
+ * 
+ * The `@default` decorator allows for columns to have values by default.  These can be literals or SQL queries.
+ * 
+ * <code>
+ *  @table model Stuff {
+ *    @id @default("seq_name") id:numberic;
+ *    @default("now()") createdDate:Date;
+ *    
+ *  }
+ * 
+ * </code>
+ * 
+ * @param context - @ignore
+ * @param target  - use on model properties.
+ * @param name - The SQL query that will be used to create the column.
+ */
 export function $default(
   context: DecoratorContext,
   target: ModelProperty,
