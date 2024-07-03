@@ -37,8 +37,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 22.x
           cache: yarn
+      - name: Setup Yarn    
+        run: yarn set version 4.3.1 --yarn-path
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}    
       - name: Install dependencies
         run: yarn install --frozen-lockfile --non-interactive
       - name: Build
@@ -48,8 +52,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          # Upload entire repository
-          path: build
+          path: packages/site/build
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
