@@ -76,6 +76,27 @@ export async function snapshotEmittedTypescript(
   return [result, diags];
 }
 
+export async function exampleEmittedTypescript(
+  t: TestContext,
+  code: string,
+): Promise<void> {
+  const [result = "", diags] = await emitWithDiagnostics(code);
+
+  for (const diag of diags) {
+    console.log(`${diag.message} ${diag.code} `);
+  }
+  //@ts-expect-error
+  t.assert.ok(diags.length == 0, "no diagnostics.");
+  const tsResult = await compile(result, {});
+  //@ts-expect-error
+  t.assert.ok(tsResult, "successfully compiled.");
+  //@ts-expect-error
+  t.assert.snapshot(code);
+  //@ts-expect-error
+  t.assert.snapshot(result);
+
+}
+
 export async function emit(code: string): Promise<string> {
   const [result, diagnostics] = await emitWithDiagnostics(code);
   expectDiagnosticEmpty(diagnostics);

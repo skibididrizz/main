@@ -1,0 +1,17 @@
+exports[`examples for docs > Create a model 1`] = `
+
+ @table("blog") model Blog {
+ @id id: string;
+ };      
+    
+`;
+
+exports[`examples for docs > Create a model 2`] = `
+import { pgTable, text } from "drizzle-orm/pg-core";
+
+export const BlogTable = pgTable("blog", {
+  id: text("id").primaryKey(),
+});
+
+export type Blog = typeof BlogTable.$inferSelect; 
+`;
