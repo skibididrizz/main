@@ -183,7 +183,7 @@ describe("@table", () => {
         `,
     );
   });
-  it("set alternate name on operation", async (t) => {
+  it("use the relation decorator", async (t) => {
     const [code, diagnostics] = await snapshotEmittedTypescript(
       t,
       `@table("users") model User {
@@ -201,6 +201,7 @@ describe("@table", () => {
           @uuid @id id: string; 
           title: string;
           content: string;
+          blogId: string;
           @relation(#{fields:#["blogId"]}) blog: Blog;
         };
         `,

@@ -1,42 +1,3 @@
-exports[`@table > set alternate name on operation 1`] = `
-import { pgTable, text, integer } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-
-export const UserTable = pgTable("users", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  email: text("email").notNull().unique(),
-  rank: integer("rank").notNull(),
-  coolScore: integer("cool_score").notNull(),
-});
-
-export type User = typeof UserTable.$inferSelect; 
-export const BlogTable = pgTable("blogs", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull().unique(),
-});
-
-export type Blog = typeof BlogTable.$inferSelect; 
-export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
-  posts: many(PostTable),
-}));
-
-export const PostTable = pgTable("posts", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-});
-
-export type Post = typeof PostTable.$inferSelect; 
-export const PostTableRelations = relations(PostTable, ({ one }) => ({
-  blog: one(BlogTable, {
-    relationName: "blog",
-    fields: [undefinedTable.undefined],
-    references: [BlogTable.id],
-  }),
-}));
-
-`;
-
 exports[`@table > should handle multiple relationships 1`] = `
 import { pgTable, text, pgIndex, primaryKey } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
@@ -283,4 +244,44 @@ export const TimeTable = pgTable("Time", {
 });
 
 export type Time = typeof TimeTable.$inferSelect; 
+`;
+
+exports[`@table > use the relation decorator 1`] = `
+import { pgTable, text, integer } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+export const UserTable = pgTable("users", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: text("email").notNull().unique(),
+  rank: integer("rank").notNull(),
+  coolScore: integer("cool_score").notNull(),
+});
+
+export type User = typeof UserTable.$inferSelect; 
+export const BlogTable = pgTable("blogs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull().unique(),
+});
+
+export type Blog = typeof BlogTable.$inferSelect; 
+export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
+  posts: many(PostTable),
+}));
+
+export const PostTable = pgTable("posts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  blogId: text("blogId").notNull(),
+});
+
+export type Post = typeof PostTable.$inferSelect; 
+export const PostTableRelations = relations(PostTable, ({ one }) => ({
+  blog: one(BlogTable, {
+    relationName: "blog",
+    fields: [PostTable.blogId],
+    references: [BlogTable.id],
+  }),
+}));
+
 `;
