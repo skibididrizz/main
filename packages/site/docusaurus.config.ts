@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 import Logo from '@site/static/img/logo.png';
 const config: Config = {
   title: 'Skibididrizz',
-  tagline: 'Gyat some of that drizz',
+  tagline: 'Gyatt some of that drizz',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here

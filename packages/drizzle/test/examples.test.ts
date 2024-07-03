@@ -23,24 +23,23 @@ describe('examples', ()=>{
      @id id: numeric;
      @default("now()") createdDate: Date;
      @default(int32(42)) answer:int32;
-
-   };
+  };
             
             `));
 
 
     it('many-to-one', t=>exampleEmittedTypescript(t, `
         @table model Blog {
-        @id id: string;
-        name: string;
-        @map("author_id") authorId: string;
-        @relation(#{fields:"authorId"}) author: Author;
+            @uuid @id id: string;
+            name: string;
+            @map("author_id") authorId: string;
+            @relation(#{fields:"authorId"}) author: Author;
         };
 
         @table model Author {
-             @id id: string;
-             name: string;
-             blogs:Blog[];
+            @id id: string;
+            name: string;
+            blogs:Blog[];
         };
         
         
