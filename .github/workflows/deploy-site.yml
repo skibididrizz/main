@@ -44,7 +44,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}    
       - name: Install dependencies
-        run: yarn install --immutable --non-interactive
+        run: yarn
       - name: Build
         run: yarn workspace@skibididrizz/site build
       - name: Setup Pages
