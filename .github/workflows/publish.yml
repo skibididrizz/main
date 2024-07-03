@@ -25,7 +25,7 @@ jobs:
         run: yarn fix
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Build Drizzle    
+      - name: Build Skibididrizz    
         run: yarn workspace @skibididrizz/drizzle build       
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

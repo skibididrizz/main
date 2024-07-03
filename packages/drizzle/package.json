@@ -20,7 +20,7 @@
     "tsx": "^4.15.6"
   },
   "devDependencies": {
-    "@types/node": "latest",
+    "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@typespec/library-linter": "^0.57.0",
@@ -33,8 +33,9 @@
     "build": "tsc && npm run build:tsp",
     "watch": "tsc --watch",
     "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
-    "test:watch": "tsx --watch --test ./test/**/*.test.ts",
-    "test": "node --test ./dist/test/**/*.test.js",
+    "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test ./test/**/*.test.ts",
+    "test": "tsx  --experimental-test-snapshots --test ./test/**/*.test.ts",
+    "test:snapshot": "tsx --experimental-test-snapshots --test-update-snapshots --test ./test/**/*.test.ts",
     "lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
     "lint:fix": "eslint . --report-unused-disable-directives --fix",
     "format": "prettier .  --write",

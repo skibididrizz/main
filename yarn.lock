@@ -3129,7 +3129,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@skibididrizz/drizzle@workspace:packages/drizzle"
   dependencies:
-    "@types/node": "npm:latest"
+    "@types/node": "npm:^20.14.9"
     "@typescript-eslint/eslint-plugin": "npm:^6.0.0"
     "@typescript-eslint/parser": "npm:^6.0.0"
     "@typespec/compiler": "npm:latest"
@@ -3160,6 +3160,24 @@ __metadata:
   dependencies:
     "@typespec/compiler": "npm:^0.57.0"
     typescript: "npm:^5.5.2"
+  languageName: unknown
+  linkType: soft
+
+"@skibididrizz/site@workspace:packages/site":
+  version: 0.0.0-use.local
+  resolution: "@skibididrizz/site@workspace:packages/site"
+  dependencies:
+    "@docusaurus/core": "npm:3.4.0"
+    "@docusaurus/module-type-aliases": "npm:3.4.0"
+    "@docusaurus/preset-classic": "npm:3.4.0"
+    "@docusaurus/tsconfig": "npm:3.4.0"
+    "@docusaurus/types": "npm:3.4.0"
+    "@mdx-js/react": "npm:^3.0.0"
+    clsx: "npm:^2.0.0"
+    prism-react-renderer: "npm:^2.3.0"
+    react: "npm:^18.0.0"
+    react-dom: "npm:^18.0.0"
+    typescript: "npm:~5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -3586,7 +3604,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:latest":
+"@types/node@npm:*, @types/node@npm:^20.14.9":
   version: 20.14.9
   resolution: "@types/node@npm:20.14.9"
   dependencies:
@@ -9739,24 +9757,6 @@ __metadata:
   checksum: 10c0/1f8197e8a19e63645a786581d58c41df7853da26702dbc005193e2437c98ca49b255345c173d50c08fe4b4dbb363e53cb655ecc570791f8deb09887248dd34a2
   languageName: node
   linkType: hard
-
-"my-website@workspace:packages/site":
-  version: 0.0.0-use.local
-  resolution: "my-website@workspace:packages/site"
-  dependencies:
-    "@docusaurus/core": "npm:3.4.0"
-    "@docusaurus/module-type-aliases": "npm:3.4.0"
-    "@docusaurus/preset-classic": "npm:3.4.0"
-    "@docusaurus/tsconfig": "npm:3.4.0"
-    "@docusaurus/types": "npm:3.4.0"
-    "@mdx-js/react": "npm:^3.0.0"
-    clsx: "npm:^2.0.0"
-    prism-react-renderer: "npm:^2.3.0"
-    react: "npm:^18.0.0"
-    react-dom: "npm:^18.0.0"
-    typescript: "npm:~5.2.2"
-  languageName: unknown
-  linkType: soft
 
 "nanoid@npm:^3.3.7":
   version: 3.3.7

@@ -1,6 +1,6 @@
 import {describe, it, beforeEach} from "node:test";
 import {BasicTestRunner, expectDiagnostics, extractCursor} from "@typespec/compiler/testing";
-import {createDrizzleTestRunner, debugWithDiagnostics, emitWithDiagnostics} from "./test-host.js";
+import {createDrizzleTestRunner, snapshotEmittedTypescript, emitWithDiagnostics} from "./test-host.js";
 
 describe("@table", () => {
     let runner: BasicTestRunner;
@@ -8,8 +8,8 @@ describe("@table", () => {
     beforeEach(async () => {
         runner = await createDrizzleTestRunner();
     })
-    it.only('should work with timestamps', async ()=>{
-      await debugWithDiagnostics(
+    it('should work with timestamps', async (t)=>{
+      await snapshotEmittedTypescript(t,
         `
     @table model Time {
       timestamp1:Date;
@@ -17,8 +17,8 @@ describe("@table", () => {
     };
     `);
     });
-    it('should work with defaults', async ()=>{
-      await debugWithDiagnostics(
+    it('should work with defaults', async (t)=>{
+      await snapshotEmittedTypescript(t,
         `
     @table model Uuid {
       @default(int32(42)) int1:integer; 
@@ -29,8 +29,8 @@ describe("@table", () => {
     `);
 
     });
-    it('should work with indexes', async ()=>{
-      await debugWithDiagnostics(
+    it('should work with indexes', async (t)=>{
+      await snapshotEmittedTypescript(t,
         `
     @table model User {
       @id id: integer;
@@ -40,8 +40,8 @@ describe("@table", () => {
     `);
 
     });
-    it('should work with indexes unique', async ()=>{
-      await debugWithDiagnostics(
+    it('should work with indexes unique', async (t)=>{
+      await snapshotEmittedTypescript(t,
         `
     @table model User {
       @id id: integer;
@@ -51,8 +51,8 @@ describe("@table", () => {
     `);
 
     });
-    it('should handle multiple relationships', async ()=>{
-        await debugWithDiagnostics(
+    it('should handle multiple relationships', async (t)=>{
+        await snapshotEmittedTypescript(t,
             `
         @table model User {
           @id id: integer;
@@ -75,8 +75,8 @@ describe("@table", () => {
         `
         );
     })
-    it('should work with composite keys', async ()=>{
-       await debugWithDiagnostics(
+    it('should work with composite keys', async (t)=>{
+       await snapshotEmittedTypescript(t,
             `
         @table model User {
           @id id: integer;
@@ -96,8 +96,8 @@ describe("@table", () => {
         `
         );
     })
-    it('should work with enums', async () => {
-        const result = (await debugWithDiagnostics(
+    it('should work with enums', async (t) => {
+        const result = (await snapshotEmittedTypescript(t,
             `
         enum State {
           do,
@@ -111,8 +111,8 @@ describe("@table", () => {
         };
         `));
     });
-    it('should parse base objects', async () => {
-        const result = (await debugWithDiagnostics(
+    it('should parse base objects', async (t) => {
+        const result = (await snapshotEmittedTypescript(t,
             `model BaseModel {
           @uuid @id id: string; 
         };
@@ -130,8 +130,8 @@ describe("@table", () => {
         `));
 
     });
-    it('should parse objects', async () => {
-        const result = (await debugWithDiagnostics(
+    it('should parse objects', async (t) => {
+        const result = (await snapshotEmittedTypescript(t,
             `
         @table("users") model User {
           @id _id: numeric;    
@@ -163,9 +163,9 @@ describe("@table", () => {
    
         `));
     });
-    it("set alternate name on operation", async () => {
+    it("set alternate name on operation", async (t) => {
 
-        const [code, diagnostics] = (await emitWithDiagnostics(
+        const [code, diagnostics] = (await snapshotEmittedTypescript(t,
             `@table("users") model User {
           @uuid @id id: string; 
           @unique email: string;
@@ -185,11 +185,6 @@ describe("@table", () => {
         };
         `
         ));
-
-        console.log(code);
-        for (const diag of diagnostics) {
-            console.log(diag.message + ' [' + diag.code + '] ');
-        }
     })
 
     // it("emit diagnostic if not used on an operation", async () => {

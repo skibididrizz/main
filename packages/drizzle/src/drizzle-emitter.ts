@@ -97,7 +97,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             relTo.set(prop.name, `many(${arrType.name}Table)`);
             args.push("many");
           }
-        } else if (prop.model && prop.type.kind === "Model") {
+        } else if (prop.model ) {
           if (prop.model.name == prop.type.name) {
             const tableRef = "table";
 
@@ -142,9 +142,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
               `one(${prop.type.name}Table, ${this.objectToString(pkObj)})`,
             );
           }
-        } else {
-          console.log("not handing primitives yet");
-        }
+        } 
       }else if(prop.type.kind === "Scalar"){
         const index = this.state('index', prop)  as ({name:string, sql?:string}) | undefined;
         const isUnique = this.state('unique', prop) as boolean | undefined;

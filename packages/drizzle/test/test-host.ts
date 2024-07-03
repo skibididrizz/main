@@ -8,6 +8,7 @@ import * as ts from "typescript";
 
 import { DrizzleTestLibrary } from "../src/testing/index.js";
 import assert from 'node:assert';
+import { TestContext } from "node:test";
 
 const COMPILER_OPTIONS = {
   outputDir:'./tsp-output',
@@ -52,18 +53,21 @@ export async function emitWithDiagnostics(
 }
 
 
-export async function debugWithDiagnostics(
+export async function snapshotEmittedTypescript(
+  t:TestContext,
   code: string,
 ): Promise<[string, readonly Diagnostic[]]> {
 
   const [result = '', diags] = await emitWithDiagnostics(code);
-  console.log(code);
-  console.log(result);
+
   for(const diag of diags){
     console.log(`${diag.message} ${diag.code} `)
   }
   const tsResult = await compile(result, {});
-  assert(tsResult, 'successfully compiled.');
+  //@ts-expect-error
+  t.assert.ok(tsResult, 'successfully compiled.');
+  //@ts-expect-error
+  t.assert.snapshot(result).setDefaultSnapshotSerializers(v=>v.replace(/\/\/.*\n/g, ''));
   return [result, diags];
 }
 
