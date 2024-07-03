@@ -160,8 +160,6 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             `${idxType}("${camelToSnake(index.name)}")${index.sql ? `.on(sql\`${index.sql}\`)` : `.on(table.${prop.name})`}`,
           );
         }
-
-        console.log("not handing primitives yet");
       }
     }
 
