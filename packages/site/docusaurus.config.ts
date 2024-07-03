@@ -1,7 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-
+import Logo from '@site/static/img/logo.png';
 const config: Config = {
   title: 'Skibididrizz',
   tagline: 'Gyat some of that drizz',
@@ -56,7 +56,7 @@ const config: Config = {
       title: 'Skibididrizz',
       logo: {
         alt: 'Skibididrizz Logo',
-        src: 'img/logo.png',
+        src: '/main/img/logo.png',
       },
       items: [
         {

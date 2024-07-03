@@ -10,11 +10,29 @@ import { FieldRef } from "./types.js";
 import { camelToSnake } from "./string.js";
 
 export const namespace = "Drizzle";
-
+/**
+ * This function marks a model to be used as a table.  If an argument is
+ * passed it will be used as the name of the table.  Otherwise the name of the
+ * name of the model will be used.
+ * 
+ * @param context 
+ * @param target 
+ * @param name - The name of the table, defaults to the name of the model
+ */
 export function $table(context: DecoratorContext, target: Type, name: string) {
   context.program.stateMap(StateKeys.table).set(target, name);
 }
-
+/**
+ * id - is used to make a column, if on a property as an model id (primary key) or
+ * if on a model as a columns that are the keys.   This can be a string or an array.
+ * 
+ * Depending on the type of property different output will be created.
+ * 
+ * @param context 
+ * @param target 
+ * @param name 
+ * @param fields 
+ */
 export function $id(
   context: DecoratorContext,
   target: ModelProperty | Model,
