@@ -16,18 +16,13 @@ import {
   Scalar,
   Type,
 } from "@typespec/compiler";
+import { $id, $index, $map, $unique, $uuid } from "./decorators.js";
 import {
-  $id,
-  $index,
-  $map,
-  $unique,
-  $uuid,
-
-} from "./decorators.js";
-import {  getMap,
+  getMap,
   getRelation,
   getTableName,
-  hasTable} from './decorators-util.js'
+  hasTable,
+} from "./decorators-util.js";
 import { FieldRef, IdRef } from "./types.js";
 import { camelToSnake, capitalize } from "./string.js";
 import { arrayOrUndefined } from "./array.js";

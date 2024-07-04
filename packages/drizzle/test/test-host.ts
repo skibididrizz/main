@@ -11,11 +11,13 @@ import assert from "node:assert";
 import type { TestContext } from "node:test";
 //@ts-expect-error - not officially supported yet.
 import { snapshot } from "node:test";
-
 snapshot.setDefaultSnapshotSerializers([
   (v: unknown) =>
     typeof v == "string" ? v.replace(/\/\/.*\n/g, "") : JSON.stringify(v),
 ]);
+snapshot.setResolveSnapshotPath((path: string) => {
+  return `${path.replace(/\.ts$/, "")}.snapshot.ts`;
+});
 
 const COMPILER_OPTIONS = {
   outputDir: "./tsp-output",
@@ -94,7 +96,6 @@ export async function exampleEmittedTypescript(
   t.assert.snapshot(code);
   //@ts-expect-error
   t.assert.snapshot(result);
-
 }
 
 export async function emit(code: string): Promise<string> {

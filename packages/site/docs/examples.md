@@ -1,48 +1,73 @@
-exports[`examples > Create a simple model 1`] = `
+# Examples
+
+
+## Create a simple model
+
+
+```tsp
+
 
  @table model Blog {
- @id id: string;
+ @uuid @id id: string;
  name: string;
  description?:string;
  };      
     
-`;
+            
+```
 
-exports[`examples > Create a simple model 2`] = `
+Generates
+
+```tsx
+
 import { pgTable, text } from "drizzle-orm/pg-core";
 
 export const BlogTable = pgTable("Blog", {
-  id: text("id").primaryKey(),
+  id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
 });
 
 export type Blog = typeof BlogTable.$inferSelect; 
-`;
+            
+```
 
-exports[`examples > Naming columns and tables 1`] = `
+## Naming columns and tables
+
+
+```tsp
+
 
         @table("blogs") model Blog {
-        @map("_id") @id id: string;
-        name: string;
+        @map("_id") @uuid @id id: string;
+        @map("label") name: string;
         @map("note") description?: string;
         };      
            
-`;
+            
+```
 
-exports[`examples > Naming columns and tables 2`] = `
+Generates
+
+```tsx
+
 import { pgTable, text } from "drizzle-orm/pg-core";
 
 export const BlogTable = pgTable("blogs", {
-  id: text("_id").primaryKey(),
-  name: text("name").notNull(),
+  id: uuid("_id").defaultRandom().primaryKey(),
+  name: text("label").notNull(),
   description: text("note"),
 });
 
 export type Blog = typeof BlogTable.$inferSelect; 
-`;
+            
+```
 
-exports[`examples > default 1`] = `
+## Simple example using @default
+
+
+```tsp
+
 
   @table model Stuff {
      @id id: numeric;
@@ -51,9 +76,13 @@ exports[`examples > default 1`] = `
   };
             
             
-`;
+            
+```
 
-exports[`examples > default 2`] = `
+Generates
+
+```tsx
+
 import { pgTable, numeric, timestamp, integer } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -61,14 +90,19 @@ export const StuffTable = pgTable("Stuff", {
   id: serial("id").primaryKey(),
   createdDate: timestamp("createdDate")
     .notNull()
-    .default(sql\`now()\`),
+    .default(sql`now()`),
   answer: integer("answer").notNull().default(42),
 });
 
 export type Stuff = typeof StuffTable.$inferSelect; 
-`;
+            
+```
 
-exports[`examples > many-to-one 1`] = `
+## many-to-one
+
+
+```tsp
+
 
         @table model Blog {
             @uuid @id id: string;
@@ -85,9 +119,13 @@ exports[`examples > many-to-one 1`] = `
         
         
         
-`;
+            
+```
 
-exports[`examples > many-to-one 2`] = `
+Generates
+
+```tsx
+
 import { pgTable, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -116,4 +154,6 @@ export const AuthorTableRelations = relations(AuthorTable, ({ many }) => ({
   blogs: many(BlogTable),
 }));
 
-`;
+            
+```
+

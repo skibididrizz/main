@@ -13,12 +13,17 @@
     "./testing": {
       "types": "./dist/src/testing/index.d.ts",
       "default": "./dist/src/testing/index.js"
+    },
+    "./examples": {
+      "types": "./dist/test/examples.test.snapshot.d.ts",
+      "default": "./dist/test/examples.test.snapshot.js"
     }
   },
   "peerDependencies": {
     "@typespec/compiler": "*"
   },
   "devDependencies": {
+    "@skibididrizz/drizzle": "^workspace:",
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -27,6 +32,7 @@
     "drizzle-orm": "^0.31.2",
     "eslint": "^8.45.0",
     "prettier": "^3.0.3",
+    "rimraf": "^5.0.7",
     "tsx": "^4.15.6",
     "typedoc": "^0.26.3",
     "typedoc-plugin-markdown": "^4.1.1",
@@ -34,6 +40,7 @@
   },
   "scripts": {
     "envo": "env",
+    "clean": "rimraf dist",
     "build": "tsc && $npm_execpath run build:tsp && $npm_execpath run format",
     "watch": "tsc --watch",
     "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
@@ -44,6 +51,6 @@
     "lint:fix": "eslint . --report-unused-disable-directives --fix",
     "format": "prettier .  --write",
     "format:check": "prettier --check .",
-    "docs": "typedoc --plugin typedoc-plugin-markdown --out ../site/docs/tsdocs src/decorators.ts"
+    "docs": "tsx ./src/mkdoc.ts > ../site/docs/examples.md; typedoc --plugin typedoc-plugin-markdown --out ../site/docs/tsdocs src/decorators.ts"
   }
 }

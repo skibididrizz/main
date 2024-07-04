@@ -14,9 +14,9 @@ export const namespace = "Drizzle";
  * Marks a model to be used as a table.  If an argument is
  * passed it will be used as the name of the table.  Otherwise the name of the
  * name of the model will be used.
- * 
- * @param context 
- * @param target 
+ *
+ * @param context
+ * @param target
  * @param name - The name of the table, defaults to the name of the model
  */
 export function $table(context: DecoratorContext, target: Type, name: string) {
@@ -46,11 +46,11 @@ export function $id(
   }
 }
 /**
- * Allows for columns to be indexed.   If using `@id` then this is not needed, as an index will be 
+ * Allows for columns to be indexed.   If using `@id` then this is not needed, as an index will be
  * created.
- * 
- * @param context 
- * @param target 
+ *
+ * @param context
+ * @param target
  * @param name - Name of the index, defaults to the name of the property with Idx appendded.
  * @param sql - The SQL query to use on the index.
  */
@@ -75,10 +75,10 @@ export function $sql(
 }
 
 /**
- * Ensures that column or columns are unique.  
- * @param context 
- * @param target 
- * @param string 
+ * Ensures that column or columns are unique.
+ * @param context
+ * @param target
+ * @param string
  */
 export function $unique(
   context: DecoratorContext,
@@ -88,10 +88,10 @@ export function $unique(
   context.program.stateMap(StateKeys.unique).set(target, "unique");
 }
 /**
- * Marks a column to use uuid.  If the column is marked `@id` then the uuid will be used as the primary key.  
- * @param context 
- * @param target 
- * @param name 
+ * Marks a column to use uuid.  If the column is marked `@id` then the uuid will be used as the primary key.
+ * @param context
+ * @param target
+ * @param name
  */
 export function $uuid(
   context: DecoratorContext,
@@ -102,10 +102,10 @@ export function $uuid(
 }
 
 /**
- * 
+ *
  * The `default` decorator allows for columns to have values by default.  These can be literals or SQL queries.
- * 
- * 
+ *
+ *
  * @param context - context to use on.
  * @param target  - use on model properties.
  * @param name - The SQL query that will be used to create the column.
@@ -122,11 +122,11 @@ export function $default(
  * Defines a property as a relation.   If supplied the name will match the opposing sides relation, if
  * it is not an array than an unique will be added to that column(s). The fields are the fields in the
  * current model context, while the references are the column(s) that match on the other side.
- * 
- * 
- * @param context 
- * @param target 
- * @param relation 
+ *
+ *
+ * @param context
+ * @param target
+ * @param relation
  */
 export function $relation(
   context: DecoratorContext,
@@ -138,10 +138,10 @@ export function $relation(
 
 /**
  * Rename the column of a model property.   If the name is not supplied the name of the property will be used.
- * 
- * @param context 
- * @param target 
- * @param name 
+ *
+ * @param context
+ * @param target
+ * @param name
  */
 export function $map(
   context: { program: Program },

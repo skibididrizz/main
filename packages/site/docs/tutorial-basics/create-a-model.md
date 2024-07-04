@@ -10,10 +10,10 @@ also use [@id](/docs/tsdocs/functions/$id)  to identify the identity column and 
 ```tsp
 
  @table model Blog {
-   @uuid @id id: string;
-   name: string;
-   description?:string;
- };      
+  @uuid @id id: string;
+  name: string;
+  description?:string;
+ };       
 
 ```
 
@@ -22,12 +22,12 @@ Will result in a **drizzle/schema.ts** like:
 import { pgTable, text } from "drizzle-orm/pg-core";
 
 export const BlogTable = pgTable("Blog", {
-  id: text("id").primaryKey(),
+  id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
 });
 
-export type Blog = typeof BlogTable.$inferSelect; 
+export type Blog = typeof BlogTable.$inferSelect;
 ```
 
 # Naming 
@@ -39,10 +39,10 @@ In addition [@default](/docs/tsdocs/functions/$default) can be used for default 
 ```tsp
 
   @table("blogs") model Blog {
-        @map("_id") @id id: string;
-        name: string;
-        @map("note") description?: string;    
-  }
+        @map("_id") @uuid @id id: string;
+        @map("label") name: string;
+        @map("note") description?: string;
+        };      
             
 ```
 
@@ -52,8 +52,8 @@ Will result in a **drizzle/schema.ts** like:
 import { pgTable, text } from "drizzle-orm/pg-core";
 
 export const BlogTable = pgTable("blogs", {
-  id: text("_id").primaryKey(),
-  name: text("name").notNull(),
+  id: uuid("_id").defaultRandom().primaryKey(),
+  name: text("label").notNull(),
   description: text("note"),
 });
 

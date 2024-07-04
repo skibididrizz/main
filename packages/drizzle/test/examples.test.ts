@@ -1,34 +1,48 @@
-import {describe, it} from "node:test";
+import { describe, it } from "node:test";
 import { exampleEmittedTypescript } from "./test-host.js";
 
-describe('examples', ()=>{
-    it('Create a simple model',  (t)=>exampleEmittedTypescript(t,`
+describe("examples", () => {
+  it("Create a simple model", (t) =>
+    exampleEmittedTypescript(
+      t,
+      `
  @table model Blog {
- @id id: string;
+ @uuid @id id: string;
  name: string;
  description?:string;
  };      
-    `));
+    `,
+    ));
 
-    it('Naming columns and tables',  (t)=>exampleEmittedTypescript(t,`
+  it("Naming columns and tables", (t) =>
+    exampleEmittedTypescript(
+      t,
+      `
         @table("blogs") model Blog {
-        @map("_id") @id id: string;
-        name: string;
+        @map("_id") @uuid @id id: string;
+        @map("label") name: string;
         @map("note") description?: string;
         };      
-           `));
+           `,
+    ));
 
-           it('default', t=>exampleEmittedTypescript(t, `
+  it("Simple example using @default", (t) =>
+    exampleEmittedTypescript(
+      t,
+      `
   @table model Stuff {
      @id id: numeric;
      @default("now()") createdDate: Date;
      @default(int32(42)) answer:int32;
   };
             
-            `));
+            `,
+    ));
 
-
-    it('many-to-one', t=>exampleEmittedTypescript(t, `
+  it("many-to-one", (t) =>
+    exampleEmittedTypescript(
+      t,
+      `
         @table model Blog {
             @uuid @id id: string;
             name: string;
@@ -43,7 +57,6 @@ describe('examples', ()=>{
         };
         
         
-        `))        
+        `,
+    ));
 });
-
-
