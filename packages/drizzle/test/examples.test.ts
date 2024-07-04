@@ -59,4 +59,30 @@ describe("examples", () => {
         
         `,
     ));
+
+  it.only("Can be configured with decorators", (t) =>
+    exampleEmittedTypescript(
+      t,
+      `
+    @config(#{dialect:"sqlite"})
+    namespace HelloSqLite {
+
+    @table model NSBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+
+    @config(#{dialect:"mysql"})
+    namespace HelloMySql {
+
+    @table model MyBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+      `,
+    ));
 });

@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All Tests" type="NodeJsTestRunner">
     <node-interpreter value="project" />
-    <node-options value="--import tsx/esm --inspect" />
+    <node-options value="--import tsx --inspect --experimental-test-snapshots --test-update-snapshots  --test" />
     <working-dir value="$PROJECT_DIR$/packages/drizzle/" />
     <envs />
     <scope-kind value="ALL" />

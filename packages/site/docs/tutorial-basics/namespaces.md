@@ -1,0 +1,50 @@
+--
+sidebar_position: 3
+--
+# Namespace
+You can use [@namespace](/docs/tsdocs/functions/$config) to have models in different Databases.
+
+```
+ @config(#{dialect:"sqlite"})
+    namespace HelloSqLite {
+
+    @table model NSBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+
+    @config(#{dialect:"mysql"})
+    namespace HelloMySql {
+
+    @table model MyBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+    
+```
+
+Which would create the following table in the database:
+
+```ts
+import { sqliteTable, uuid, text } from "drizzle-orm/sqlite-core";
+import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
+
+export const NSBlogTable = sqliteTable("NSBlog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+});
+
+export type NSBlog = typeof NSBlogTable.$inferSelect; 
+export const MyBlogTable = mysqlTable("MyBlog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+});
+
+export type MyBlog = typeof MyBlogTable.$inferSelect; 
+```

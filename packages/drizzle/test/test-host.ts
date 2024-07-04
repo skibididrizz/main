@@ -16,7 +16,7 @@ snapshot.setDefaultSnapshotSerializers([
     typeof v == "string" ? v.replace(/\/\/.*\n/g, "") : JSON.stringify(v),
 ]);
 snapshot.setResolveSnapshotPath((path: string) => {
-  return `${path.replace(/\.ts$/, "")}.snapshot.ts`;
+  return `${path.replace(/\.[jt]s$/, "")}.snapshot.cjs`;
 });
 
 const COMPILER_OPTIONS = {
@@ -88,7 +88,7 @@ export async function exampleEmittedTypescript(
     console.log(`${diag.message} ${diag.code} `);
   }
   //@ts-expect-error
-  t.assert.ok(diags.length == 0, "no diagnostics.");
+  t.assert.ok(diags.length == 0, "has diagnostics.");
   const tsResult = await compile(result, {});
   //@ts-expect-error
   t.assert.ok(tsResult, "successfully compiled.");

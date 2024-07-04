@@ -12,6 +12,7 @@ import {
   getDoc,
   Model,
   ModelProperty,
+  Namespace,
   Program,
   Scalar,
   Type,
@@ -23,10 +24,12 @@ import {
   getTableName,
   hasTable,
 } from "./decorators-util.js";
-import { FieldRef, IdRef } from "./types.js";
+import { Configuration, Dialect, FieldRef, IdRef } from "./types.js";
 import { camelToSnake, capitalize } from "./string.js";
 import { arrayOrUndefined } from "./array.js";
 import { StateKeys } from "./lib.js";
+import * as Dbs from "./db.js";
+
 export const intrensicToDrizzle = new Map<string, string>([
   ["unknown", "jsonb"],
   ["string", "text"],
@@ -74,11 +77,28 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   has(decorator: keyof typeof StateKeys, v: Type) {
     return this.program.stateMap(StateKeys[decorator]).has(v);
   }
+  byNamespace(namespace?: Namespace): Configuration | undefined {
+    if (namespace) {
+      const ns = this.program.stateMap(StateKeys.config).get(namespace);
+      if (ns) {
+        return ns;
+      }
+      return this.byNamespace(namespace.namespace);
+    }
+    return undefined;
+  }
+  getDb(namespace?: Namespace) {
+    const config = this.byNamespace(namespace);
+    return new Dbs[config?.dialect ?? "postgres"](
+      this.emitter.getContext().sourceFile.imports,
+    );
+  }
   modelDeclaration(model: Model, name: string) {
     if (!hasTable(this.program, model)) {
       return "";
     }
-    this.addDrizzleDbImport("pgTable");
+    const db = this.getDb(model.namespace);
+
     const tableName = getTableName(this.program, model) ?? name;
     let selfRef: ObjectBuilder<unknown> | undefined;
     let relTo: ObjectBuilder<unknown> | undefined;
@@ -95,9 +115,8 @@ export class DrizzleEmitter extends TypeScriptEmitter {
           }
         } else if (prop.model) {
           if (prop.model.name == prop.type.name) {
-            const tableRef = "table";
+            const tableRef = db.table();
 
-            this.addDrizzleDbImport("foreignKey");
             const fkObj = new ObjectBuilder();
             const pk = this.primaryKeyFor(prop.type)?.name;
             fkObj.set("columns", `[${tableRef}.${prop.name}]`);
@@ -109,7 +128,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             selfRef ??
               (selfRef = new ObjectBuilder()).set(
                 prop.name,
-                `foreignKey(${this.objectToString(fkObj)})`,
+                `${db.type("foreignKey")}(${this.objectToString(fkObj)})`,
               );
           } else {
             args.push("one");
@@ -145,10 +164,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
           | undefined;
         const isUnique = this.state("unique", prop) as boolean | undefined;
         if (index?.name) {
-          const idxType = isUnique ? "uniqueIndex" : "index";
-          if (isUnique) {
-            this.addDrizzleDbImport(isUnique ? "uniqueIndex" : "index");
-          }
+          const idxType = db.type(isUnique ? "uniqueIndex" : "index");
           this.addImport("drizzle-orm", index.sql ? "sql" : undefined);
           selfRef = selfRef || new ObjectBuilder();
           selfRef.set(
@@ -166,7 +182,6 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     //handle composite keys
     const primaryKey = this.state("id", model) as IdRef | undefined;
     if (primaryKey && primaryKey.fields) {
-      this.addDrizzleDbImport("pgIndex", "primaryKey");
       const indexBuilder = new ObjectBuilder();
       if (primaryKey.name)
         indexBuilder.set("name", `"${camelToSnake(primaryKey.name)}"`);
@@ -190,7 +205,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       selfRef = selfRef ?? new ObjectBuilder();
       selfRef.set(
         `pk${capitalize(primaryKey.name ?? "")}`,
-        `primaryKey(${this.objectToString(indexBuilder)})`,
+        `${db.type("primaryKey")}(${this.objectToString(indexBuilder)})`,
       );
     }
 
@@ -198,7 +213,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       tableName,
       code`
       ${this.doc(model)}
-      export const ${name}Table = pgTable('${tableName}', {
+      export const ${name}Table = ${this.getDb(model.namespace).table()}('${tableName}', {
         ${this.emitter.emitModelProperties(model)}
       } ${selfRef ? code`,(table)=>(${this.objectToString(selfRef)})` : ""});
 
@@ -259,11 +274,14 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   }
 
   typeToDrizzleDecl(property: ModelProperty, ref?: string) {
+    const db = this.getDb(property.model?.namespace);
     const colName = ref ?? getMap(this.program, property);
     const typeSb = new StringBuilder();
     const id = this.state("id", property) as IdRef | undefined;
     const isUuid = this.has("uuid", property);
-    const type = isUuid ? "uuid" : this.typeToDrizzle(property);
+    const type = db.type(
+      isUuid ? "uuid" : this.typeToDrizzle(property) ?? "unknown",
+    );
 
     typeSb.push(`${type}('${colName}')`);
     if (isUuid) {
@@ -300,9 +318,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   typeToDrizzle(property: ModelProperty) {
     if (property.type.kind === "Scalar") {
       let type = intrensicToDrizzle.get(property.type.name);
-      if (type) {
-        this.addDrizzleDbImport(type);
-      }
+
       switch (property.type.name) {
         case "numeric": {
           if (this.state("id", property)) {
@@ -386,13 +402,6 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     );
   }
 
-  addDrizzleDbImport(...decl: (string | undefined)[]) {
-    if (!decl.length) {
-      return this;
-    }
-    return this.addImport("drizzle-orm/pg-core", ...decl);
-  }
-
   addImport(pkgName: string, ...decl: (string | undefined)[]) {
     const sourceFile = this.emitter.getContext().sourceFile;
     const impts = new Set(sourceFile.imports.get(pkgName) ?? []);
@@ -421,14 +430,14 @@ ${doc
   enumDeclaration(en: Enum, name: string): EmitterOutput<string> {
     //Ignore enums in the drizzle namespace, cause they are for configuration.
     if (en.namespace?.name == "Drizzle") return "";
-    this.addDrizzleDbImport("pgEnum");
+    const db = this.getDb(en.namespace);
     const table = getTableName(this.program, en) ?? name;
 
     return this.emitter.result.declaration(
       `${en.name}Enum`,
       code`
       ${this.doc(en)}
-      export const ${en.name}Enum = pgEnum('${table}', [${Array.from(en.members.keys(), (v) => `'${v}'`).join(",")}]);
+      export const ${en.name}Enum = ${db.enum()}('${table}', [${Array.from(en.members.keys(), (v) => `'${v}'`).join(",")}]);
       `,
     );
   }

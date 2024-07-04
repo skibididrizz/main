@@ -21,3 +21,14 @@ export interface IdRef {
   name?: string;
   fields?: string[];
 }
+
+export type Dialect = "postgres" | "mysql" | "sqlite";
+export type DbCredentials = {
+  url: string;
+};
+export type Configuration = {
+  dialect: Dialect;
+  strict?: boolean;
+  verbose?: boolean;
+  credentials: DbCredentials;
+};

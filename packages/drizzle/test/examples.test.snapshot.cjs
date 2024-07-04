@@ -1,3 +1,47 @@
+exports[`examples > Can be configured with decorators 1`] = `
+
+    @config(#{dialect:"sqlite"})
+    namespace HelloSqLite {
+
+    @table model NSBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+
+    @config(#{dialect:"mysql"})
+    namespace HelloMySql {
+
+    @table model MyBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+      
+`;
+
+exports[`examples > Can be configured with decorators 2`] = `
+import { sqliteTable, uuid, text } from "drizzle-orm/sqlite-core";
+import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
+
+export const NSBlogTable = sqliteTable("NSBlog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+});
+
+export type NSBlog = typeof NSBlogTable.$inferSelect; 
+export const MyBlogTable = mysqlTable("MyBlog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+});
+
+export type MyBlog = typeof MyBlogTable.$inferSelect; 
+`;
+
 exports[`examples > Create a simple model 1`] = `
 
  @table model Blog {
@@ -9,8 +53,6 @@ exports[`examples > Create a simple model 1`] = `
 `;
 
 exports[`examples > Create a simple model 2`] = `
-import { pgTable, text } from "drizzle-orm/pg-core";
-
 export const BlogTable = pgTable("Blog", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
@@ -31,8 +73,6 @@ exports[`examples > Naming columns and tables 1`] = `
 `;
 
 exports[`examples > Naming columns and tables 2`] = `
-import { pgTable, text } from "drizzle-orm/pg-core";
-
 export const BlogTable = pgTable("blogs", {
   id: uuid("_id").defaultRandom().primaryKey(),
   name: text("label").notNull(),
@@ -54,7 +94,6 @@ exports[`examples > Simple example using @default 1`] = `
 `;
 
 exports[`examples > Simple example using @default 2`] = `
-import { pgTable, numeric, timestamp, integer } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const StuffTable = pgTable("Stuff", {
@@ -88,7 +127,6 @@ exports[`examples > many-to-one 1`] = `
 `;
 
 exports[`examples > many-to-one 2`] = `
-import { pgTable, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const BlogTable = pgTable("Blog", {

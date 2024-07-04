@@ -31,3 +31,17 @@ enum DeleteAction {
   };
 
   alias Date = plainDate;
+  alias serial = int32;
+
+  alias Dialect = "sqlite" | "mysql" | "postgres";
+  
+  model DbCredentials {
+    url:string;
+  }
+
+  model Configuration {
+    dialect:  Dialect;
+    strict?:boolean;
+    verbose?:boolean;
+    credentials?:DbCredentials;
+  }

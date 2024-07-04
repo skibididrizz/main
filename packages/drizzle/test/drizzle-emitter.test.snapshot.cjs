@@ -1,5 +1,4 @@
 exports[`@table > should handle multiple relationships 1`] = `
-import { pgTable, text, pgIndex, primaryKey } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const UserTable = pgTable("User", {
@@ -44,7 +43,6 @@ export const FollowTableRelations = relations(FollowTable, ({ one, one }) => ({
 `;
 
 exports[`@table > should parse base objects 1`] = `
-import { pgTable, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const BlogBOTable = pgTable("BlogBO", {
@@ -68,7 +66,6 @@ export const PostBOTableRelations = relations(PostBOTable, ({ one }) => ({
 `;
 
 exports[`@table > should parse objects 1`] = `
-import { pgTable, numeric, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const UserTable = pgTable("users", {
@@ -132,8 +129,6 @@ export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
 `;
 
 exports[`@table > should work with composite keys 1`] = `
-import { pgTable, text, pgIndex, primaryKey } from "drizzle-orm/pg-core";
-
 export const UserTable = pgTable("User", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
@@ -164,7 +159,6 @@ export type BooksToAuthors = typeof BooksToAuthorsTable.$inferSelect;
 `;
 
 exports[`@table > should work with defaults 1`] = `
-import { pgTable } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const UuidTable = pgTable("Uuid", {
@@ -182,8 +176,6 @@ export type Uuid = typeof UuidTable.$inferSelect;
 `;
 
 exports[`@table > should work with enums 1`] = `
-import { pgTable, pgEnum } from "drizzle-orm/pg-core";
-
 export const ActionTable = pgTable("Action", {
   id: uuid("id").defaultRandom().primaryKey(),
   state: StateEnum("state"),
@@ -195,7 +187,6 @@ export const StateEnum = pgEnum("State", ["do", "doing", "done", "failed"]);
 `;
 
 exports[`@table > should work with indexes 1`] = `
-import { pgTable, uniqueIndex, text } from "drizzle-orm/pg-core";
 import {} from "drizzle-orm";
 
 export const UserTable = pgTable(
@@ -214,7 +205,6 @@ export type User = typeof UserTable.$inferSelect;
 `;
 
 exports[`@table > should work with indexes unique 1`] = `
-import { pgTable, uniqueIndex, text } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const UserTable = pgTable(
@@ -233,7 +223,6 @@ export type User = typeof UserTable.$inferSelect;
 `;
 
 exports[`@table > should work with timestamps 1`] = `
-import { pgTable, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const TimeTable = pgTable("Time", {
@@ -247,7 +236,6 @@ export type Time = typeof TimeTable.$inferSelect;
 `;
 
 exports[`@table > use the relation decorator 1`] = `
-import { pgTable, text, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const UserTable = pgTable("users", {

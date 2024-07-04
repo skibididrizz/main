@@ -47,3 +47,7 @@ extern dec map(target:ModelProperty, column:valueof string);
  * relation - Mark this property as a relation.
  */
 extern dec relation(target:ModelProperty, relation?:valueof RelationOptions);
+/**
+ * config - Mark this property as a configuration.
+ */
+extern dec config(target:Namespace, config:valueof Configuration);

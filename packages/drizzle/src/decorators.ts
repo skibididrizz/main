@@ -6,7 +6,7 @@ import type {
   Type,
 } from "@typespec/compiler";
 import { StateKeys } from "./lib.js";
-import { FieldRef } from "./types.js";
+import { Configuration, FieldRef } from "./types.js";
 import { camelToSnake } from "./string.js";
 
 export const namespace = "Drizzle";
@@ -149,4 +149,12 @@ export function $map(
   name: string,
 ) {
   context.program.stateMap(StateKeys.map).set(target, name);
+}
+
+export function $config(
+  context: { program: Program },
+  target: ModelProperty,
+  config: Configuration,
+) {
+  context.program.stateMap(StateKeys.config).set(target, config);
 }

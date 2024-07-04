@@ -1,11 +1,64 @@
 # Examples
 
 
+## Can be configured with decorators
+
+
+  ```tsp
+  
+
+    @config(#{dialect:"sqlite"})
+    namespace HelloSqLite {
+
+    @table model NSBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+
+    @config(#{dialect:"mysql"})
+    namespace HelloMySql {
+
+    @table model MyBlog {
+        @uuid @id id: string;
+        name: string;
+        description?:string;
+      };
+    }
+      
+            
+  ```
+  
+Generates
+
+```tsx
+  
+import { sqliteTable, uuid, text } from "drizzle-orm/sqlite-core";
+import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
+
+export const NSBlogTable = sqliteTable("NSBlog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+});
+
+export type NSBlog = typeof NSBlogTable.$inferSelect; 
+export const MyBlogTable = mysqlTable("MyBlog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+});
+
+export type MyBlog = typeof MyBlogTable.$inferSelect; 
+            
+  ```
+
 ## Create a simple model
 
 
-```tsp
-
+  ```tsp
+  
 
  @table model Blog {
  @uuid @id id: string;
@@ -14,14 +67,12 @@
  };      
     
             
-```
-
+  ```
+  
 Generates
 
 ```tsx
-
-import { pgTable, text } from "drizzle-orm/pg-core";
-
+  
 export const BlogTable = pgTable("Blog", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
@@ -30,13 +81,13 @@ export const BlogTable = pgTable("Blog", {
 
 export type Blog = typeof BlogTable.$inferSelect; 
             
-```
+  ```
 
 ## Naming columns and tables
 
 
-```tsp
-
+  ```tsp
+  
 
         @table("blogs") model Blog {
         @map("_id") @uuid @id id: string;
@@ -45,14 +96,12 @@ export type Blog = typeof BlogTable.$inferSelect;
         };      
            
             
-```
-
+  ```
+  
 Generates
 
 ```tsx
-
-import { pgTable, text } from "drizzle-orm/pg-core";
-
+  
 export const BlogTable = pgTable("blogs", {
   id: uuid("_id").defaultRandom().primaryKey(),
   name: text("label").notNull(),
@@ -61,13 +110,13 @@ export const BlogTable = pgTable("blogs", {
 
 export type Blog = typeof BlogTable.$inferSelect; 
             
-```
+  ```
 
 ## Simple example using @default
 
 
-```tsp
-
+  ```tsp
+  
 
   @table model Stuff {
      @id id: numeric;
@@ -77,13 +126,12 @@ export type Blog = typeof BlogTable.$inferSelect;
             
             
             
-```
-
+  ```
+  
 Generates
 
 ```tsx
-
-import { pgTable, numeric, timestamp, integer } from "drizzle-orm/pg-core";
+  
 import { sql } from "drizzle-orm";
 
 export const StuffTable = pgTable("Stuff", {
@@ -96,13 +144,13 @@ export const StuffTable = pgTable("Stuff", {
 
 export type Stuff = typeof StuffTable.$inferSelect; 
             
-```
+  ```
 
 ## many-to-one
 
 
-```tsp
-
+  ```tsp
+  
 
         @table model Blog {
             @uuid @id id: string;
@@ -120,13 +168,12 @@ export type Stuff = typeof StuffTable.$inferSelect;
         
         
             
-```
-
+  ```
+  
 Generates
 
 ```tsx
-
-import { pgTable, text } from "drizzle-orm/pg-core";
+  
 import { relations } from "drizzle-orm";
 
 export const BlogTable = pgTable("Blog", {
@@ -155,5 +202,5 @@ export const AuthorTableRelations = relations(AuthorTable, ({ many }) => ({
 }));
 
             
-```
+  ```
 
