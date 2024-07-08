@@ -8,7 +8,10 @@ To create a model add  [@table](/docs/tsdocs/functions/$table) to a model in you
 also use [@id](/docs/tsdocs/functions/$id)  to identify the identity column and [@uuid](/docs/tsdocs/functions/$uuid)  to identifiy the column as a uuid type.
 
 ```tsp
+import "@skibididrizz/drizzle";
+using Drizzle;
 
+${code}
  @table model Blog {
   @uuid @id id: string;
   name: string;
@@ -37,6 +40,8 @@ and the [@table](/docs/tsdocs/functions/$table) annotation to rename the table.
 In addition [@default](/docs/tsdocs/functions/$default) can be used for default values.
 
 ```tsp
+import "@skibididrizz/drizzle";
+using Drizzle;
 
   @table("blogs") model Blog {
         @map("_id") @uuid @id id: string;

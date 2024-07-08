@@ -48,6 +48,7 @@ export const intrinsicNameToTSType = new Map<string, string>([
 ]);
 
 export class TypeScriptEmitter extends CodeTypeEmitter {
+  exports = new Map<string, string[]>();
   // type literals
   booleanLiteral(boolean: BooleanLiteral): EmitterOutput<string> {
     return JSON.stringify(boolean.value);
@@ -302,6 +303,7 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
       emittedSourceFile.contents += decl.value + "\n";
     }
 
+   
     emittedSourceFile.contents = await prettier.format(
       emittedSourceFile.contents,
       {
@@ -312,3 +314,4 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
     return emittedSourceFile;
   }
 }
+ 

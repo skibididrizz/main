@@ -1,11 +1,19 @@
 # Examples
 
 
-## Can be configured with decorators
+## Configure namespaces
+Using [@config](/docs/tsdocs/functions/$config) you can configure the dialect and namespace.  You
+can also specify the output file.   This is still a experimental feature.  They are all experimental
+features.
 
 
-  ```tsp
-  
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
 
     @config(#{dialect:"sqlite"})
     namespace HelloSqLite {
@@ -28,14 +36,16 @@
     }
       
             
-  ```
-  
-Generates
+ ```
+
+Generates **schema.ts**
 
 ```tsx
-  
+
+
+
+
 import { sqliteTable, uuid, text } from "drizzle-orm/sqlite-core";
-import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
 
 export const NSBlogTable = sqliteTable("NSBlog", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -44,6 +54,9 @@ export const NSBlogTable = sqliteTable("NSBlog", {
 });
 
 export type NSBlog = typeof NSBlogTable.$inferSelect; 
+
+import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
+
 export const MyBlogTable = mysqlTable("MyBlog", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
@@ -51,43 +64,96 @@ export const MyBlogTable = mysqlTable("MyBlog", {
 });
 
 export type MyBlog = typeof MyBlogTable.$inferSelect; 
+
             
-  ```
+```
+
 
 ## Create a simple model
+This example shows how to use create a model with a uuid primary key.
+Notice how description is optional. [@table](/docs/tsdocs/functions/$table) will mark
+a table to be in included in the database.
 
 
-  ```tsp
-  
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
 
  @table model Blog {
  @uuid @id id: string;
  name: string;
- description?:string;
+ description?: string;
  };      
     
             
-  ```
-  
-Generates
+ ```
+
+Generates **schema.ts**
 
 ```tsx
-  
-export const BlogTable = pgTable("Blog", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-  description: text("description"),
-});
 
-export type Blog = typeof BlogTable.$inferSelect; 
+
             
-  ```
+```
+
+
+## Many-to-one
+This example shows how to use a many-to-one relationship.   Notice how the relation is marked
+with [@relation](/docs/tsdocs/functions/$relation).  
+Fields map to the local fields of the model, relations map to the foreign key(s) in the other model.
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
+@table model Blog {
+    @uuid @id id: string;
+    name: string;
+    @map("author_id") authorId: string;
+    @relation(#{fields:"authorId"}) author: Author;
+};
+
+@table model Author {
+    @id id: string;
+    name: string;
+    blogs:Blog[];
+};
+        
+            
+ ```
+
+Generates **schema.ts**
+
+```tsx
+
+
+            
+```
+
 
 ## Naming columns and tables
+By default it uses the model name, however passing a string to [@table](/docs/tsdocs/functions/$table) will 
+ use that as the table name.    
+
+ For columns use *[@map](/docs/tsdocs/functions/$map)* to map the column name to the database column name.
 
 
-  ```tsp
-  
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
 
         @table("blogs") model Blog {
         @map("_id") @uuid @id id: string;
@@ -96,111 +162,47 @@ export type Blog = typeof BlogTable.$inferSelect;
         };      
            
             
-  ```
-  
-Generates
+ ```
+
+Generates **schema.ts**
 
 ```tsx
-  
-export const BlogTable = pgTable("blogs", {
-  id: uuid("_id").defaultRandom().primaryKey(),
-  name: text("label").notNull(),
-  description: text("note"),
-});
 
-export type Blog = typeof BlogTable.$inferSelect; 
+
             
-  ```
+```
+
 
 ## Simple example using @default
+For default values for columns use [@default](/docs/tsdocs/functions/$default).   This can
+take a string with an SQL query or a literal.   All strings get evaluated as SQL so you will
+need to escape them to use a literal.
 
 
-  ```tsp
-  
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
 
-  @table model Stuff {
+using Drizzle;
+
+
+
+@table model Stuff {
      @id id: numeric;
      @default("now()") createdDate: Date;
      @default(int32(42)) answer:int32;
-  };
+};
             
             
             
-  ```
-  
-Generates
+ ```
+
+Generates **schema.ts**
 
 ```tsx
-  
-import { sql } from "drizzle-orm";
 
-export const StuffTable = pgTable("Stuff", {
-  id: serial("id").primaryKey(),
-  createdDate: timestamp("createdDate")
-    .notNull()
-    .default(sql`now()`),
-  answer: integer("answer").notNull().default(42),
-});
-
-export type Stuff = typeof StuffTable.$inferSelect; 
-            
-  ```
-
-## many-to-one
-
-
-  ```tsp
-  
-
-        @table model Blog {
-            @uuid @id id: string;
-            name: string;
-            @map("author_id") authorId: string;
-            @relation(#{fields:"authorId"}) author: Author;
-        };
-
-        @table model Author {
-            @id id: string;
-            name: string;
-            blogs:Blog[];
-        };
-        
-        
-        
-            
-  ```
-  
-Generates
-
-```tsx
-  
-import { relations } from "drizzle-orm";
-
-export const BlogTable = pgTable("Blog", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-  authorId: text("author_id").notNull(),
-});
-
-export type Blog = typeof BlogTable.$inferSelect; 
-export const BlogTableRelations = relations(BlogTable, ({ one }) => ({
-  author: one(AuthorTable, {
-    relationName: "author",
-    fields: [BlogTable.authorId],
-    references: [AuthorTable.id],
-  }),
-}));
-
-export const AuthorTable = pgTable("Author", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-});
-
-export type Author = typeof AuthorTable.$inferSelect; 
-export const AuthorTableRelations = relations(AuthorTable, ({ many }) => ({
-  blogs: many(BlogTable),
-}));
 
             
-  ```
+```
+
 

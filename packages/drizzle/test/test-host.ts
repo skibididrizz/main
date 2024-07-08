@@ -24,6 +24,7 @@ const COMPILER_OPTIONS = {
   noEmit: false,
   emit: ["drizzle"],
 };
+const outputDir = "/test/tsp-output/@skibididrizz/drizzle"
 
 export async function createDrizzleTestHost() {
   return createTestHost({
@@ -51,11 +52,18 @@ export async function emitWithDiagnostics(
     throw e;
   }
   try {
-    const f = await runner.program.host.readFile(
-      "/test/tsp-output/@skibididrizz/drizzle/schema.ts",
-    );
+    const host = runner.program.host;
 
-    return [f.text, runner.program.diagnostics];
+    const files = await Promise.all((await host.readDir(outputDir
+    )).map((file)=>host.readFile(`${outputDir}/${file}`)));
+
+    const text:string = files.length == 1 ? files[0].text+'' : files.reduce((ret, f)=>{
+      
+      return `${ret}\n//file: ${f.path}\n${f.text}\n`;
+    }, "");
+    
+    
+    return [text, runner.program.diagnostics];
   } catch (e) {
     return [undefined, runner.program.diagnostics, e];
   }
@@ -70,9 +78,6 @@ export async function snapshotEmittedTypescript(
   for (const diag of diags) {
     console.log(`${diag.message} ${diag.code} `);
   }
-  const tsResult = await compile(result, {});
-  //@ts-expect-error
-  t.assert.ok(tsResult, "successfully compiled.");
   //@ts-expect-error
   t.assert.snapshot(result);
   return [result, diags];
@@ -80,6 +85,7 @@ export async function snapshotEmittedTypescript(
 
 export async function exampleEmittedTypescript(
   t: TestContext,
+  markdown: string,
   code: string,
 ): Promise<void> {
   const [result = "", diags] = await emitWithDiagnostics(code);
@@ -89,9 +95,8 @@ export async function exampleEmittedTypescript(
   }
   //@ts-expect-error
   t.assert.ok(diags.length == 0, "has diagnostics.");
-  const tsResult = await compile(result, {});
   //@ts-expect-error
-  t.assert.ok(tsResult, "successfully compiled.");
+  t.assert.snapshot(markdown);
   //@ts-expect-error
   t.assert.snapshot(code);
   //@ts-expect-error

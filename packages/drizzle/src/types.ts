@@ -31,4 +31,5 @@ export type Configuration = {
   strict?: boolean;
   verbose?: boolean;
   credentials: DbCredentials;
+  schema?: string;
 };

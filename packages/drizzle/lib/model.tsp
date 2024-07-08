@@ -43,5 +43,9 @@ enum DeleteAction {
     dialect:  Dialect;
     strict?:boolean;
     verbose?:boolean;
+    /**
+     * Where to write the schema.
+     */
+    schema?:string;
     credentials?:DbCredentials;
   }

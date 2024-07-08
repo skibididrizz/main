@@ -10,18 +10,21 @@ These can be complex, both sides need to know how they are connected and what to
 Many to one relationships 
 
 ```tsp
-  @table model Blog {
-        @id id: string;
-        name: string;
-        @map("author_id") authorId: string;
-        @relation(#{fields:"authorId"}) author: Author;
-    };
+import "@skibididrizz/drizzle";
+using Drizzle;
 
-    @table model Author {
-        @id id: string;
-        name: string;
-        blogs:Blog[];
-    };
+@table model Blog {
+    @uuid @id id: string;
+    name: string;
+    @map("author_id") authorId: string;
+    @relation(#{fields:"authorId"}) author: Author;
+};
+
+@table model Author {
+    @uuid @id id: string;
+    name: string;
+    blogs:Blog[];
+};
         
 
 ```
@@ -29,11 +32,11 @@ Many to one relationships
 
 ```tsx
 
-import { pgTable, text } from "drizzle-orm/pg-core";
+import { pgTable,uuid, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const BlogTable = pgTable("Blog", {
-  id: text("id").primaryKey(),
+  id: uuid("id").primaryKey(),
   name: text("name").notNull(),
   authorId: text("author_id").notNull(),
 });

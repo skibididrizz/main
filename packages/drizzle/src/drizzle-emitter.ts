@@ -2,6 +2,7 @@ import { TypeScriptEmitter } from "./typescript-emitter.js";
 import {
   ArrayBuilder,
   code,
+  Context,
   EmitterOutput,
   ObjectBuilder,
   SourceFile,
@@ -47,20 +48,40 @@ export const intrensicToDrizzle = new Map<string, string>([
   ["numeric", "numeric"],
 ]);
 
+
+type StateKeyType = keyof typeof  StateKeys;
 export class DrizzleEmitter extends TypeScriptEmitter {
-  private drizzleSchemaSourceFile?: SourceFile<string>;
+
 
   // context is covered later in this document
-  programContext(program: Program) {
-    const src = (this.drizzleSchemaSourceFile =
-      this.emitter.createSourceFile("schema.ts"));
-    const sourceFile = this.drizzleSchemaSourceFile;
+  programContext(program: Program): Context  {
+    const sourceFile =    this.emitter.createSourceFile("schema.ts");
     return {
       sourceFile,
       scope: sourceFile.globalScope,
     };
   }
 
+  namespaceContext(namespace: Namespace): Context {
+    const ctx = this.programContext(this.program);
+    let sourceFile = ctx.sourceFile
+    const config = this.byNamespace("config", namespace) as Configuration;
+    if (config && config.schema != sourceFile.path.split('/').pop()) {
+      const name = config.schema ?? `${namespace.name}Schema.ts`;
+     
+      this.programContext(this.program).sourceFile
+      ctx.scope.declarations.push(this.emitter.result.rawCode(code`export * from "./${name}";`));
+     
+      sourceFile = this.emitter.createSourceFile(name);
+      
+
+      return {
+        sourceFile,
+        scope: sourceFile.globalScope,
+      };
+    }
+    return ctx;
+  }
   objectToString(obj: ObjectBuilder<any>) {
     const ret =
       Object.entries(obj).reduce((ret, [key, value]) => {
@@ -71,24 +92,20 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   get program() {
     return this.emitter.getProgram();
   }
-  state(decorator: keyof typeof StateKeys, v: Type) {
+  state(decorator: StateKeyType, v: Type) {
     return this.program.stateMap(StateKeys[decorator]).get(v);
   }
-  has(decorator: keyof typeof StateKeys, v: Type) {
+  has(decorator: StateKeyType, v: Type) {
     return this.program.stateMap(StateKeys[decorator]).has(v);
   }
-  byNamespace(namespace?: Namespace): Configuration | undefined {
+  byNamespace(decorator:StateKeyType, namespace?: Namespace): unknown {
     if (namespace) {
-      const ns = this.program.stateMap(StateKeys.config).get(namespace);
-      if (ns) {
-        return ns;
-      }
-      return this.byNamespace(namespace.namespace);
+      return this.program.stateMap(StateKeys[decorator]).get(namespace) ?? this.byNamespace(decorator, namespace.namespace);
     }
     return undefined;
   }
   getDb(namespace?: Namespace) {
-    const config = this.byNamespace(namespace);
+    const config = this.byNamespace("config", namespace) as Configuration;
     return new Dbs[config?.dialect ?? "postgres"](
       this.emitter.getContext().sourceFile.imports,
     );
@@ -219,8 +236,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
 
       export export type ${name} = typeof ${name}Table.$inferSelect; // return type when queried 
 
-      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${this.objectToString(relTo)}))` : ""}
-      `,
+      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${this.objectToString(relTo)}))` : ""}      `,
     );
   }
   modelProperties(model: Model) {

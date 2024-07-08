@@ -44,7 +44,7 @@
     "build": "tsc && $npm_execpath run build:tsp && $npm_execpath run format",
     "watch": "tsc --watch",
     "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
-    "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test ./test/**/*.test.ts",
+    "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test ./test/**/*.test.ts --test-only",
     "test": "tsx  --experimental-test-snapshots --test ./test/**/*.test.ts",
     "test:snapshot": "tsx --experimental-test-snapshots --test-update-snapshots --test ./test/**/*.test.ts",
     "lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
