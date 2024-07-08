@@ -1,7 +1,7 @@
 abstract class Db {
   constructor(
     public readonly moduleName: string,
-    public readonly imports = new Map<string, string[]>(),
+    public readonly imports: Map<string, string[]>,
   ) {}
   addImport(pkgName: string, ...decl: (string | undefined)[]) {
     const imptsArr =
@@ -45,7 +45,7 @@ export const mysql = class extends Db {
 
 export const postgres = class extends Db {
   constructor(imports: Map<string, string[]>) {
-    super("drizzle-orm/pg-core");
+    super("drizzle-orm/pg-core", imports);
   }
   table(): string {
     return this.type("pgTable");

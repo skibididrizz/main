@@ -9,18 +9,16 @@ async function main() {
   let i = 0;
 
   for (const [key, value] of Object.entries(test)) {
-    
     const title = key.replace(/examples > (.+?) \d{1,}$/, "$1");
     if (prev !== title) {
-md += `\n## ${title}
+      md += `\n## ${title}
 ${value.trim()}
 
 `;
-prev = title;
-i++;
- 
-}else if (i == 1){
-    md += `
+      prev = title;
+      i++;
+    } else if (i == 1) {
+      md += `
  **schema.tsp**     
  \`\`\`tsp
 import "@skibididrizz/drizzle";
@@ -30,14 +28,13 @@ using Drizzle;
 ${value}            
  \`\`\`
 `;
-i++
+      i++;
     } else {
-   md += `\nGenerates **schema.ts**\n\n\`\`\`tsx
+      md += `\nGenerates **schema.ts**\n\n\`\`\`tsx
 ${value}            
 \`\`\`\n
 `;
-i = 0;
-    
+      i = 0;
     }
   }
   return md;

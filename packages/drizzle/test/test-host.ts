@@ -24,7 +24,7 @@ const COMPILER_OPTIONS = {
   noEmit: false,
   emit: ["drizzle"],
 };
-const outputDir = "/test/tsp-output/@skibididrizz/drizzle"
+const outputDir = "/test/tsp-output/@skibididrizz/drizzle";
 
 export async function createDrizzleTestHost() {
   return createTestHost({
@@ -54,15 +54,19 @@ export async function emitWithDiagnostics(
   try {
     const host = runner.program.host;
 
-    const files = await Promise.all((await host.readDir(outputDir
-    )).map((file)=>host.readFile(`${outputDir}/${file}`)));
+    const files = await Promise.all(
+      (await host.readDir(outputDir)).map((file) =>
+        host.readFile(`${outputDir}/${file}`),
+      ),
+    );
 
-    const text:string = files.length == 1 ? files[0].text+'' : files.reduce((ret, f)=>{
-      
-      return `${ret}\n//file: ${f.path}\n${f.text}\n`;
-    }, "");
-    
-    
+    const text: string =
+      files.length == 1
+        ? files[0].text + ""
+        : files.reduce((ret, f) => {
+            return `${ret}\n//file: ${f.path}\n${f.text}\n`;
+          }, "");
+
     return [text, runner.program.diagnostics];
   } catch (e) {
     return [undefined, runner.program.diagnostics, e];

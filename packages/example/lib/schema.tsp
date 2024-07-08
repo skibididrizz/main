@@ -2,7 +2,9 @@ import "@skibididrizz/drizzle";
 
 using Drizzle;
 
+@config(#{dialect:"postgres"})
 namespace ExamplePostgres;
+
 @table("users") 
 model User {
  @id id: numeric;

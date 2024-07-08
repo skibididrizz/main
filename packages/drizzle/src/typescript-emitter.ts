@@ -303,7 +303,6 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
       emittedSourceFile.contents += decl.value + "\n";
     }
 
-   
     emittedSourceFile.contents = await prettier.format(
       emittedSourceFile.contents,
       {
@@ -314,4 +313,3 @@ export class TypeScriptEmitter extends CodeTypeEmitter {
     return emittedSourceFile;
   }
 }
- 
