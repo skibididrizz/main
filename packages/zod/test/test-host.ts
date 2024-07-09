@@ -9,14 +9,19 @@ import { TestContext } from "node:test";
 import * as ts from "typescript";
 //@ts-expect-error - not officially supported yet.
 import { snapshot } from "node:test";
-const niceString = (v:string)=> v.replace(/\/\/.*\n/g, "")
+const niceString = (v: string) => v.replace(/\/\/.*\n/g, "");
 snapshot.setDefaultSnapshotSerializers([
   (v: unknown) =>
-    v == null ? null :
-    typeof v == "string" ? niceString(v) : 
-  
- typeof v == 'object' ? Object.entries(v).map(([k, v]) => `//file: ${k}\n${niceString(v)}`).join('\n\n') : JSON.stringify(v) 
-])
+    v == null
+      ? null
+      : typeof v == "string"
+        ? niceString(v)
+        : typeof v == "object"
+          ? Object.entries(v)
+              .map(([k, v]) => `//file: ${k}\n${niceString(v)}`)
+              .join("\n\n")
+          : JSON.stringify(v),
+]);
 snapshot.setResolveSnapshotPath((path: string) => {
   return `${path.replace(/\.[jt]s$/, "")}.snapshot.cjs`;
 });

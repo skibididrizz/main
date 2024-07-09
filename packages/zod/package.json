@@ -21,10 +21,10 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@typespec/compiler": "latest",
     "@types/node": "latest",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@typespec/compiler": "latest",
     "eslint": "^8.45.0",
     "prettier": "^3.0.3",
     "tsx": "^4.16.2",

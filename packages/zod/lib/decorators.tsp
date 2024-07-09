@@ -7,4 +7,4 @@ namespace Zod;
 /**
  * zod - Mark this model as a Zod model.
  */
-extern dec zod(target: Model);
+extern dec zod(target: Model | Enum);

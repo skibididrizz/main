@@ -1,10 +1,11 @@
-@skibididrizz/zod
-===
+# @skibididrizz/zod
+
 A schema language based on [TypeSpec](https://typespec.io) that generates
-[zod](https://github.com/colinhacks/zod) parsers.   It is meant to be used with other
+[zod](https://github.com/colinhacks/zod) parsers. It is meant to be used with other
 tooling to be able to have a single source of truth for models (i.e. the schema).
 
 ## Installation
+
 Add the packages to your package.json
 
 ```sh
@@ -23,7 +24,7 @@ Modify your build to generate the zod output
 Create your schema in **lib/schema.tsp**
 
 Run the build
+
 ```sh
 $ yarn run build
 ```
-

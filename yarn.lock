@@ -3208,6 +3208,8 @@ __metadata:
     tsx: "npm:^4.16.2"
     typescript: "npm:^5.3.3"
     zod: "npm:^3.23.8"
+  peerDependencies:
+    "@typespec/compiler": "*"
   languageName: unknown
   linkType: soft
 

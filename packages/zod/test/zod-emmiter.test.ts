@@ -25,7 +25,8 @@ describe("zod", () => {
   id:string; 
   name?:string;
   cool?:int32;
-}`);
+}`,
+    );
   });
   it("plain with arrays", async (t) => {
     const result = await snapshotEmittedTypescript(
@@ -34,12 +35,13 @@ describe("zod", () => {
 @zod model User {
   id:string; 
   items?:string[];
-}`);
+}`,
+    );
   });
   it("nested object", async (t) => {
     const result = await snapshotEmittedTypescript(
       t,
-`@zod model Blog {
+      `@zod model Blog {
   id: string;
   owner?: User;
 }      
@@ -47,25 +49,60 @@ describe("zod", () => {
   id:string; 
   name?:string;
   cool?:int32;
-}`);
+}`,
+    );
   });
   it("should allow for extension object", async (t) => {
     const result = await snapshotEmittedTypescript(
       t,
-`@zod model Animal {
+      `@zod model Animal {
   baseId: string;
 }      
 @zod model Dog extends Animal {
   name?:string;
-}`);
+}`,
+    );
   });
 
   it("should allow for unions object", async (t) => {
     const result = await snapshotEmittedTypescript(
       t,
-`@zod model Idunno {
-  baseId: string | int32 | int64;
+      `
+@zod model Stuff {}
+@zod model Idunno {
+  baseId: string | int32 | int64 | Stuff;
 }      
-`);
+`,
+    );
+  });
+
+  it("should allow for enums", async (t) => {
+    const result = await snapshotEmittedTypescript(
+      t,
+      `
+@zod enum Status {
+Good,
+Bad,
+Ugly,
+}    
+@zod model User {
+  id:string;
+  status:Status;
+}
+`,
+    );
+  });
+  it("should allow for enums", async (t) => {
+    const result = await snapshotEmittedTypescript(
+      t,
+      `
+@zod enum Foo {
+  One: 1,
+  Ten: 10,
+  Hundred: 100,
+  Thousand: 1000,
+}
+`,
+    );
   });
 });

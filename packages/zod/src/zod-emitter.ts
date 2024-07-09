@@ -1,4 +1,5 @@
 import {
+  Enum,
   getDoc,
   Model,
   ModelProperty,
@@ -34,8 +35,7 @@ const typeSpecToZod = new Map([
   ["boolean", "boolean"],
   ["null", "null"],
   ["void", "unknown"],
-
-])
+]);
 
 export class ZodEmitter extends CodeTypeEmitter {
   constructor(emitter: AssetEmitter<any, any>) {
@@ -50,9 +50,8 @@ export class ZodEmitter extends CodeTypeEmitter {
       sourceFile,
       scope: sourceFile.globalScope,
     };
-
   }
- 
+
   toDoc(type: Type) {
     const doc = getDoc(this.program, type);
     return doc
@@ -67,8 +66,36 @@ export class ZodEmitter extends CodeTypeEmitter {
   get(type: Type, key: keyof typeof StateKeys) {
     return this.program.stateMap(StateKeys[key]).get(type);
   }
+  enumDeclaration(en: Enum, name: string): EmitterOutput<string> {
+    if (!this.has(en, "zod")) {
+      return this.emitter.result.none();
+    }
+    const builder = new StringBuilder();
+
+    builder.push("z.enum([");
+    
+    const arr = new ArrayBuilder();
+    for (const [memberName, {value}] of en.members) {
+      arr.push(
+        typeof value === "string" ? JSON.stringify(value) : value == null ? JSON.stringify(memberName) : value,
+      );
+    }
+    Array.from(en.members.values(), (v) =>
+      typeof v.value === "string" ? JSON.stringify(v.value) : v.value,
+    );
+    builder.push(arr.join(","));
+    builder.push("])");
+    return this.emitter.result.declaration(
+      name,
+      code`
+${this.toDoc(en)}           
+export const ${name} = ${builder};
+export type ${name} = z.infer<typeof ${name}>;
+
+            `,
+    );
+  }
   modelDeclaration(model: Model, name: string): EmitterOutput<string> {
-   
     if (!this.has(model, "zod")) {
       return this.emitter.result.none();
     }
@@ -90,14 +117,17 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     for (const [name, property] of properties) {
       objectBuilder.set(name, this.modelProperty(property));
     }
-    let objStr = model.baseModel ? 'extend' :'shape';
-    this.addImport('zod', objStr);
+    let objStr = model.baseModel ? "extend" : "z.shape";
     if (model.baseModel) {
-      objStr = `${model.baseModel.name}.extend`
+      objStr = `${model.baseModel.name}.extend`;
     }
-    return this.emitter.result.declaration(model.name, code`
+
+    return this.emitter.result.declaration(
+      model.name,
+      code`
       ${objStr}(${this.objectToString(objectBuilder)})
-      `);
+      `,
+    );
   }
   objectToString(obj: ObjectBuilder<any>) {
     const ret =
@@ -106,58 +136,72 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
       }, "{\n") + "}";
     return ret;
   }
-  addImport(modeName:string, ...namedImport:string[]){
-    const imports = this.emitter.getContext().sourceFile.imports;
-    imports.set(modeName, [... new Set([...(imports.get(modeName) ?? []), ...namedImport])]);
-  }
 
   typeToZod(type: Type) {
-
     const builder = new StringBuilder();
-    if (type.kind === 'Union'){
-      this.addImport('zod', 'union');
-      builder.push('union([');
-      const arr = new ArrayBuilder();
-      Array.from(type.variants.values(), (v) => arr.push(this.typeToZod(v.type).reduce()));
-      builder.push(arr.join(','));
-      builder.push('])');
-    }else if (type.kind === "Scalar") {
-      const zodType = typeSpecToZod.get(type.name);
-
-      if (zodType) {
-        this.addImport('zod', zodType);
-        builder.push(zodType);
-        builder.push('()');
-      }else{
+    switch (type.kind) {
+      case "Enum": {
+      builder.push(`z.lazy(()=>${type.name})`)
+       break;
+      }
+      case "Union": {
+        builder.push("z.union([");
+        const arr = new ArrayBuilder();
+        Array.from(type.variants.values(), (v) =>
+          arr.push(this.typeToZod(v.type).reduce()),
+        );
+        builder.push(arr.join(","));
+        builder.push("])");
+        break;
+      }
+      case "Scalar": {
+        const zodType = typeSpecToZod.get(type.name);
+        if (zodType) {
+          builder.push('z.');
+          builder.push(zodType);
+          builder.push("()");
+        } else {
+          this.program.reportDiagnostic({
+            message: `Type  ${type.name} is unknown.`,
+            target: type,
+            severity: "warning",
+            code: "unknown-type",
+          });
+        }
+        break;
+      }
+      case "Model": {
+        if (type.name === "Array") {
+          const args = type.templateMapper?.args;
+          if (args && args.length === 1) {
+            const arg = args[0];
+            if (arg.entityKind === "Type") {
+              builder.pushStringBuilder(this.typeToZod(arg));
+              builder.push(".array()");
+            } else {
+              this.program.reportDiagnostic({
+                message: `Type  ${type.name} is unknown.`,
+                target: type,
+                severity: "warning",
+                code: "unknown-type",
+              });
+            }
+            break;
+          }
+        }
+        builder.push(`z.lazy(()=>${type.name})`);
+        break;
+      }
+      default: {
         this.program.reportDiagnostic({
-          message: `Type  ${type.name} is unknown.`,
+          message: `Type  ${type.kind} is unknown.`,
           target: type,
           severity: "warning",
           code: "unknown-type",
         });
       }
-    }else if (type.kind === 'Model'){
-      if (type.name === 'Array'){
-        const args = type.templateMapper?.args;
-        if (args && args.length === 1) {
-          const arg = args[0];
-          if (arg.entityKind === 'Type'){
-            builder.pushStringBuilder(this.typeToZod(arg));
-            builder.push('.array()');
-          }else{
-            this.program.reportDiagnostic({
-              message: `Type  ${type.name} is unknown.`,
-              target: type,
-              severity: "warning",
-              code: "unknown-type",
-            });
-          }
-        }
-      }else{
-        this.addImport('zod', 'lazy');
-        builder.push(`lazy(()=>${type.name})`);
-      }
     }
+
     return builder;
   }
   modelProperty(property: ModelProperty): EmitterOutput<string> {
@@ -168,11 +212,10 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     return builder.reduce();
   }
 
-
   async sourceFile(sourceFile: SourceFile<string>): Promise<EmittedSourceFile> {
     const emittedSourceFile: EmittedSourceFile = {
       path: sourceFile.path,
-      contents: "",
+      contents: "import * as z from 'zod';\n",
     };
 
     for (const [importPath, typeNames] of sourceFile.imports) {
