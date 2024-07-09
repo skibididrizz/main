@@ -1,6 +1,8 @@
 --
+title: Namespace
 sidebar_position: 3
 --
+
 # Namespace
 You can use [@namespace](/docs/tsdocs/functions/$config) to have models in different Databases.
 

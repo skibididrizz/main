@@ -1,0 +1,46 @@
+{
+  "name": "@skibididrizz/zod",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "tspMain": "lib/main.tsp",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./testing": {
+      "types": "./dist/src/testing/index.d.ts",
+      "default": "./dist/src/testing/index.js"
+    }
+  },
+  "peerDependencies": {
+    "@typespec/compiler": "*"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "latest",
+    "@types/node": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.3",
+    "tsx": "^4.16.2",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
+    "build": "tsc && $npm_execpath run build:tsp && $npm_execpath run format",
+    "watch": "tsc --watch",
+    "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test ./test/**/*.test.ts --test-only",
+    "test": "tsx  --experimental-test-snapshots --test ./test/**/*.test.ts",
+    "test:snapshot": "tsx --experimental-test-snapshots --test-update-snapshots --test ./test/**/*.test.ts",
+    "lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
+    "lint:fix": "eslint . --report-unused-disable-directives --fix",
+    "format": "prettier .  --write",
+    "format:check": "prettier --check ."
+  },
+  "private": true
+}

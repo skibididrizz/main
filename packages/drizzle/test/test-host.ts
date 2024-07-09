@@ -36,7 +36,7 @@ export async function createDrizzleTestRunner() {
   const host = await createDrizzleTestHost();
 
   return createTestWrapper(host, {
-    autoUsings: ["Drizzle"],
+    autoImports: ["Drizzle"],
     compilerOptions: COMPILER_OPTIONS,
   });
 }

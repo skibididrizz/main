@@ -1,1 +1,2 @@
-export * from "./decorators.js";
+
+export const namespace = 'Zod';

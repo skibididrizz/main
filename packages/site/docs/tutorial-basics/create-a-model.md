@@ -11,8 +11,7 @@ also use [@id](/docs/tsdocs/functions/$id)  to identify the identity column and 
 import "@skibididrizz/drizzle";
 using Drizzle;
 
-${code}
- @table model Blog {
+@table model Blog {
   @uuid @id id: string;
   name: string;
   description?:string;
