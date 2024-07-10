@@ -4,6 +4,6 @@ import {
   TypeSpecTestLibrary,
 } from "@typespec/compiler/testing";
 export const DrizzleTestLibrary: TypeSpecTestLibrary = createTestLibrary({
-  name: "drizzle",
+  name: "@skibididrizz/drizzle",
   packageRoot: await findTestPackageRoot(import.meta.url),
 });

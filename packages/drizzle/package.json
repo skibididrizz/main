@@ -19,6 +19,9 @@
       "default": "./dist/test/examples.test.snapshot.js"
     }
   },
+  "dependencies": {
+    "@skibididrizz/common": "workspace:^"
+  },
   "peerDependencies": {
     "@typespec/compiler": "*"
   },

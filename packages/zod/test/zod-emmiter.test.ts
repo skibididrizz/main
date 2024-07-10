@@ -1,14 +1,6 @@
 import { describe, it, beforeEach } from "node:test";
-import {
-  BasicTestRunner,
-  expectDiagnostics,
-  extractCursor,
-} from "@typespec/compiler/testing";
-import {
-  createZodTestRunner,
-  snapshotEmittedTypescript,
-  emitWithDiagnostics,
-} from "./test-host.js";
+import { BasicTestRunner } from "@typespec/compiler/testing";
+import { createZodTestRunner, snapshotEmittedTypescript } from "./test-host.js";
 
 describe("zod", () => {
   let runner: BasicTestRunner;
@@ -92,8 +84,8 @@ Ugly,
 `,
     );
   });
-  it("should allow for enums", async (t) => {
-    const result = await snapshotEmittedTypescript(
+  it("should allow for enums with values", async (t) => {
+    await snapshotEmittedTypescript(
       t,
       `
 @zod enum Foo {

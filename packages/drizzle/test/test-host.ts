@@ -22,7 +22,7 @@ snapshot.setResolveSnapshotPath((path: string) => {
 const COMPILER_OPTIONS = {
   outputDir: "./tsp-output",
   noEmit: false,
-  emit: ["drizzle"],
+  emit: ["@skibididrizz/drizzle"],
 };
 const outputDir = "/test/tsp-output/@skibididrizz/drizzle";
 
@@ -36,7 +36,9 @@ export async function createDrizzleTestRunner() {
   const host = await createDrizzleTestHost();
 
   return createTestWrapper(host, {
-    autoImports: ["Drizzle"],
+    autoImports: ["@skibididrizz/drizzle"],
+    autoUsings: ["Drizzle"],
+
     compilerOptions: COMPILER_OPTIONS,
   });
 }

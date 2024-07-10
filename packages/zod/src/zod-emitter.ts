@@ -20,6 +20,7 @@ import {
 } from "@typespec/compiler/emitter-framework";
 import { StateKeys } from "./lib.js";
 import * as prettier from "prettier";
+import { ObjectBuilderExt } from "@skibididrizz/common";
 
 const typeSpecToZod = new Map([
   ["unknown", "unknown"],
@@ -66,25 +67,28 @@ export class ZodEmitter extends CodeTypeEmitter {
   get(type: Type, key: keyof typeof StateKeys) {
     return this.program.stateMap(StateKeys[key]).get(type);
   }
+
   enumDeclaration(en: Enum, name: string): EmitterOutput<string> {
     if (!this.has(en, "zod")) {
       return this.emitter.result.none();
     }
     const builder = new StringBuilder();
 
-    builder.push("z.enum([");
-    
-    const arr = new ArrayBuilder();
-    for (const [memberName, {value}] of en.members) {
-      arr.push(
-        typeof value === "string" ? JSON.stringify(value) : value == null ? JSON.stringify(memberName) : value,
+    const objBuilder = new ObjectBuilderExt();
+    builder.push("z.nativeEnum(");
+
+    for (const [memberName, { value }] of en.members) {
+      objBuilder.set(
+        memberName,
+        typeof value === "string"
+          ? JSON.stringify(value)
+          : value == null
+            ? JSON.stringify(memberName)
+            : value,
       );
     }
-    Array.from(en.members.values(), (v) =>
-      typeof v.value === "string" ? JSON.stringify(v.value) : v.value,
-    );
-    builder.push(arr.join(","));
-    builder.push("])");
+    builder.push(objBuilder.toStringBuilder());
+    builder.push(")");
     return this.emitter.result.declaration(
       name,
       code`
@@ -113,7 +117,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
   modelProperties(model: Model): EmitterOutput<string> {
     const properties = model.properties;
 
-    const objectBuilder = new ObjectBuilder();
+    const objectBuilder = new ObjectBuilderExt();
     for (const [name, property] of properties) {
       objectBuilder.set(name, this.modelProperty(property));
     }
@@ -125,24 +129,18 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     return this.emitter.result.declaration(
       model.name,
       code`
-      ${objStr}(${this.objectToString(objectBuilder)})
+      ${objStr}(${objectBuilder.toStringBuilder()})})
       `,
     );
   }
-  objectToString(obj: ObjectBuilder<any>) {
-    const ret =
-      Object.entries(obj).reduce((ret, [key, value]) => {
-        return `${ret}  ${key}:${value},\n`;
-      }, "{\n") + "}";
-    return ret;
-  }
+
 
   typeToZod(type: Type) {
     const builder = new StringBuilder();
     switch (type.kind) {
       case "Enum": {
-      builder.push(`z.lazy(()=>${type.name})`)
-       break;
+        builder.push(`z.lazy(()=>${type.name})`);
+        break;
       }
       case "Union": {
         builder.push("z.union([");
@@ -157,7 +155,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
       case "Scalar": {
         const zodType = typeSpecToZod.get(type.name);
         if (zodType) {
-          builder.push('z.');
+          builder.push("z.");
           builder.push(zodType);
           builder.push("()");
         } else {

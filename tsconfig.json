@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "incremental": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "target": "ES2022",
+        "useDefineForClassFields": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ES2022"],
+        "rootDir": ".",
+        "outDir": "dist",
+        "sourceMap": true,
+        "declaration": true,
+        "skipLibCheck": true,
+        /* Linting */
+        "strict": true,
+        "paths": {
+          "@skibididrizz/*": ["./packages/*/src"],
+        },
+    },
+    "files": [
+    ],
+    "references": [
+      {
+        "path": "./packages/common"
+      },
+      {
+        "path": "./packages/drizzle"
+      },
+      {
+        "path": "./packages/zod"
+      }
+    ]
+  }

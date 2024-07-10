@@ -1,2 +1,1 @@
-
-export const namespace = 'Zod';
+export const namespace = "Zod";

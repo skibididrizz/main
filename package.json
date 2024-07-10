@@ -13,7 +13,10 @@
   "scripts": {
     "env": "env",
     "fix": "echo \"npmAuthToken: \"${NPM_TOKEN}\"\" >> .yarnrc.yml",
-    "build": "yarn workspaces foreach --all run build",
+    "$build": "yarn workspaces foreach -A run build",
+    "build": "tsc --build --verbose",
+    "test": "yarn workspaces foreach -A run test",
+    "release": "yarn build && yarn test && yarn site && yarn bump ${0}",
     "bump": "yarn workspaces foreach -A version ${0} && git commit -am \"v${0}\" && git tag v${0} && echo 'do not forget to \"git push --tags origin main\" to update docs and release new version",
     "site": "yarn workspace @skibididrizz/drizzle docs && yarn workspace @skibididrizz/site build"
   }

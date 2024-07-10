@@ -30,7 +30,7 @@ import { camelToSnake, capitalize } from "./string.js";
 import { arrayOrUndefined } from "./array.js";
 import { StateKeys } from "./lib.js";
 import * as Dbs from "./db.js";
-
+import { ObjectBuilderExt } from "@skibididrizz/common";
 export const intrensicToDrizzle = new Map<string, string>([
   ["unknown", "jsonb"],
   ["string", "text"],
@@ -78,13 +78,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
   //   }
   //   return ctx;
   // }
-  objectToString(obj: ObjectBuilder<any>) {
-    const ret =
-      Object.entries(obj).reduce((ret, [key, value]) => {
-        return `${ret}  ${key}:${value},\n`;
-      }, "{\n") + "}";
-    return ret;
-  }
+
   get program() {
     return this.emitter.getProgram();
   }
@@ -137,7 +131,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
           if (prop.model.name == prop.type.name) {
             const tableRef = db.table();
 
-            const fkObj = new ObjectBuilder();
+            const fkObj = new ObjectBuilderExt();
             const pk = this.primaryKeyFor(prop.type)?.name;
             fkObj.set("columns", `[${tableRef}.${prop.name}]`);
             fkObj.set("foreignColumns", `[${tableRef}.${pk ?? "_id"}]`);
@@ -148,12 +142,12 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             selfRef ??
               (selfRef = new ObjectBuilder()).set(
                 prop.name,
-                `${db.type("foreignKey")}(${this.objectToString(fkObj)})`,
+                `${db.type("foreignKey")}(${fkObj.toStringBuilder()})`,
               );
           } else {
             args.push("one");
-            relTo = relTo ?? new ObjectBuilder();
-            const pkObj = new ObjectBuilder();
+            relTo = relTo ?? new ObjectBuilderExt();
+            const pkObj = new ObjectBuilderExt();
             const relToResult = this.relationTo(prop);
             const fieldsArr = new ArrayBuilder();
             if (relToResult.name)
@@ -174,7 +168,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             pkObj.set("references", `[${referencesArr}]`);
             relTo.set(
               prop.name,
-              `one(${prop.type.name}Table, ${this.objectToString(pkObj)})`,
+              `one(${prop.type.name}Table, ${pkObj.toStringBuilder()})`,
             );
           }
         }
@@ -202,7 +196,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     //handle composite keys
     const primaryKey = this.state("id", model) as IdRef | undefined;
     if (primaryKey && primaryKey.fields) {
-      const indexBuilder = new ObjectBuilder();
+      const indexBuilder = new ObjectBuilderExt();
       if (primaryKey.name)
         indexBuilder.set("name", `"${camelToSnake(primaryKey.name)}"`);
       indexBuilder.set(
@@ -222,10 +216,10 @@ export class DrizzleEmitter extends TypeScriptEmitter {
           .join(", ")}]`,
       );
 
-      selfRef = selfRef ?? new ObjectBuilder();
+      selfRef = selfRef ?? new ObjectBuilderExt();
       selfRef.set(
         `pk${capitalize(primaryKey.name ?? "")}`,
-        `${db.type("primaryKey")}(${this.objectToString(indexBuilder)})`,
+        `${db.type("primaryKey")}(${indexBuilder.toStringBuilder()})`,
       );
     }
 
@@ -235,11 +229,11 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       ${this.doc(model)}
       export const ${name}Table = ${this.getDb(model.namespace).table()}('${tableName}', {
         ${this.emitter.emitModelProperties(model)}
-      } ${selfRef ? code`,(table)=>(${this.objectToString(selfRef)})` : ""});
+      } ${selfRef ? code`,(table)=>(${selfRef.toStringBuilder()})` : ""});
 
       export export type ${name} = typeof ${name}Table.$inferSelect; // return type when queried 
 
-      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${this.objectToString(relTo)}))` : ""}      `,
+      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${relTo.toStringBuilder()}))` : ""}      `,
     );
   }
   modelProperties(model: Model) {

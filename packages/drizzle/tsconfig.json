@@ -1,17 +1,9 @@
 {
+  "extends":"../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "lib": ["ES2022"],
-    "rootDir": ".",
-    "outDir": "dist",
-    "sourceMap": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    /* Linting */
-    "strict": true
+        "rootDir": ".",
+        "outDir": "./dist",
+        "composite": true,
   },
   "include": ["src", "test"]
 }

@@ -1,4 +1,4 @@
-import { Diagnostic, resolvePath } from "@typespec/compiler";
+import { Diagnostic, Program, resolvePath } from "@typespec/compiler";
 import {
   createTestHost,
   createTestWrapper,
@@ -7,6 +7,8 @@ import {
 import { ZodTestLibrary } from "../src/testing/index.js";
 import { TestContext } from "node:test";
 import * as ts from "typescript";
+import { resolve } from "node:path";
+
 //@ts-expect-error - not officially supported yet.
 import { snapshot } from "node:test";
 const niceString = (v: string) => v.replace(/\/\/.*\n/g, "");
@@ -66,6 +68,12 @@ export async function emitWithDiagnostics(
   return [result, runner.program.diagnostics];
 }
 
+export async function emitExample(t: TestContext, doc: string, code: string) {
+  //@ts-expect-error
+  t.assert.snapshot(doc);
+  await snapshotEmittedTypescript(t, code);
+}
+
 export async function emit(code: string): Promise<Record<string, string>> {
   const [result, diagnostics] = await emitWithDiagnostics(code);
   expectDiagnosticEmpty(diagnostics);
@@ -87,42 +95,69 @@ export async function snapshotEmittedTypescript(
   //@ts-expect-error
   t.assert.snapshot(result);
 
-  return [result, diags];
+  return [result, diags?.length ? diags : await compileTs(result)];
 }
 
-function compileTs(source: Record<string, string>) {
+function compileTs(source: Record<string, string>): Promise<Diagnostic[]> {
   const host = ts.createCompilerHost({
     noEmit: true,
   });
 
   const createdFiles: Record<string, string> = {};
 
+  const oReadFile = host.readFile;
   host.writeFile = (fileName: string, contents: string) =>
     (createdFiles[fileName] = contents);
-  host.readFile = (fileName: string) => source[fileName];
-
-  const program = ts.createProgram(Object.keys(source), {}, host);
+  host.readFile = (fileName: string) => {
+    return source[fileName] ?? oReadFile.call(host, fileName);
+  };
+  const program = ts.createProgram(
+    Object.keys(source),
+    {
+      useDefineForClassFields: true,
+      target: ts.ScriptTarget.ES2023,
+      rootDir: ".",
+      outDir: "dist",
+      skipLibCheck: true,
+      module: ts.ModuleKind.NodeNext,
+      moduleResolution: ts.ModuleResolutionKind.NodeNext,
+    },
+    host,
+  );
   const emitResult = program.emit();
-
   const allDiagnostics = ts
     .getPreEmitDiagnostics(program)
     .concat(emitResult.diagnostics);
 
-  return allDiagnostics?.length
-    ? allDiagnostics.reduce((ret, diagnostic) => {
-        if (diagnostic.file) {
-          const { line, character } = ts.getLineAndCharacterOfPosition(
-            diagnostic.file,
-            diagnostic.start!,
-          );
-          const message = ts.flattenDiagnosticMessageText(
-            diagnostic.messageText,
-            "\n",
-          );
-          return `${ret}\n${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`;
-        } else {
-          return `${ret}\n${ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n")}`;
-        }
-      }, "")
-    : undefined;
+  return Promise.all(
+    allDiagnostics.map(async (diagnostic) => {
+      const { line, character } = ts.getLineAndCharacterOfPosition(
+        diagnostic.file!,
+        diagnostic.start!,
+      );
+
+      //return `${ret}\n${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`;
+      const ret: Diagnostic = {
+        code: diagnostic.code + "",
+        severity: "error",
+        message: ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"),
+        target: {
+          pos: diagnostic.start ?? 0,
+          end: diagnostic.length ?? 0,
+          file: {
+            path: diagnostic.file?.fileName!,
+            text: diagnostic.file?.text ?? "",
+            getLineStarts() {
+              return diagnostic.file?.getLineStarts() ?? [line, character];
+            },
+            getLineAndCharacterOfPosition() {
+              return { line, character };
+            },
+          },
+        },
+      };
+
+      return ret;
+    }),
+  );
 }

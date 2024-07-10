@@ -95,12 +95,16 @@ export const User = z.shape({
 });
 export type User = z.infer<typeof User>;
 
-export const Status = z.enum(["Good", "Bad", "Ugly"]);
+export const Status = z.nativeEnum({
+  Good: "Good",
+  Bad: "Bad",
+  Ugly: "Ugly",
+});
 export type Status = z.infer<typeof Status>;
 
 `;
 
-exports[`zod > should allow for enums 3`] = `
+exports[`zod > should allow for enums with values 1`] = `
 
 @zod enum Foo {
   One: 1,
@@ -111,11 +115,16 @@ exports[`zod > should allow for enums 3`] = `
 
 `;
 
-exports[`zod > should allow for enums 4`] = `
+exports[`zod > should allow for enums with values 2`] = `
 //file: zod.ts
 import * as z from "zod";
 
-export const Foo = z.enum([1, 10, 100, 1000]);
+export const Foo = z.nativeEnum({
+  One: 1,
+  Ten: 10,
+  Hundred: 100,
+  Thousand: 1000,
+});
 export type Foo = z.infer<typeof Foo>;
 
 `;
