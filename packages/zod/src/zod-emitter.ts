@@ -20,7 +20,7 @@ import {
 } from "@typespec/compiler/emitter-framework";
 import { StateKeys } from "./lib.js";
 import * as prettier from "prettier";
-import { ObjectBuilderExt } from "@skibididrizz/common";
+import { toStringBuilder } from "@skibididrizz/common";
 
 const typeSpecToZod = new Map([
   ["unknown", "unknown"],
@@ -74,7 +74,7 @@ export class ZodEmitter extends CodeTypeEmitter {
     }
     const builder = new StringBuilder();
 
-    const objBuilder = new ObjectBuilderExt();
+    const objBuilder = new ObjectBuilder();
     builder.push("z.nativeEnum(");
 
     for (const [memberName, { value }] of en.members) {
@@ -87,7 +87,7 @@ export class ZodEmitter extends CodeTypeEmitter {
             : value,
       );
     }
-    builder.push(objBuilder.toStringBuilder());
+    builder.push(toStringBuilder(objBuilder));
     builder.push(")");
     return this.emitter.result.declaration(
       name,
@@ -117,7 +117,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
   modelProperties(model: Model): EmitterOutput<string> {
     const properties = model.properties;
 
-    const objectBuilder = new ObjectBuilderExt();
+    const objectBuilder = new ObjectBuilder();
     for (const [name, property] of properties) {
       objectBuilder.set(name, this.modelProperty(property));
     }

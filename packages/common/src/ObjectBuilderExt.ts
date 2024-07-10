@@ -1,15 +1,17 @@
 import { ObjectBuilder, StringBuilder } from "@typespec/compiler/emitter-framework";
 
 
-export class ObjectBuilderExt<T> extends ObjectBuilder<T> {
-    constructor(private readonly depth = '  ') {
-        super();
+class StringBuilderExt extends StringBuilder {
+    toString(){
+        return this.reduce();
     }
-    toStringBuilder(){
-        const sb = new StringBuilder();
+}
+
+export function toStringBuilder(objectBuilder:ObjectBuilder<unknown>, depth = '  '){
+        const sb = new StringBuilderExt();
         sb.push('{\n');
-        for(const [key, value] of this.entries){
-            sb.push(this.depth);
+        for(const [key, value] of Object.entries(objectBuilder)) {
+            sb.push(depth);
             sb.push(key);
             sb.push(': ');
             sb.push(value);
@@ -17,5 +19,4 @@ export class ObjectBuilderExt<T> extends ObjectBuilder<T> {
         }
         sb.push('\n}');
         return sb;
-    }
 }

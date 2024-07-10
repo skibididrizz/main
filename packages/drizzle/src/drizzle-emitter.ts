@@ -30,7 +30,7 @@ import { camelToSnake, capitalize } from "./string.js";
 import { arrayOrUndefined } from "./array.js";
 import { StateKeys } from "./lib.js";
 import * as Dbs from "./db.js";
-import { ObjectBuilderExt } from "@skibididrizz/common";
+import { toStringBuilder } from "@skibididrizz/common";
 export const intrensicToDrizzle = new Map<string, string>([
   ["unknown", "jsonb"],
   ["string", "text"],
@@ -131,7 +131,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
           if (prop.model.name == prop.type.name) {
             const tableRef = db.table();
 
-            const fkObj = new ObjectBuilderExt();
+            const fkObj = new ObjectBuilder();
             const pk = this.primaryKeyFor(prop.type)?.name;
             fkObj.set("columns", `[${tableRef}.${prop.name}]`);
             fkObj.set("foreignColumns", `[${tableRef}.${pk ?? "_id"}]`);
@@ -142,12 +142,12 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             selfRef ??
               (selfRef = new ObjectBuilder()).set(
                 prop.name,
-                `${db.type("foreignKey")}(${fkObj.toStringBuilder()})`,
+                `${db.type("foreignKey")}(${toStringBuilder(fkObj).reduce()})`,
               );
           } else {
             args.push("one");
-            relTo = relTo ?? new ObjectBuilderExt();
-            const pkObj = new ObjectBuilderExt();
+            relTo = relTo ?? new ObjectBuilder();
+            const pkObj = new ObjectBuilder();
             const relToResult = this.relationTo(prop);
             const fieldsArr = new ArrayBuilder();
             if (relToResult.name)
@@ -168,7 +168,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             pkObj.set("references", `[${referencesArr}]`);
             relTo.set(
               prop.name,
-              `one(${prop.type.name}Table, ${pkObj.toStringBuilder()})`,
+              `one(${prop.type.name}Table, ${toStringBuilder(pkObj).reduce()})`,
             );
           }
         }
@@ -196,7 +196,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     //handle composite keys
     const primaryKey = this.state("id", model) as IdRef | undefined;
     if (primaryKey && primaryKey.fields) {
-      const indexBuilder = new ObjectBuilderExt();
+      const indexBuilder = new ObjectBuilder();
       if (primaryKey.name)
         indexBuilder.set("name", `"${camelToSnake(primaryKey.name)}"`);
       indexBuilder.set(
@@ -216,10 +216,10 @@ export class DrizzleEmitter extends TypeScriptEmitter {
           .join(", ")}]`,
       );
 
-      selfRef = selfRef ?? new ObjectBuilderExt();
+      selfRef = selfRef ?? new ObjectBuilder();
       selfRef.set(
         `pk${capitalize(primaryKey.name ?? "")}`,
-        `${db.type("primaryKey")}(${indexBuilder.toStringBuilder()})`,
+        `${db.type("primaryKey")}(${toStringBuilder(indexBuilder)})`,
       );
     }
 
@@ -229,11 +229,11 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       ${this.doc(model)}
       export const ${name}Table = ${this.getDb(model.namespace).table()}('${tableName}', {
         ${this.emitter.emitModelProperties(model)}
-      } ${selfRef ? code`,(table)=>(${selfRef.toStringBuilder()})` : ""});
+      } ${selfRef ? code`,(table)=>(${toStringBuilder(selfRef)})` : ""});
 
       export export type ${name} = typeof ${name}Table.$inferSelect; // return type when queried 
 
-      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${relTo.toStringBuilder()}))` : ""}      `,
+      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${toStringBuilder(relTo).reduce()}))` : ""}      `,
     );
   }
   modelProperties(model: Model) {
