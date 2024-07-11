@@ -19,8 +19,8 @@ extern dec id(target: ModelProperty | Model, name?: valueof string , fields?:val
 /**
  * index - Mark this property as an index.
  * @param name The alternate name.
- * @param sql The SQL statement to use for the index. It will replace {column} with the name of the current column. so you can use {columns} in the SQL statement. 
- *  Think ```lower({column})``` to lower case the index.  If \@unique is used in combination it will generate a unique index.
+ * @param sql The SQL statement to use for the index. It will replace \{column\} with the name of the current column. so you can use \{column\} in the SQL statement. 
+ *  Think ```lower(\{column\})``` to lower case the index.  If \@unique is used in combination it will generate a unique index.
  */
 extern dec index(target: ModelProperty, name?: valueof string, sql?:valueof string);
 /**

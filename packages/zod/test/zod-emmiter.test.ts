@@ -60,7 +60,7 @@ describe("zod", () => {
     );
   });
 
-  it.only("should allow for unions object", async (t) => {
+  it("should allow for unions object", async (t) => {
     await ctx.emitExample(
       t,
       "Unions are supported",

@@ -77,10 +77,10 @@ index - Mark this property as an index.
 
 #### Parameters
 
-| Name | Type                    | Description                                                                                                                                                                                                       |
-| ---- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name | `valueof scalar string` | The alternate name.                                                                                                                                                                                               |
-| sql  | `valueof scalar string` | The SQL statement to use for the index. It will replace ```{column}``` with the name of the current column. so you can use ```{columns}``` in the SQL statement. <br />Think `lower({column})` to lower case the index. If \  |
+| Name | Type                    | Description                                                                                                                                                                                                            |
+| ---- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name | `valueof scalar string` | The alternate name.                                                                                                                                                                                                    |
+| sql  | `valueof scalar string` | The SQL statement to use for the index. It will replace \{column\} with the name of the current column. so you can use \{column\} in the SQL statement. <br />Think `lower(\{column\})` to lower case the index. If \  |
 
 ### `@map` {#@Drizzle.map}
 

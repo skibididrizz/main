@@ -145,7 +145,6 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
         }
         union.pushStringBuilder(fromArrayBuilder(arr));
         union.push(")");
-        console.log("union", union.toString());
         builder.pushStringBuilder(union);
         break;
       }

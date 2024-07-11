@@ -1,8 +1,9 @@
 ---
-sidebar_position: 1
+sidebar_position: -1
+title: Getting Started
 ---
 
-# Skibididrizz  Intro
+# Skibididrizz  Drizzle
 
 Let's discover **Skibididrizz in less than 5 minutes**.
 

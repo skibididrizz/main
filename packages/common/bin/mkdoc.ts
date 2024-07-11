@@ -1,7 +1,6 @@
 #!/usr/bin/env tsx
 
 async function main(snapshot = process.argv.slice(2)[0]) {
-  console.log("loading '%s'", snapshot);
   const resp = await import(snapshot);
   //@ts-ignore
   const test = resp.default as Record<string, string>;
@@ -10,7 +9,7 @@ async function main(snapshot = process.argv.slice(2)[0]) {
   let i = 0;
 
   for (const [key, value] of Object.entries(test)) {
-    const title = key.replace(/examples > (.+?) \d{1,}$/, "$1");
+    const title = key.replace(/(?:.+? >)? (.+?) \d{1,}$/, "$1");
     if (prev !== title) {
       md += `\n## ${title}
 ${value.trim()}

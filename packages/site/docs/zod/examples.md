@@ -1,8 +1,17 @@
-loading '/Users/jspears/projects/drizz/packages/zod/test/zod-emmiter.test.snapshot.cjs'
 # Examples
 
 
-## zod > nested object 1
+## nested object
+Can reference other models
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
 @zod model Blog {
   id: string;
   owner?: User;
@@ -12,9 +21,13 @@ loading '/Users/jspears/projects/drizz/packages/zod/test/zod-emmiter.test.snapsh
   name?:string;
   cool?:int32;
 }
+            
+ ```
 
+Generates **schema.ts**
 
-## zod > nested object 2
+```tsx
+
 //file: zod.ts
 import * as z from "zod";
 
@@ -31,16 +44,34 @@ export const User = z.shape({
 });
 export type User = z.infer<typeof User>;
 
+            
+```
 
-## zod > plain 1
+
+## plain
+A simple example numbers and optional
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
 @zod model User {
   id:string; 
   name?:string;
   cool?:int32;
 }
+            
+ ```
 
+Generates **schema.ts**
 
-## zod > plain 2
+```tsx
+
 //file: zod.ts
 import * as z from "zod";
 
@@ -51,15 +82,33 @@ export const User = z.shape({
 });
 export type User = z.infer<typeof User>;
 
+            
+```
 
-## zod > plain with arrays 1
+
+## plain with arrays
+Handles arrays
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
 @zod model User {
   id:string; 
   items?:string[];
 }
+            
+ ```
 
+Generates **schema.ts**
 
-## zod > plain with arrays 2
+```tsx
+
 //file: zod.ts
 import * as z from "zod";
 
@@ -69,8 +118,22 @@ export const User = z.shape({
 });
 export type User = z.infer<typeof User>;
 
+            
+```
 
-## zod > should allow for enums 1
+
+## should allow for enums
+Enums are supported
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
 @zod enum Status {
 Good,
 Bad,
@@ -81,8 +144,13 @@ Ugly,
   status:Status;
 }
 
+            
+ ```
 
-## zod > should allow for enums 2
+Generates **schema.ts**
+
+```tsx
+
 //file: zod.ts
 import * as z from "zod";
 
@@ -99,8 +167,22 @@ export const Status = z.nativeEnum({
 });
 export type Status = z.infer<typeof Status>;
 
+            
+```
 
-## zod > should allow for enums with values 1
+
+## should allow for enums with values
+Just an enum
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
 @zod enum Foo {
   One: 1,
   Ten: 10,
@@ -108,8 +190,13 @@ export type Status = z.infer<typeof Status>;
   Thousand: 1000,
 }
 
+            
+ ```
 
-## zod > should allow for enums with values 2
+Generates **schema.ts**
+
+```tsx
+
 //file: zod.ts
 import * as z from "zod";
 
@@ -121,17 +208,34 @@ export const Foo = z.nativeEnum({
 });
 export type Foo = z.infer<typeof Foo>;
 
+            
+```
 
-## zod > should allow for extension object 1
+
+## should allow for extension object
+Inheritance is supported
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
 @zod model Animal {
   baseId: string;
 }      
 @zod model Dog extends Animal {
   name?:string;
 }
+            
+ ```
 
+Generates **schema.ts**
 
-## zod > should allow for extension object 2
+```tsx
+
 //file: zod.ts
 import * as z from "zod";
 
@@ -145,24 +249,50 @@ export const Dog = Animal.extend({
 });
 export type Dog = z.infer<typeof Dog>;
 
+            
+```
 
-## zod > should allow for unions object 1
-@zod model Stuff {}
+
+## should allow for unions object
+Unions are supported
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
+@zod model Stuff {
+id:string;
+};
 @zod model Idunno {
   baseId: string | int32 | int64 | Stuff;
-}
+}      ;
 
+            
+ ```
 
-## zod > should allow for unions object 2
+Generates **schema.ts**
+
+```tsx
+
 //file: zod.ts
 import * as z from "zod";
 
-export const Stuff = z.shape({});
+export const Stuff = z.shape({
+  id: z.string(),
+});
 export type Stuff = z.infer<typeof Stuff>;
 
 export const Idunno = z.shape({
   baseId: z.union([z.string(), z.number(), z.bigint(), z.lazy(() => Stuff)]),
 });
 export type Idunno = z.infer<typeof Idunno>;
+
+            
+```
 
 
