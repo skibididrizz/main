@@ -19,6 +19,6 @@
     "release": "yarn build && yarn test && yarn site && yarn bump ${0}",
     "bump": "yarn workspaces foreach -A version ${0} && git commit -am \"v${0}\" && git tag v${0} && echo 'do not forget to \"git push --tags origin main\" to update docs and release new version",
     "docs": "yarn workspaces foreach -A run docs",
-    "site": "yarn workspace @skibididrizz/site build"
+    "site": "yarn test && yarn docs && yarn build && yarn workspace @skibididrizz/site build-site"
   }
 }

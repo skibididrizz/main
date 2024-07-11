@@ -8,7 +8,7 @@
     "docs_generate_drizzle": "tspd doc $INIT_CWD/../drizzle --output-dir $INIT_CWD/docs/drizzle/api --enable-experimental",
     "docs_generate_zod": "tspd doc $INIT_CWD/../zod --output-dir $INIT_CWD/docs/zod/api --enable-experimental",
     "docs": "$npm_execpath docs_generate_drizzle & $npm_execpath docs_generate_zod",
-    "build": "$npm_execpath docs && build",
+    "site-build": "$npm_execpath docs && build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
