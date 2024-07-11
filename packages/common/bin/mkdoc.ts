@@ -1,7 +1,8 @@
 #!/usr/bin/env tsx
 
-async function main() {
-  const resp = await import("../test/examples.test.snapshot.cjs");
+async function main(snapshot = process.argv.slice(2)[0]) {
+  console.log("loading '%s'", snapshot);
+  const resp = await import(snapshot);
   //@ts-ignore
   const test = resp.default as Record<string, string>;
   let prev = "";

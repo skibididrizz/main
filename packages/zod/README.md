@@ -1,30 +1,29 @@
 # @skibididrizz/zod
 
-A schema language based on [TypeSpec](https://typespec.io) that generates
-[zod](https://github.com/colinhacks/zod) parsers. It is meant to be used with other
-tooling to be able to have a single source of truth for models (i.e. the schema).
+## Install
 
-## Installation
-
-Add the packages to your package.json
-
-```sh
-$ yarn add @skibididrizz/zod @typespec/compiler -D
+```bash
+npm install @skibididrizz/zod
 ```
 
-Modify your build to generate the zod output
+## Decorators
 
-```json
-"scripts":{
-  "build":    "build": "tsp compile --emit @skibididrizz/zod ./lib/schema.tsp --option \"@skibididrizz/zod.emitter-output-dir={project-root}/src\"",
+### Zod
 
-}
+- [`@zod`](#@zod)
+
+#### `@zod`
+
+zod - Mark this model as a Zod model.
+
+```typespec
+@Zod.zod
 ```
 
-Create your schema in **lib/schema.tsp**
+##### Target
 
-Run the build
+`union Model | Enum`
 
-```sh
-$ yarn run build
-```
+##### Parameters
+
+None

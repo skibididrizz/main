@@ -29,19 +29,21 @@
     "eslint": "^8.45.0",
     "prettier": "^3.0.3",
     "tsx": "^4.16.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.5.3"
   },
   "scripts": {
     "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
     "build": "tsc && $npm_execpath run build:tsp && $npm_execpath run format",
     "watch": "tsc --watch",
-    "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test ./test/**/*.test.ts --test-only",
+    "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test-only ./test/**/*.test.ts",
+    "test:watch:zod": "$npm_execpath test:watch",
     "test": "tsx  --experimental-test-snapshots --test ./test/**/*.test.ts",
     "test:snapshot": "tsx --experimental-test-snapshots --test-update-snapshots --test ./test/**/*.test.ts",
     "lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
     "lint:fix": "eslint . --report-unused-disable-directives --fix",
     "format": "prettier .  --write",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "docs": "skibididrizz-doc $INIT_CWD/test/zod-emmiter.test.snapshot.cjs > ../site/docs/zod/examples.md"
   },
   "private": true
 }

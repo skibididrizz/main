@@ -26,6 +26,11 @@ const sidebars: SidebarsConfig = {
     },
   ],
    */
+  // tutorialSidebar:[
+  //   'tutorial-basics',
+  //   'examples',
+
+  // ]
 };
 
 export default sidebars;

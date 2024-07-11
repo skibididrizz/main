@@ -1,27 +1,14 @@
-# @skibididrizz/drizzle
+---
+title: "Decorators"
+toc_min_heading_level: 2
+toc_max_heading_level: 3
+---
 
-## Install
+# Decorators
 
-```bash
-npm install @skibididrizz/drizzle
-```
+## Drizzle
 
-## Decorators
-
-### Drizzle
-
-- [`@config`](#@config)
-- [`@default`](#@default)
-- [`@id`](#@id)
-- [`@index`](#@index)
-- [`@map`](#@map)
-- [`@relation`](#@relation)
-- [`@sql`](#@sql)
-- [`@table`](#@table)
-- [`@unique`](#@unique)
-- [`@uuid`](#@uuid)
-
-#### `@config`
+### `@config` {#@Drizzle.config}
 
 config - Mark this property as a configuration.
 
@@ -29,17 +16,17 @@ config - Mark this property as a configuration.
 @Drizzle.config(config: valueof Drizzle.Configuration)
 ```
 
-##### Target
+#### Target
 
 `Namespace`
 
-##### Parameters
+#### Parameters
 
 | Name   | Type                                  | Description |
 | ------ | ------------------------------------- | ----------- |
 | config | `valueof model Drizzle.Configuration` |             |
 
-#### `@default`
+### `@default` {#@Drizzle.default}
 
 default - Mark this property as a default value.
 
@@ -47,17 +34,17 @@ default - Mark this property as a default value.
 @Drizzle.default(type?: valueof string | int32 | int16 | int8 | uint32 | uint16 | uint8 | float32 | float64 | boolean)
 ```
 
-##### Target
+#### Target
 
 `ModelProperty`
 
-##### Parameters
+#### Parameters
 
 | Name | Type                                                                                                           | Description |
 | ---- | -------------------------------------------------------------------------------------------------------------- | ----------- |
 | type | `valueof union string \| int32 \| int16 \| int8 \| uint32 \| uint16 \| uint8 \| float32 \| float64 \| boolean` |             |
 
-#### `@id`
+### `@id` {#@Drizzle.id}
 
 id - Mark this property as the primary key, or the list of columns that make up the primary key.
 
@@ -65,18 +52,18 @@ id - Mark this property as the primary key, or the list of columns that make up 
 @Drizzle.id(name?: valueof string, fields?: valueof string[])
 ```
 
-##### Target
+#### Target
 
 `union ModelProperty | Model`
 
-##### Parameters
+#### Parameters
 
 | Name   | Type                     | Description                                       |
 | ------ | ------------------------ | ------------------------------------------------- |
 | name   | `valueof scalar string`  | The alternate name.                               |
 | fields | `valueof model string[]` | The list of columns that make up the primary key. |
 
-#### `@index`
+### `@index` {#@Drizzle.index}
 
 index - Mark this property as an index.
 
@@ -84,18 +71,18 @@ index - Mark this property as an index.
 @Drizzle.index(name?: valueof string, sql?: valueof string)
 ```
 
-##### Target
+#### Target
 
 `ModelProperty`
 
-##### Parameters
+#### Parameters
 
 | Name | Type                    | Description                                                                                                                                                                                                       |
 | ---- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | name | `valueof scalar string` | The alternate name.                                                                                                                                                                                               |
-| sql  | `valueof scalar string` | The SQL statement to use for the index. It will replace {column} with the name of the current column. so you can use {columns} in the SQL statement. <br />Think `lower({column})` to lower case the index. If \  |
+| sql  | `valueof scalar string` | The SQL statement to use for the index. It will replace ```{column}``` with the name of the current column. so you can use ```{columns}``` in the SQL statement. <br />Think `lower({column})` to lower case the index. If \  |
 
-#### `@map`
+### `@map` {#@Drizzle.map}
 
 map - Mark this property as a column in a table.
 
@@ -103,17 +90,17 @@ map - Mark this property as a column in a table.
 @Drizzle.map(column: valueof string)
 ```
 
-##### Target
+#### Target
 
 `ModelProperty`
 
-##### Parameters
+#### Parameters
 
 | Name   | Type                    | Description |
 | ------ | ----------------------- | ----------- |
 | column | `valueof scalar string` |             |
 
-#### `@relation`
+### `@relation` {#@Drizzle.relation}
 
 relation - Mark this property as a relation.
 
@@ -121,17 +108,17 @@ relation - Mark this property as a relation.
 @Drizzle.relation(relation?: valueof Drizzle.RelationOptions)
 ```
 
-##### Target
+#### Target
 
 `ModelProperty`
 
-##### Parameters
+#### Parameters
 
 | Name     | Type                                    | Description |
 | -------- | --------------------------------------- | ----------- |
 | relation | `valueof model Drizzle.RelationOptions` |             |
 
-#### `@sql`
+### `@sql` {#@Drizzle.sql}
 
 sql - Mark this property as the value of a SQL statement.
 
@@ -139,17 +126,17 @@ sql - Mark this property as the value of a SQL statement.
 @Drizzle.sql(statement: valueof string)
 ```
 
-##### Target
+#### Target
 
 `ModelProperty`
 
-##### Parameters
+#### Parameters
 
 | Name      | Type                    | Description |
 | --------- | ----------------------- | ----------- |
 | statement | `valueof scalar string` |             |
 
-#### `@table`
+### `@table` {#@Drizzle.table}
 
 table - Mark this model as a table, optionally with a name.
 
@@ -157,17 +144,17 @@ table - Mark this model as a table, optionally with a name.
 @Drizzle.table(tableName?: valueof string)
 ```
 
-##### Target
+#### Target
 
 `union Model | Enum`
 
-##### Parameters
+#### Parameters
 
 | Name      | Type                    | Description |
 | --------- | ----------------------- | ----------- |
 | tableName | `valueof scalar string` |             |
 
-#### `@unique`
+### `@unique` {#@Drizzle.unique}
 
 unique - Mark this property as a unique value.
 
@@ -175,17 +162,17 @@ unique - Mark this property as a unique value.
 @Drizzle.unique(...columns: valueof string[])
 ```
 
-##### Target
+#### Target
 
 `union ModelProperty | Model`
 
-##### Parameters
+#### Parameters
 
 | Name    | Type                     | Description |
 | ------- | ------------------------ | ----------- |
 | columns | `valueof model string[]` |             |
 
-#### `@uuid`
+### `@uuid` {#@Drizzle.uuid}
 
 uuid - Mark this property as a UUID.
 
@@ -193,11 +180,11 @@ uuid - Mark this property as a UUID.
 @Drizzle.uuid(defaultRandom?: boolean)
 ```
 
-##### Target
+#### Target
 
 `ModelProperty`
 
-##### Parameters
+#### Parameters
 
 | Name          | Type             | Description |
 | ------------- | ---------------- | ----------- |

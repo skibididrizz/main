@@ -20,7 +20,7 @@ import {
 } from "@typespec/compiler/emitter-framework";
 import { StateKeys } from "./lib.js";
 import * as prettier from "prettier";
-import { toStringBuilder } from "@skibididrizz/common";
+import { fromArrayBuilder, fromObjectBuilder } from "@skibididrizz/common";
 
 const typeSpecToZod = new Map([
   ["unknown", "unknown"],
@@ -72,10 +72,8 @@ export class ZodEmitter extends CodeTypeEmitter {
     if (!this.has(en, "zod")) {
       return this.emitter.result.none();
     }
-    const builder = new StringBuilder();
 
     const objBuilder = new ObjectBuilder();
-    builder.push("z.nativeEnum(");
 
     for (const [memberName, { value }] of en.members) {
       objBuilder.set(
@@ -87,7 +85,9 @@ export class ZodEmitter extends CodeTypeEmitter {
             : value,
       );
     }
-    builder.push(toStringBuilder(objBuilder));
+    const builder = new StringBuilder();
+    builder.push("z.nativeEnum(");
+    builder.pushStringBuilder(fromObjectBuilder(objBuilder));
     builder.push(")");
     return this.emitter.result.declaration(
       name,
@@ -95,8 +95,7 @@ export class ZodEmitter extends CodeTypeEmitter {
 ${this.toDoc(en)}           
 export const ${name} = ${builder};
 export type ${name} = z.infer<typeof ${name}>;
-
-            `,
+`,
     );
   }
   modelDeclaration(model: Model, name: string): EmitterOutput<string> {
@@ -115,25 +114,20 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     );
   }
   modelProperties(model: Model): EmitterOutput<string> {
-    const properties = model.properties;
-
     const objectBuilder = new ObjectBuilder();
-    for (const [name, property] of properties) {
+
+    for (const [name, property] of model.properties) {
       objectBuilder.set(name, this.modelProperty(property));
     }
-    let objStr = model.baseModel ? "extend" : "z.shape";
-    if (model.baseModel) {
-      objStr = `${model.baseModel.name}.extend`;
-    }
-
-    return this.emitter.result.declaration(
-      model.name,
-      code`
-      ${objStr}(${objectBuilder.toStringBuilder()})})
-      `,
+    const strBuilder = new StringBuilder();
+    strBuilder.push(
+      model.baseModel ? `${model.baseModel.name}.extend` : "z.shape",
     );
+    strBuilder.push("(");
+    strBuilder.pushStringBuilder(fromObjectBuilder(objectBuilder));
+    strBuilder.push(")");
+    return this.emitter.result.declaration(model.name, strBuilder);
   }
-
 
   typeToZod(type: Type) {
     const builder = new StringBuilder();
@@ -143,13 +137,16 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
         break;
       }
       case "Union": {
-        builder.push("z.union([");
+        const union = new StringBuilder();
+        union.push("z.union(");
         const arr = new ArrayBuilder();
-        Array.from(type.variants.values(), (v) =>
-          arr.push(this.typeToZod(v.type).reduce()),
-        );
-        builder.push(arr.join(","));
-        builder.push("])");
+        for (const v of type.variants.values()) {
+          arr.push(this.typeToZod(v.type));
+        }
+        union.pushStringBuilder(fromArrayBuilder(arr));
+        union.push(")");
+        console.log("union", union.toString());
+        builder.pushStringBuilder(union);
         break;
       }
       case "Scalar": {
@@ -170,24 +167,21 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
       }
       case "Model": {
         if (type.name === "Array") {
-          const args = type.templateMapper?.args;
-          if (args && args.length === 1) {
-            const arg = args[0];
-            if (arg.entityKind === "Type") {
-              builder.pushStringBuilder(this.typeToZod(arg));
-              builder.push(".array()");
-            } else {
-              this.program.reportDiagnostic({
-                message: `Type  ${type.name} is unknown.`,
-                target: type,
-                severity: "warning",
-                code: "unknown-type",
-              });
-            }
-            break;
+          const [arg] = type.templateMapper?.args ?? [];
+          if (arg?.entityKind === "Type") {
+            builder.pushStringBuilder(this.typeToZod(arg));
+            builder.push(".array()");
+          } else {
+            this.program.reportDiagnostic({
+              message: `Type  ${type.name} is unknown.`,
+              target: type,
+              severity: "warning",
+              code: "unknown-type",
+            });
           }
+        } else {
+          builder.push(`z.lazy(()=>${type.name})`);
         }
-        builder.push(`z.lazy(()=>${type.name})`);
         break;
       }
       default: {
@@ -207,7 +201,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     if (property.optional) {
       builder.push(".nullable()");
     }
-    return builder.reduce();
+    return builder;
   }
 
   async sourceFile(sourceFile: SourceFile<string>): Promise<EmittedSourceFile> {
@@ -224,12 +218,17 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
       emittedSourceFile.contents += decl.value + "\n";
     }
 
-    emittedSourceFile.contents = await prettier.format(
-      emittedSourceFile.contents,
-      {
-        parser: "typescript",
-      },
-    );
+    try {
+      emittedSourceFile.contents = await prettier.format(
+        emittedSourceFile.contents,
+        {
+          parser: "typescript",
+        },
+      );
+    } catch (e) {
+      console.log(emittedSourceFile.contents);
+      throw e;
+    }
 
     return emittedSourceFile;
   }

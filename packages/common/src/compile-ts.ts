@@ -1,7 +1,7 @@
 import { Diagnostic } from "@typespec/compiler";
 import ts from 'typescript';
 
-async function compileTs(source: Record<string, string>,
+export async function compileTs(source: Record<string, string>,
   tsConfig: ts.CompilerOptions = {
     useDefineForClassFields: true,
     target: ts.ScriptTarget.ES2023,

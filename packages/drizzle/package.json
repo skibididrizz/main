@@ -37,8 +37,6 @@
     "prettier": "^3.0.3",
     "rimraf": "^5.0.7",
     "tsx": "^4.15.6",
-    "typedoc": "^0.26.3",
-    "typedoc-plugin-markdown": "^4.1.1",
     "typescript": "^5.5.2"
   },
   "scripts": {
@@ -54,6 +52,6 @@
     "lint:fix": "eslint . --report-unused-disable-directives --fix",
     "format": "prettier .  --write",
     "format:check": "prettier --check .",
-    "docs": "tsx ./bin/mkdoc.ts > ../site/docs/examples.md; typedoc --plugin typedoc-plugin-markdown --readme none --out ../site/docs/tsdocs ./src/decorators.ts"
+    "docs": "skibididrizz-doc $INIT_CWD/test/examples.test.snapshot.cjs > ../site/docs/drizzle/examples.md"
   }
 }

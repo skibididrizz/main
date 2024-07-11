@@ -31,6 +31,7 @@ exports[`examples > Configure namespaces 2`] = `
 `;
 
 exports[`examples > Configure namespaces 3`] = `
+//file: schema.ts
 import { sqliteTable, uuid, text } from "drizzle-orm/sqlite-core";
 import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
 
@@ -70,6 +71,7 @@ exports[`examples > Create a simple model 2`] = `
 `;
 
 exports[`examples > Create a simple model 3`] = `
+//file: schema.ts
 import { pgTable, uuid, text } from "drizzle-orm/pg-core";
 
 export const BlogTable = pgTable("Blog", {
@@ -108,6 +110,7 @@ exports[`examples > Many-to-one 2`] = `
 `;
 
 exports[`examples > Many-to-one 3`] = `
+//file: schema.ts
 import { relations } from "drizzle-orm";
 import { pgTable, uuid, text } from "drizzle-orm/pg-core";
 
@@ -159,6 +162,7 @@ exports[`examples > Naming columns and tables 2`] = `
 `;
 
 exports[`examples > Naming columns and tables 3`] = `
+//file: schema.ts
 import { pgTable, uuid, text } from "drizzle-orm/pg-core";
 
 export const BlogTable = pgTable("blogs", {
@@ -190,6 +194,7 @@ exports[`examples > Simple example using @default 2`] = `
 `;
 
 exports[`examples > Simple example using @default 3`] = `
+//file: schema.ts
 import { pgTable, serial, timestamp, integer } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 

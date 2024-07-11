@@ -1,9 +1,14 @@
-import { describe, it } from "node:test";
-import { exampleEmittedTypescript } from "./test-host.js";
+import { beforeEach, describe, it } from "node:test";
+import { SkibididrizzTestContext } from "@skibididrizz/common";
+import { DrizzleTestLibrary } from "../src/testing/index.js";
+
 
 describe("examples", () => {
+  let ctx: SkibididrizzTestContext;
+  beforeEach(()=> ctx = new SkibididrizzTestContext(DrizzleTestLibrary));
+
   it("Create a simple model", (t) =>
-    exampleEmittedTypescript(
+    ctx.emitExample(
       t,
       `
 This example shows how to use create a model with a uuid primary key.
@@ -21,7 +26,7 @@ a table to be in included in the database.
     ));
 
   it("Naming columns and tables", (t) =>
-    exampleEmittedTypescript(
+    ctx.emitExample(
       t,
       `
  By default it uses the model name, however passing a string to [@table](/docs/tsdocs/functions/$table) will 
@@ -40,7 +45,7 @@ a table to be in included in the database.
     ));
 
   it("Simple example using @default", (t) =>
-    exampleEmittedTypescript(
+    ctx.emitExample(
       t,
       `
 For default values for columns use [@default](/docs/tsdocs/functions/$default).   This can
@@ -58,7 +63,7 @@ need to escape them to use a literal.
     ));
 
   it("Many-to-one", (t) =>
-    exampleEmittedTypescript(
+    ctx.emitExample(
       t,
       `
 This example shows how to use a many-to-one relationship.   Notice how the relation is marked
@@ -83,8 +88,8 @@ Fields map to the local fields of the model, relations map to the foreign key(s)
         `,
     ));
 
-  it.only("Configure namespaces", (t) =>
-    exampleEmittedTypescript(
+  it("Configure namespaces", (t) =>
+    ctx.emitExample(
       t,
       `
 Using [@config](/docs/tsdocs/functions/$config) you can configure the dialect and namespace.  You

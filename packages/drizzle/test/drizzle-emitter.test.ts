@@ -1,23 +1,15 @@
 import { describe, it, beforeEach } from "node:test";
-import {
-  BasicTestRunner,
-  expectDiagnostics,
-  extractCursor,
-} from "@typespec/compiler/testing";
-import {
-  createDrizzleTestRunner,
-  snapshotEmittedTypescript,
-  emitWithDiagnostics,
-} from "./test-host.js";
+import { SkibididrizzTestContext } from "@skibididrizz/common";
+import { DrizzleTestLibrary } from "../src/testing/index.js";
 
-describe("@table", () => {
-  let runner: BasicTestRunner;
+describe("drizzle", () => {
+  let ctx: SkibididrizzTestContext;
 
   beforeEach(async () => {
-    runner = await createDrizzleTestRunner();
+    ctx = new SkibididrizzTestContext(DrizzleTestLibrary)
   });
   it("should work with timestamps", async (t) => {
-    await snapshotEmittedTypescript(
+    await ctx.snapshotEmittedTypescript(
       t,
       `
     @table model Time {
@@ -28,7 +20,7 @@ describe("@table", () => {
     );
   });
   it("should work with defaults", async (t) => {
-    await snapshotEmittedTypescript(
+    await ctx.snapshotEmittedTypescript(
       t,
       `
     @table model Uuid {
@@ -40,8 +32,8 @@ describe("@table", () => {
     `,
     );
   });
-  it("should work with indexes", async (t) => {
-    await snapshotEmittedTypescript(
+  it("should work with indexes and unique email", async (t) => {
+    await ctx.snapshotEmittedTypescript(
       t,
       `
     @table model User {
@@ -52,8 +44,8 @@ describe("@table", () => {
     `,
     );
   });
-  it("should work with indexes unique", async (t) => {
-    await snapshotEmittedTypescript(
+  it("should work with indexes unique with sql", async (t) => {
+    await ctx.snapshotEmittedTypescript(
       t,
       `
     @table model User {
@@ -65,7 +57,7 @@ describe("@table", () => {
     );
   });
   it("should handle multiple relationships", async (t) => {
-    await snapshotEmittedTypescript(
+    await ctx.snapshotEmittedTypescript(
       t,
       `
         @table model User {
@@ -90,7 +82,7 @@ describe("@table", () => {
     );
   });
   it("should work with composite keys", async (t) => {
-    await snapshotEmittedTypescript(
+    await ctx.snapshotEmittedTypescript(
       t,
       `
         @table model User {
@@ -112,7 +104,7 @@ describe("@table", () => {
     );
   });
   it("should work with enums", async (t) => {
-    const result = await snapshotEmittedTypescript(
+    const result = await ctx.snapshotEmittedTypescript(
       t,
       `
         enum State {
@@ -129,7 +121,7 @@ describe("@table", () => {
     );
   });
   it("should parse base objects", async (t) => {
-    const result = await snapshotEmittedTypescript(
+    const result = await ctx.snapshotEmittedTypescript(
       t,
       `model BaseModel {
           @uuid @id id: string; 
@@ -149,7 +141,7 @@ describe("@table", () => {
     );
   });
   it("should parse objects", async (t) => {
-    const result = await snapshotEmittedTypescript(
+    const result = await ctx.snapshotEmittedTypescript(
       t,
       `
         @table("users") model User {
@@ -184,7 +176,7 @@ describe("@table", () => {
     );
   });
   it("use the relation decorator", async (t) => {
-    const [code, diagnostics] = await snapshotEmittedTypescript(
+    const [code, diagnostics] = await ctx.snapshotEmittedTypescript(
       t,
       `@table("users") model User {
           @uuid @id id: string; 
@@ -207,29 +199,15 @@ describe("@table", () => {
         `,
     );
   });
-
-  // it("emit diagnostic if not used on an operation", async () => {
-  //   const diagnostics = await runner.diagnose(
-  //     `@alternateName("bar") model Test {}`
-  //   );
-  //   expectDiagnostics(diagnostics, {
-  //     severity: "error",
-  //     code: "decorator-wrong-target",
-  //     message: "Cannot apply @alternateName decorator to Test since it is not assignable to Operation"
-  //   })
-  // });
-  //
-  //
-  // it("emit diagnostic if using banned name", async () => {
-  //   const {pos, source} = extractCursor(`@alternateName(┆"banned") op test(): void;`)
-  //   const diagnostics = await runner.diagnose(
-  //     source
-  //   );
-  //   expectDiagnostics(diagnostics, {
-  //     severity: "error",
-  //     code: "drizzle-decorator/banned-alternate-name",
-  //     message: `Banned alternate name "banned".`,
-  //     pos: pos + runner.autoCodeOffset
-  //   })
-  // });
+  it('should work with default values', async (t) => {
+    const [code, diagnostics] = await ctx.snapshotEmittedTypescript(
+      t,
+      `@table("ex") model ExampleDefaultValue {
+         name?: string = "foo";
+         count:int32 = 1;
+        };
+        
+        `,
+    );
+  })
 });

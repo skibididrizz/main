@@ -1,3 +1,4 @@
+loading '/Users/jspears/projects/drizz/packages/drizzle/test/examples.test.snapshot.cjs'
 # Examples
 
 
@@ -42,10 +43,9 @@ Generates **schema.ts**
 
 ```tsx
 
-
-
-
+//file: schema.ts
 import { sqliteTable, uuid, text } from "drizzle-orm/sqlite-core";
+import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
 
 export const NSBlogTable = sqliteTable("NSBlog", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -54,9 +54,6 @@ export const NSBlogTable = sqliteTable("NSBlog", {
 });
 
 export type NSBlog = typeof NSBlogTable.$inferSelect; 
-
-import { mysqlTable, uuid, text } from "drizzle-orm/mysql-core";
-
 export const MyBlogTable = mysqlTable("MyBlog", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
@@ -64,7 +61,6 @@ export const MyBlogTable = mysqlTable("MyBlog", {
 });
 
 export type MyBlog = typeof MyBlogTable.$inferSelect; 
-
             
 ```
 
@@ -96,7 +92,16 @@ Generates **schema.ts**
 
 ```tsx
 
+//file: schema.ts
+import { pgTable, uuid, text } from "drizzle-orm/pg-core";
 
+export const BlogTable = pgTable("Blog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+});
+
+export type Blog = typeof BlogTable.$inferSelect; 
             
 ```
 
@@ -135,6 +140,34 @@ Generates **schema.ts**
 
 ```tsx
 
+//file: schema.ts
+import { relations } from "drizzle-orm";
+import { pgTable, uuid, text } from "drizzle-orm/pg-core";
+
+export const BlogTable = pgTable("Blog", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  authorId: text("author_id").notNull(),
+});
+
+export type Blog = typeof BlogTable.$inferSelect; 
+export const BlogTableRelations = relations(BlogTable, ({ one }) => ({
+  author: one(AuthorTable, {
+    relationName: "author",
+    fields: [BlogTable.authorId],
+    references: [AuthorTable.id],
+  }),
+}));
+
+export const AuthorTable = pgTable("Author", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+});
+
+export type Author = typeof AuthorTable.$inferSelect; 
+export const AuthorTableRelations = relations(AuthorTable, ({ many }) => ({
+  blogs: many(BlogTable),
+}));
 
             
 ```
@@ -168,7 +201,16 @@ Generates **schema.ts**
 
 ```tsx
 
+//file: schema.ts
+import { pgTable, uuid, text } from "drizzle-orm/pg-core";
 
+export const BlogTable = pgTable("blogs", {
+  id: uuid("_id").defaultRandom().primaryKey(),
+  name: text("label").notNull(),
+  description: text("note"),
+});
+
+export type Blog = typeof BlogTable.$inferSelect; 
             
 ```
 
@@ -201,7 +243,19 @@ Generates **schema.ts**
 
 ```tsx
 
+//file: schema.ts
+import { pgTable, serial, timestamp, integer } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
+export const StuffTable = pgTable("Stuff", {
+  id: serial("id").primaryKey(),
+  createdDate: timestamp("createdDate")
+    .notNull()
+    .default(sql`now()`),
+  answer: integer("answer").notNull().default(42),
+});
+
+export type Stuff = typeof StuffTable.$inferSelect; 
             
 ```
 

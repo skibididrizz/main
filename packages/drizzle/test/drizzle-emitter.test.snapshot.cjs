@@ -1,4 +1,28 @@
-exports[`@table > should handle multiple relationships 1`] = `
+exports[`drizzle > should handle multiple relationships 1`] = `
+
+        @table model User {
+          @id id: integer;
+          name:string;
+          followedBy: Follow[];
+          follows: Follow[];
+        };
+
+        @id("follows_followedby_user",#["followedById", "followingId"]) @table model Follow {
+            @relation(#{name:"followedBy", fields: "followedById"})
+            followedBy:User;
+            followedById: integer;
+            
+            @relation(#{name:"follows", fields: "followingId"})
+            following:User;
+            followingId:integer;      
+        };
+       
+
+        
+`;
+
+exports[`drizzle > should handle multiple relationships 2`] = `
+//file: schema.ts
 import { relations } from "drizzle-orm";
 import { pgTable, integer, text, primaryKey } from "drizzle-orm/pg-core";
 
@@ -43,7 +67,26 @@ export const FollowTableRelations = relations(FollowTable, ({ one, one }) => ({
 
 `;
 
-exports[`@table > should parse base objects 1`] = `
+exports[`drizzle > should parse base objects 1`] = `
+model BaseModel {
+          @uuid @id id: string; 
+        };
+
+        @table model BlogBO extends BaseModel {
+          name:string;
+        };
+
+        @table model PostBO extends BaseModel {
+          @map("blog_id") blogId: string;
+          @relation(#{name:"blog", fields:#["blogId"], references:#["id"]}) blog:BlogBO;
+        } 
+  
+   
+        
+`;
+
+exports[`drizzle > should parse base objects 2`] = `
+//file: schema.ts
 import { pgTable, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -67,7 +110,41 @@ export const PostBOTableRelations = relations(PostBOTable, ({ one }) => ({
 
 `;
 
-exports[`@table > should parse objects 1`] = `
+exports[`drizzle > should parse objects 1`] = `
+
+        @table("users") model User {
+          @id _id: numeric;    
+          comments:Comment[];   
+        };
+
+        @table("blogs") model Blog {
+          @id id:numeric;
+          content:string;
+          @map("author_id") authorId:numeric;
+          posts:Post[];
+        };
+        
+        @table("comments") model Comment {
+          @id id:numeric;
+          text:string;
+          @map("author_id") authorId:numeric;
+          @map("post_id") postId:numeric;
+          @relation(#{fields:#["postId"], references:#["id"]}) post: Post;
+          @relation(#{fields:#["authorId"], references:#["id"]}) author: User;
+
+        }
+        @table("posts") model Post {
+          @id id:string;
+          @map("blog_id") blogId:string;
+          @relation(#{name:"blog", fields:#["blogId"], references:#["id"]}) blog: Blog;
+        } 
+        
+   
+        
+`;
+
+exports[`drizzle > should parse objects 2`] = `
+//file: schema.ts
 import { relations } from "drizzle-orm";
 import { pgTable, serial, text, numeric } from "drizzle-orm/pg-core";
 
@@ -131,7 +208,28 @@ export const BlogTableRelations = relations(BlogTable, ({ many }) => ({
 
 `;
 
-exports[`@table > should work with composite keys 1`] = `
+exports[`drizzle > should work with composite keys 1`] = `
+
+        @table model User {
+          @id id: integer;
+          name:string;
+        };
+        @table model Book {
+          @id id: integer;
+          name: string;
+        };
+        @table("books_to_authors") 
+        @id("booksToAuthor", #["authorId", "bookId"])
+        model BooksToAuthors {
+          authorId: integer;
+          bookId: integer;
+        };
+ 
+        
+`;
+
+exports[`drizzle > should work with composite keys 2`] = `
+//file: schema.ts
 import { pgTable, integer, text, primaryKey } from "drizzle-orm/pg-core";
 
 export const UserTable = pgTable("User", {
@@ -163,7 +261,40 @@ export const BooksToAuthorsTable = pgTable(
 export type BooksToAuthors = typeof BooksToAuthorsTable.$inferSelect; 
 `;
 
-exports[`@table > should work with defaults 1`] = `
+exports[`drizzle > should work with default values 1`] = `
+@table("ex") model ExampleDefaultValue {
+         name?: string = "foo";
+         count:int32 = 1;
+        };
+        
+        
+`;
+
+exports[`drizzle > should work with default values 2`] = `
+//file: schema.ts
+import { pgTable, text, integer } from "drizzle-orm/pg-core";
+
+export const ExampleDefaultValueTable = pgTable("ex", {
+  name: text("name").default("foo"),
+  count: integer("count").notNull().default(1),
+});
+
+export type ExampleDefaultValue = typeof ExampleDefaultValueTable.$inferSelect; 
+`;
+
+exports[`drizzle > should work with defaults 1`] = `
+
+    @table model Uuid {
+      @default(int32(42)) int1:integer; 
+      @default("'42'::integer'") int2:integer;
+      @uuid(true) uuid1: string;
+      @uuid @default("gen_random_uuid()")  uuid2: string;
+    };
+    
+`;
+
+exports[`drizzle > should work with defaults 2`] = `
+//file: schema.ts
 import { pgTable, integer, uuid } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -181,7 +312,23 @@ export const UuidTable = pgTable("Uuid", {
 export type Uuid = typeof UuidTable.$inferSelect; 
 `;
 
-exports[`@table > should work with enums 1`] = `
+exports[`drizzle > should work with enums 1`] = `
+
+        enum State {
+          do,
+          doing,
+          done,
+          failed
+        }
+        @table model Action {
+          @uuid @id id: string; 
+          state:State;
+        };
+        
+`;
+
+exports[`drizzle > should work with enums 2`] = `
+//file: schema.ts
 import { pgTable, uuid, pgEnum } from "drizzle-orm/pg-core";
 
 export const ActionTable = pgTable("Action", {
@@ -194,7 +341,18 @@ export const StateEnum = pgEnum("State", ["do", "doing", "done", "failed"]);
 
 `;
 
-exports[`@table > should work with indexes 1`] = `
+exports[`drizzle > should work with indexes and unique email 1`] = `
+
+    @table model User {
+      @id id: integer;
+      name:string;
+      @index @unique email:string;
+    };
+    
+`;
+
+exports[`drizzle > should work with indexes and unique email 2`] = `
+//file: schema.ts
 import { uniqueIndex, pgTable, integer, text } from "drizzle-orm/pg-core";
 import {} from "drizzle-orm";
 
@@ -213,7 +371,18 @@ export const UserTable = pgTable(
 export type User = typeof UserTable.$inferSelect; 
 `;
 
-exports[`@table > should work with indexes unique 1`] = `
+exports[`drizzle > should work with indexes unique with sql 1`] = `
+
+    @table model User {
+      @id id: integer;
+      name:string;
+      @index("email", "lower({column})") @unique  email:string;
+    };
+    
+`;
+
+exports[`drizzle > should work with indexes unique with sql 2`] = `
+//file: schema.ts
 import { uniqueIndex, pgTable, integer, text } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -232,7 +401,17 @@ export const UserTable = pgTable(
 export type User = typeof UserTable.$inferSelect; 
 `;
 
-exports[`@table > should work with timestamps 1`] = `
+exports[`drizzle > should work with timestamps 1`] = `
+
+    @table model Time {
+      timestamp1:Date;
+      @default("now()") timestamp2:Date;
+    };
+    
+`;
+
+exports[`drizzle > should work with timestamps 2`] = `
+//file: schema.ts
 import { pgTable, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -246,7 +425,30 @@ export const TimeTable = pgTable("Time", {
 export type Time = typeof TimeTable.$inferSelect; 
 `;
 
-exports[`@table > use the relation decorator 1`] = `
+exports[`drizzle > use the relation decorator 1`] = `
+@table("users") model User {
+          @uuid @id id: string; 
+          @unique email: string;
+          rank: int32;
+          @map("cool_score") coolScore: int32;
+        };
+        @table("blogs") model Blog {
+          @uuid @id id: string; 
+          @unique name: string;
+          posts: Post[];
+        };
+        @table("posts") model Post {
+          @uuid @id id: string; 
+          title: string;
+          content: string;
+          blogId: string;
+          @relation(#{fields:#["blogId"]}) blog: Blog;
+        };
+        
+`;
+
+exports[`drizzle > use the relation decorator 2`] = `
+//file: schema.ts
 import { pgTable, uuid, text, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 

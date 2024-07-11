@@ -17,6 +17,7 @@ import {
   Program,
   Scalar,
   Type,
+  Value,
 } from "@typespec/compiler";
 import { $id, $index, $map, $unique, $uuid } from "./decorators.js";
 import {
@@ -30,7 +31,7 @@ import { camelToSnake, capitalize } from "./string.js";
 import { arrayOrUndefined } from "./array.js";
 import { StateKeys } from "./lib.js";
 import * as Dbs from "./db.js";
-import { toStringBuilder } from "@skibididrizz/common";
+import { fromObjectBuilder } from "@skibididrizz/common";
 export const intrensicToDrizzle = new Map<string, string>([
   ["unknown", "jsonb"],
   ["string", "text"],
@@ -142,7 +143,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             selfRef ??
               (selfRef = new ObjectBuilder()).set(
                 prop.name,
-                `${db.type("foreignKey")}(${toStringBuilder(fkObj).reduce()})`,
+                `${db.type("foreignKey")}(${fromObjectBuilder(fkObj).reduce()})`,
               );
           } else {
             args.push("one");
@@ -168,7 +169,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
             pkObj.set("references", `[${referencesArr}]`);
             relTo.set(
               prop.name,
-              `one(${prop.type.name}Table, ${toStringBuilder(pkObj).reduce()})`,
+              `one(${prop.type.name}Table, ${fromObjectBuilder(pkObj).reduce()})`,
             );
           }
         }
@@ -219,7 +220,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       selfRef = selfRef ?? new ObjectBuilder();
       selfRef.set(
         `pk${capitalize(primaryKey.name ?? "")}`,
-        `${db.type("primaryKey")}(${toStringBuilder(indexBuilder)})`,
+        `${db.type("primaryKey")}(${fromObjectBuilder(indexBuilder)})`,
       );
     }
 
@@ -229,11 +230,11 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       ${this.doc(model)}
       export const ${name}Table = ${this.getDb(model.namespace).table()}('${tableName}', {
         ${this.emitter.emitModelProperties(model)}
-      } ${selfRef ? code`,(table)=>(${toStringBuilder(selfRef)})` : ""});
+      } ${selfRef ? code`,(table)=>(${fromObjectBuilder(selfRef)})` : ""});
 
       export export type ${name} = typeof ${name}Table.$inferSelect; // return type when queried 
 
-      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${toStringBuilder(relTo).reduce()}))` : ""}      `,
+      ${relTo ? `export const ${model.name}TableRelations = relations(${model.name}Table, ({${args.join(",")}})=>(${fromObjectBuilder(relTo).reduce()}))` : ""}      `,
     );
   }
   modelProperties(model: Model) {
@@ -353,13 +354,46 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     }
   }
 
+  fromValue( value: Value):string |undefined{
+    // type Value = ScalarValue | NumericValue | StringValue | BooleanValue | ObjectValue | ArrayValue | EnumValue | NullValue;
+    switch(value.valueKind){
+      case 'StringValue':
+        return JSON.stringify(value.value);
+      case 'BooleanValue':
+        return value.value+'';
+      case 'NumericValue':
+        return value.value+'';
+      case 'NullValue':
+        return value.value+'';
+      case 'ArrayValue':
+        return `[${value.values.map((v) => this.fromValue(v)).join(', ')}]`;
+      case 'ObjectValue':
+        this.program.reportDiagnostic({
+          code: "object-literals-not-allowed",
+          target: value,
+          severity: "error",
+          message: "object literals are not allowed in drizzle",
+        });
+        return ;
+      case 'EnumValue':
+        return `${value.type}.${value.value.name}`;
+    }
+    return
+  }
   modelPropertyLiteral(property: ModelProperty): EmitterOutput<string> {
     const name = property.name;
     const program = this.emitter.getProgram();
     const colName = getMap(program, property);
     const typeSb = new StringBuilder();
+
     if (property.type.kind === "Scalar") {
       typeSb.push(this.typeToDrizzleDecl(property));
+      if (property.defaultValue?.entityKind === 'Value') {
+        const value = this.fromValue(property.defaultValue);
+        if (value != null){
+          typeSb.push(`.default(${value})`);
+        }
+      }
     } else if (property.type.kind === "Enum") {
       typeSb.push(`${property.type.name}Enum('${colName}')`);
     } else {
