@@ -8,3 +8,7 @@ namespace Zod;
  * zod - Mark this model as a Zod model.
  */
 extern dec zod(target: Model | Enum);
+/**
+ * Mark a model with a brand.
+ */
+extern dec brand(target:Model, brand:valueof string);

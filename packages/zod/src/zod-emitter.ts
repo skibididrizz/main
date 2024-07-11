@@ -1,6 +1,16 @@
 import {
   Enum,
   getDoc,
+  getFormat,
+  getMaxItems,
+  getMaxLength,
+  getMaxValue,
+  getMaxValueExclusive,
+  getMinItems,
+  getMinLength,
+  getMinValue,
+  getMinValueExclusive,
+  getPattern,
   Model,
   ModelProperty,
   Program,
@@ -21,7 +31,6 @@ import {
 import { StateKeys } from "./lib.js";
 import * as prettier from "prettier";
 import { fromArrayBuilder, fromObjectBuilder } from "@skibididrizz/common";
-
 const typeSpecToZod = new Map([
   ["unknown", "unknown"],
   ["string", "string"],
@@ -102,14 +111,14 @@ export type ${name} = z.infer<typeof ${name}>;
     if (!this.has(model, "zod")) {
       return this.emitter.result.none();
     }
-
+    const brand = this.get(model, "brand");
+    const brandStr = brand? `.brand<"${brand}">()` : "";
     return this.emitter.result.declaration(
       model.name,
       code`
 ${this.toDoc(model)}           
-export const ${model.name} = ${this.modelProperties(model)};
+export const ${model.name} = ${this.modelProperties(model)}${brandStr};
 export type ${model.name} = z.infer<typeof ${model.name}>;
-
             `,
     );
   }
@@ -150,6 +159,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
       }
       case "Scalar": {
         const zodType = typeSpecToZod.get(type.name);
+
         if (zodType) {
           builder.push("z.");
           builder.push(zodType);
@@ -198,7 +208,40 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
   modelProperty(property: ModelProperty): EmitterOutput<string> {
     const builder = this.typeToZod(property.type);
     if (property.optional) {
-      builder.push(".nullable()");
+      builder.push(".optional()");
+    }
+    const doc = getDoc(this.program, property);
+    const validations: Record<string, string | undefined> = {};
+    const program = this.program;
+
+    if (property.type.kind === "Scalar") {
+      if (property.type.name === "string") {
+        validations.min = asString(getMinLength(program, property));
+        validations.max = asString(getMaxLength(program, property));
+        validations.regex = asRegex(getPattern(program, property));
+        const format = getFormat(program, property);
+        if (format) validations[format] = "";
+      } else if (property.type.name === "Number") {
+        validations.gt = asString(getMinValue(program, property));
+        validations.lt = asString(getMaxValue(program, property));
+        validations.gte = asString(getMaxValueExclusive(program, property));
+        validations.gte = asString(getMinValueExclusive(program, property));
+      }
+    } else if (
+      property.type.kind === "Model" &&
+      property.type.name === "Array"
+    ) {
+      validations.min = asString(getMinItems(program, property));
+      validations.max = asString(getMaxItems(program, property));
+    }
+
+    for (const [key, value] of Object.entries(validations)) {
+      if (value != null) {
+        builder.push(`.${key}(${value})`);
+      }
+    }
+    if (doc){
+      builder.push(`.describe(${JSON.stringify(doc)})`);
     }
     return builder;
   }
@@ -231,4 +274,19 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
 
     return emittedSourceFile;
   }
+}
+
+function asString(v: unknown): string | undefined {
+  if (v == null) return undefined;
+  if (typeof v === "string") {
+    return v;
+  }
+  return String(v);
+}
+function asRegex(v: unknown): string | undefined {
+  if (v == null) return undefined;
+  if (typeof v === "string") {
+    return `/${v}/`;
+  }
+  return JSON.stringify(String(v));
 }

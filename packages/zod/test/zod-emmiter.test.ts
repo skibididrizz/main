@@ -106,4 +106,41 @@ Ugly,
 `,
     );
   });
+  it("minimums can be used", async (t) => {
+    await ctx.emitExample(
+      t,
+      "Minimums can be used",
+      `
+@zod model User {
+  id:string;
+  @minValue(18) age:int32;
+}
+`,
+    );
+  });
+  it("format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2)", async (t) => {
+    await ctx.emitExample(
+      t,
+      "Paterns and formats can be used",
+      `
+@zod model User {
+  @format("uuid") id:string;
+  @pattern("[^A-Z]*") name:string;
+
+}
+`,
+    );
+  });
+
+  it('Allows for objects to be branded', async (t)=>ctx.emitExample(t, 'Brands are supported', `
+      @zod @brand("Dog") model Dog {
+        name:string;
+      }
+      @zod @brand("Cat") model Cat {
+        name:string;
+      }
+
+      `));
+
+  
 });

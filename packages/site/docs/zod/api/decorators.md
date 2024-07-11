@@ -8,6 +8,24 @@ toc_max_heading_level: 3
 
 ## Zod
 
+### `@brand` {#@Zod.brand}
+
+Mark a model with a brand.
+
+```typespec
+@Zod.brand(brand: valueof string)
+```
+
+#### Target
+
+`Model`
+
+#### Parameters
+
+| Name  | Type                    | Description |
+| ----- | ----------------------- | ----------- |
+| brand | `valueof scalar string` |             |
+
 ### `@zod` {#@Zod.zod}
 
 zod - Mark this model as a Zod model.

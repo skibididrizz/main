@@ -1,6 +1,129 @@
 # Examples
 
 
+## Allows for objects to be branded
+Brands are supported
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
+      @zod @brand("Dog") model Dog {
+        name:string;
+      }
+      @zod @brand("Cat") model Cat {
+        name:string;
+      }
+
+      
+            
+ ```
+
+Generates **schema.ts**
+
+```tsx
+
+//file: zod.ts
+import * as z from "zod";
+
+export const Dog = z
+  .shape({
+    name: z.string(),
+  })
+  .brand<"Dog">();
+export type Dog = z.infer<typeof Dog>;
+
+export const Cat = z
+  .shape({
+    name: z.string(),
+  })
+  .brand<"Cat">();
+export type Cat = z.infer<typeof Cat>;
+
+            
+```
+
+
+## format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2)
+Paterns and formats can be used
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
+@zod model User {
+  @format("uuid") id:string;
+  @pattern("[^A-Z]*") name:string;
+
+}
+
+            
+ ```
+
+Generates **schema.ts**
+
+```tsx
+
+//file: zod.ts
+import * as z from "zod";
+
+export const User = z.shape({
+  id: z.string().uuid(),
+  name: z.string().regex(/[^A-Z]*/),
+});
+export type User = z.infer<typeof User>;
+
+            
+```
+
+
+## minimums can be used
+Minimums can be used
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
+@zod model User {
+  id:string;
+  @minValue(18) age:int32;
+}
+
+            
+ ```
+
+Generates **schema.ts**
+
+```tsx
+
+//file: zod.ts
+import * as z from "zod";
+
+export const User = z.shape({
+  id: z.string(),
+  age: z.number(),
+});
+export type User = z.infer<typeof User>;
+
+            
+```
+
+
 ## nested object
 Can reference other models
 
@@ -33,14 +156,14 @@ import * as z from "zod";
 
 export const Blog = z.shape({
   id: z.string(),
-  owner: z.lazy(() => User).nullable(),
+  owner: z.lazy(() => User).optional(),
 });
 export type Blog = z.infer<typeof Blog>;
 
 export const User = z.shape({
   id: z.string(),
-  name: z.string().nullable(),
-  cool: z.number().nullable(),
+  name: z.string().optional(),
+  cool: z.number().optional(),
 });
 export type User = z.infer<typeof User>;
 
@@ -77,8 +200,8 @@ import * as z from "zod";
 
 export const User = z.shape({
   id: z.string(),
-  name: z.string().nullable(),
-  cool: z.number().nullable(),
+  name: z.string().optional(),
+  cool: z.number().optional(),
 });
 export type User = z.infer<typeof User>;
 
@@ -114,7 +237,7 @@ import * as z from "zod";
 
 export const User = z.shape({
   id: z.string(),
-  items: z.string().array().nullable(),
+  items: z.string().array().optional(),
 });
 export type User = z.infer<typeof User>;
 
@@ -245,7 +368,7 @@ export const Animal = z.shape({
 export type Animal = z.infer<typeof Animal>;
 
 export const Dog = Animal.extend({
-  name: z.string().nullable(),
+  name: z.string().optional(),
 });
 export type Dog = z.infer<typeof Dog>;
 

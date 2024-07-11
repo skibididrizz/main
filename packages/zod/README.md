@@ -10,7 +10,26 @@ npm install @skibididrizz/zod
 
 ### Zod
 
+- [`@brand`](#@brand)
 - [`@zod`](#@zod)
+
+#### `@brand`
+
+Mark a model with a brand.
+
+```typespec
+@Zod.brand(brand: valueof string)
+```
+
+##### Target
+
+`Model`
+
+##### Parameters
+
+| Name  | Type                    | Description |
+| ----- | ----------------------- | ----------- |
+| brand | `valueof scalar string` |             |
 
 #### `@zod`
 
