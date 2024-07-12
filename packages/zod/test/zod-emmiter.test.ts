@@ -132,7 +132,11 @@ Ugly,
     );
   });
 
-  it('Allows for objects to be branded', async (t)=>ctx.emitExample(t, 'Brands are supported', `
+  it("Allows for objects to be branded", async (t) =>
+    ctx.emitExample(
+      t,
+      "Brands are supported",
+      `
       @zod @brand("Dog") model Dog {
         name:string;
       }
@@ -140,7 +144,19 @@ Ugly,
         name:string;
       }
 
-      `));
+      `,
+    ));
 
-  
+  it("Can have default values", async (t) =>
+    ctx.emitExample(
+      t,
+      "Using the default syntax a property can have a default value",
+      `
+        @zod model Dog {
+          name:string = "Fido";
+          age:int32 = 10;
+        }
+        `,
+    ));
+
 });

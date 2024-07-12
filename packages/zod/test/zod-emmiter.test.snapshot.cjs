@@ -34,6 +34,31 @@ export type Cat = z.infer<typeof Cat>;
 
 `;
 
+exports[`zod > Can have default values 1`] = `
+Using the default syntax a property can have a default value
+`;
+
+exports[`zod > Can have default values 2`] = `
+
+        @zod model Dog {
+          name:string = "Fido";
+          age:int32 = 10;
+        }
+        
+`;
+
+exports[`zod > Can have default values 3`] = `
+//file: zod.ts
+import * as z from "zod";
+
+export const Dog = z.shape({
+  name: z.string().default("Fido"),
+  age: z.number().default(10),
+});
+export type Dog = z.infer<typeof Dog>;
+
+`;
+
 exports[`zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2) 1`] = `
 Paterns and formats can be used
 `;
@@ -79,7 +104,7 @@ import * as z from "zod";
 
 export const User = z.shape({
   id: z.string(),
-  age: z.number(),
+  age: z.number().gte(18),
 });
 export type User = z.infer<typeof User>;
 

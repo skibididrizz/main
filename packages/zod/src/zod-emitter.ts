@@ -14,7 +14,9 @@ import {
   Model,
   ModelProperty,
   Program,
+  Scalar,
   Type,
+  Value,
 } from "@typespec/compiler";
 import {
   AssetEmitter,
@@ -112,7 +114,7 @@ export type ${name} = z.infer<typeof ${name}>;
       return this.emitter.result.none();
     }
     const brand = this.get(model, "brand");
-    const brandStr = brand? `.brand<"${brand}">()` : "";
+    const brandStr = brand ? `.brand<"${brand}">()` : "";
     return this.emitter.result.declaration(
       model.name,
       code`
@@ -213,7 +215,10 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     const doc = getDoc(this.program, property);
     const validations: Record<string, string | undefined> = {};
     const program = this.program;
-
+    const value = property.defaultValue;
+    if (value != null) {
+      validations.default = asString(asValue(value));
+    }
     if (property.type.kind === "Scalar") {
       if (property.type.name === "string") {
         validations.min = asString(getMinLength(program, property));
@@ -221,11 +226,11 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
         validations.regex = asRegex(getPattern(program, property));
         const format = getFormat(program, property);
         if (format) validations[format] = "";
-      } else if (property.type.name === "Number") {
-        validations.gt = asString(getMinValue(program, property));
-        validations.lt = asString(getMaxValue(program, property));
-        validations.gte = asString(getMaxValueExclusive(program, property));
-        validations.gte = asString(getMinValueExclusive(program, property));
+      } else if (isNumberType(property.type){
+            validations.lte = asString(getMaxValue(program, property));
+            validations.lt = asString(getMaxValueExclusive(program, property));
+            validations.gte = asString(getMinValue(program, property));
+            validations.gt = asString(getMinValueExclusive(program, property));
       }
     } else if (
       property.type.kind === "Model" &&
@@ -240,7 +245,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
         builder.push(`.${key}(${value})`);
       }
     }
-    if (doc){
+    if (doc) {
       builder.push(`.describe(${JSON.stringify(doc)})`);
     }
     return builder;
@@ -289,4 +294,30 @@ function asRegex(v: unknown): string | undefined {
     return `/${v}/`;
   }
   return JSON.stringify(String(v));
+}
+
+function isNumberType(type:Type | Scalar | undefined):boolean{
+  if (type == null){
+    return false;
+  }
+  if (type.kind != 'Scalar'){
+    return false;
+  })
+  if (type.name == 'numeric'){
+    return true;
+  }
+  return isNumberType(type.baseScalar);
+}
+function asValue(v:Value):string | undefined{
+  switch(v.valueKind){
+    case 'NullValue': return 'null';
+    case 'StringValue': return JSON.stringify(v.value);
+    case 'BooleanValue': return String(v.value);
+    case 'ArrayValue': return `[${v.values.map(v=>asValue(v)).join(',')}]`; 
+    case 'EnumValue': return `${v.value.name}.${v.value.enum.name}`;
+    case 'NumericValue': return String(v.value);
+    case 'ObjectValue': return `{${Array.from(v.properties.values(), v=>v.name+':'+asValue(v.value)).join(',')}}`;
+    case 'ScalarValue': return v.value.name;
+    default: throw new Error(`Unknown value kind ${v}`);
+  }
 }

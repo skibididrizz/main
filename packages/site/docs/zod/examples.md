@@ -49,6 +49,43 @@ export type Cat = z.infer<typeof Cat>;
 ```
 
 
+## Can have default values
+Using the default syntax a property can have a default value
+
+
+ **schema.tsp**     
+ ```tsp
+import "@skibididrizz/drizzle";
+
+using Drizzle;
+
+
+
+        @zod model Dog {
+          name:string = "Fido";
+          age:int32 = 10;
+        }
+        
+            
+ ```
+
+Generates **schema.ts**
+
+```tsx
+
+//file: zod.ts
+import * as z from "zod";
+
+export const Dog = z.shape({
+  name: z.string().default("Fido"),
+  age: z.number().default(10),
+});
+export type Dog = z.infer<typeof Dog>;
+
+            
+```
+
+
 ## format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2)
 Paterns and formats can be used
 
@@ -116,7 +153,7 @@ import * as z from "zod";
 
 export const User = z.shape({
   id: z.string(),
-  age: z.number(),
+  age: z.number().gte(18),
 });
 export type User = z.infer<typeof User>;
 
