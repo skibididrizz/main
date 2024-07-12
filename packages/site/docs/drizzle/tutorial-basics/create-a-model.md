@@ -4,8 +4,8 @@ sidebar_position: 1
 
 # Create a Model
 
-To create a model add  [@table](/docs/tsdocs/functions/$table) to a model in your **lib/schema.tsp**. We
-also use [@id](/docs/tsdocs/functions/$id)  to identify the identity column and [@uuid](/docs/tsdocs/functions/$uuid)  to identifiy the column as a uuid type.
+To create a model add  [@table](/docs/drizzle/api/decorators#@Drizzle.table) to a model in your **lib/schema.tsp**. We
+also use [@id](/docs/drizzle/api/decorators#@Drizzle.id)  to identify the identity column and [@uuid](/docs/drizzle/api/decorators#@Drizzle.uuid)  to identifiy the column as a uuid type.
 
 ```tsp
 import "@skibididrizz/drizzle";
@@ -34,9 +34,9 @@ export type Blog = typeof BlogTable.$inferSelect;
 
 # Naming 
 Renaming the table in **lib/schema.tsp** will change the name of the table and the type.  You
-can use [@map](/docs/tsdocs/functions/$map) annotation to rename columns,
-and the [@table](/docs/tsdocs/functions/$table) annotation to rename the table.
-In addition [@default](/docs/tsdocs/functions/$default) can be used for default values.
+can use [@map](/docs/drizzle/api/decorators#@Drizzle.map) annotation to rename columns,
+and the [@table](/docs/drizzle/api/decorators#@Drizzle.able) annotation to rename the table.
+In addition [@default](/docs/drizzle/api/decorators#@Drizzle.default) can be used for default values.
 
 ```tsp
 import "@skibididrizz/drizzle";

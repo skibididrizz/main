@@ -1,6 +1,6 @@
 exports[`examples > Configure namespaces 1`] = `
 
-Using [@config](/docs/tsdocs/functions/$config) you can configure the dialect and namespace.  You
+Using [@config](/docs/drizzle/api/decorators#@Drizzle.config) you can configure the dialect and namespace.  You
 can also specify the output file.   This is still a experimental feature.  They are all experimental
 features.
 
@@ -54,7 +54,7 @@ export type MyBlog = typeof MyBlogTable.$inferSelect;
 exports[`examples > Create a simple model 1`] = `
 
 This example shows how to use create a model with a uuid primary key.
-Notice how description is optional. [@table](/docs/tsdocs/functions/$table) will mark
+Notice how description is optional. [@table](/docs/drizzle/api/decorators#@Drizzle.table) will mark
 a table to be in included in the database.
 
 
@@ -86,7 +86,7 @@ export type Blog = typeof BlogTable.$inferSelect;
 exports[`examples > Many-to-one 1`] = `
 
 This example shows how to use a many-to-one relationship.   Notice how the relation is marked
-with [@relation](/docs/tsdocs/functions/$relation).  
+with [@relation](/docs/drizzle/api/decorators#@Drizzle.relation).  
 Fields map to the local fields of the model, relations map to the foreign key(s) in the other model.
 
 
@@ -143,10 +143,10 @@ export const AuthorTableRelations = relations(AuthorTable, ({ many }) => ({
 
 exports[`examples > Naming columns and tables 1`] = `
 
- By default it uses the model name, however passing a string to [@table](/docs/tsdocs/functions/$table) will 
+ By default it uses the model name, however passing a string to [@table](/docs/drizzle/api/decorators#@Drizzle.table) will 
  use that as the table name.    
 
- For columns use *[@map](/docs/tsdocs/functions/$map)* to map the column name to the database column name.
+ For columns use *[@map](/docs/drizzle/api/decorators#@Drizzle.map)* to map the column name to the database column name.
 
  
 `;
@@ -176,7 +176,7 @@ export type Blog = typeof BlogTable.$inferSelect;
 
 exports[`examples > Simple example using @default 1`] = `
 
-For default values for columns use [@default](/docs/tsdocs/functions/$default).   This can
+For default values for columns use [@default](/docs/drizzle/api/decorators#@Drizzle.default).   This can
 take a string with an SQL query or a literal.   All strings get evaluated as SQL so you will
 need to escape them to use a literal.
 

@@ -29,8 +29,12 @@ npm install --save-peer @skibididrizz/zod
 </TabItem>
 </Tabs>
 
-## Zod
+adding the following line to `package.json`
+```json
+{
+  "scripts":{
+    "build": "tsp compile --emit @skibididrizz/zod ./lib/zod.tsp --option \"@skibididrizz/zod.emitter-output-dir={project-root}/src\""
 
-### Decorators
-
-- [`@zod`](./decorators.md#@Zod.zod)
+  }
+}
+```
