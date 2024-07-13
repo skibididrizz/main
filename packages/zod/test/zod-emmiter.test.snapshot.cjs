@@ -74,11 +74,15 @@ export type Status = z.infer<typeof Status>;
 
 `;
 
-exports[`zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2) 1`] = `
+exports[
+  `zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2) 1`
+] = `
 Paterns and formats can be used
 `;
 
-exports[`zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2) 2`] = `
+exports[
+  `zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2) 2`
+] = `
 
 @zod model User {
   @format("uuid") id:string;
@@ -88,7 +92,9 @@ exports[`zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nan
 
 `;
 
-exports[`zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2) 3`] = `
+exports[
+  `zod > format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2) 3`
+] = `
 //file: zod.ts
 import * as z from "zod";
 
