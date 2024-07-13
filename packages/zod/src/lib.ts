@@ -7,9 +7,9 @@ export const $lib = createTypeSpecLibrary({
     zod: {
       description: "Mark a model as a zod schema",
     },
-    brand:{
+    brand: {
       description: "Make a model brand",
-    }
+    },
   },
 });
 

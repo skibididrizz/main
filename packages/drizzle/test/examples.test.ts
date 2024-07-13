@@ -2,10 +2,9 @@ import { beforeEach, describe, it } from "node:test";
 import { SkibididrizzTestContext } from "@skibididrizz/common";
 import { DrizzleTestLibrary } from "../src/testing/index.js";
 
-
 describe("examples", () => {
   let ctx: SkibididrizzTestContext;
-  beforeEach(()=> ctx = new SkibididrizzTestContext(DrizzleTestLibrary));
+  beforeEach(() => (ctx = new SkibididrizzTestContext(DrizzleTestLibrary)));
 
   it("Create a simple model", (t) =>
     ctx.emitExample(

@@ -6,7 +6,7 @@ describe("drizzle", () => {
   let ctx: SkibididrizzTestContext;
 
   beforeEach(async () => {
-    ctx = new SkibididrizzTestContext(DrizzleTestLibrary)
+    ctx = new SkibididrizzTestContext(DrizzleTestLibrary);
   });
   it("should work with timestamps", async (t) => {
     await ctx.snapshotEmittedTypescript(
@@ -199,7 +199,7 @@ describe("drizzle", () => {
         `,
     );
   });
-  it('should work with default values', async (t) => {
+  it("should work with default values", async (t) => {
     const [code, diagnostics] = await ctx.snapshotEmittedTypescript(
       t,
       `@table("ex") model ExampleDefaultValue {
@@ -209,5 +209,5 @@ describe("drizzle", () => {
         
         `,
     );
-  })
+  });
 });

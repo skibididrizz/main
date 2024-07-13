@@ -354,31 +354,31 @@ export class DrizzleEmitter extends TypeScriptEmitter {
     }
   }
 
-  fromValue( value: Value):string |undefined{
+  fromValue(value: Value): string | undefined {
     // type Value = ScalarValue | NumericValue | StringValue | BooleanValue | ObjectValue | ArrayValue | EnumValue | NullValue;
-    switch(value.valueKind){
-      case 'StringValue':
+    switch (value.valueKind) {
+      case "StringValue":
         return JSON.stringify(value.value);
-      case 'BooleanValue':
-        return value.value+'';
-      case 'NumericValue':
-        return value.value+'';
-      case 'NullValue':
-        return value.value+'';
-      case 'ArrayValue':
-        return `[${value.values.map((v) => this.fromValue(v)).join(', ')}]`;
-      case 'ObjectValue':
+      case "BooleanValue":
+        return value.value + "";
+      case "NumericValue":
+        return value.value + "";
+      case "NullValue":
+        return value.value + "";
+      case "ArrayValue":
+        return `[${value.values.map((v) => this.fromValue(v)).join(", ")}]`;
+      case "ObjectValue":
         this.program.reportDiagnostic({
           code: "object-literals-not-allowed",
           target: value,
           severity: "error",
           message: "object literals are not allowed in drizzle",
         });
-        return ;
-      case 'EnumValue':
+        return;
+      case "EnumValue":
         return `${value.type}.${value.value.name}`;
     }
-    return
+    return;
   }
   modelPropertyLiteral(property: ModelProperty): EmitterOutput<string> {
     const name = property.name;
@@ -388,9 +388,9 @@ export class DrizzleEmitter extends TypeScriptEmitter {
 
     if (property.type.kind === "Scalar") {
       typeSb.push(this.typeToDrizzleDecl(property));
-      if (property.defaultValue?.entityKind === 'Value') {
+      if (property.defaultValue?.entityKind === "Value") {
         const value = this.fromValue(property.defaultValue);
-        if (value != null){
+        if (value != null) {
           typeSb.push(`.default(${value})`);
         }
       }
