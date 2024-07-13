@@ -152,7 +152,14 @@ Ugly,
       t,
       "Using the default syntax a property can have a default value",
       `
+        @zod enum Status {
+          Good,
+          Bad,
+          Ugly,
+        }
+        
         @zod model Dog {
+          status:Status = Status.Good;
           name:string = "Fido";
           age:int32 = 10;
         }

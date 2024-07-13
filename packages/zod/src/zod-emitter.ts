@@ -314,7 +314,7 @@ function asValue(v:Value):string | undefined{
     case 'StringValue': return JSON.stringify(v.value);
     case 'BooleanValue': return String(v.value);
     case 'ArrayValue': return `[${v.values.map(v=>asValue(v)).join(',')}]`; 
-    case 'EnumValue': return `${v.value.name}.${v.value.enum.name}`;
+    case 'EnumValue': return `()=>${v.value.enum.name}.${v.value.name}`;
     case 'NumericValue': return String(v.value);
     case 'ObjectValue': return `{${Array.from(v.properties.values(), v=>v.name+':'+asValue(v.value)).join(',')}}`;
     case 'ScalarValue': return v.value.name;
