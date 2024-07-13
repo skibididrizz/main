@@ -35,8 +35,8 @@ export type Blog = typeof BlogTable.$inferSelect;
 # Naming 
 Renaming the table in **lib/schema.tsp** will change the name of the table and the type.  You
 can use [@map](/docs/drizzle/api/decorators#@Drizzle.map) annotation to rename columns,
-and the [@table](/docs/drizzle/api/decorators#@Drizzle.able) annotation to rename the table.
-In addition [@default](/docs/drizzle/api/decorators#@Drizzle.default) can be used for default values.
+and the [@table](/docs/drizzle/api/decorators#@Drizzle.table) annotation to rename the table.
+In addition for default values can be site by assignment syntax.
 
 ```tsp
 import "@skibididrizz/drizzle";
