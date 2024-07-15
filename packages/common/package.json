@@ -7,9 +7,6 @@
     "scripts": {
         "build": "tsc --build"
     },
-    "bin": {
-        "skibididrizz-doc": "./dist/bin/mkdoc.js"
-    },
     "exports": {
         ".": {
             "types": "./dist/src/index.d.ts",

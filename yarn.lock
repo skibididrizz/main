@@ -5051,8 +5051,6 @@ __metadata:
   peerDependencies:
     "@typespec/compiler": "*"
     typescript: ^5.5.3
-  bin:
-    skibididrizz-doc: ./dist/bin/mkdoc.js
   languageName: unknown
   linkType: soft
 
@@ -5069,8 +5067,6 @@ __metadata:
   peerDependencies:
     "@typespec/compiler": "*"
     typescript: ^5.5.3
-  bin:
-    skibididrizz-doc: ./dist/bin/mkdoc.js
   languageName: unknown
   linkType: soft
 

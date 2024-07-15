@@ -10,7 +10,8 @@ describe("zod", () => {
   });
 
   it("plain", async () => {
-    await ctx.emitExample(
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/simple.md",
       
       "A simple example numbers and optional",
       `
@@ -22,8 +23,9 @@ describe("zod", () => {
     );
   });
   it("plain with arrays", async () => {
-    await ctx.emitExample(
-      
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/arrays.md",
+
       "Handles arrays",
       `
 @zod model User {
@@ -33,8 +35,9 @@ describe("zod", () => {
     );
   });
   it("nested object", async () => {
-    await ctx.emitExample(
-      
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/reference-model.md",
+
       "Can reference other models",
       `@zod model Blog {
   id: string;
@@ -48,7 +51,8 @@ describe("zod", () => {
     );
   });
   it("should allow for extension object", async () => {
-    await ctx.emitExample(
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/extends.md",
       
       "Inheritance is supported",
       `@zod model Animal {
@@ -61,7 +65,8 @@ describe("zod", () => {
   });
 
   it("should allow for unions object", async () => {
-    await ctx.emitExample(
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/unions.md",
       
       "Unions are supported",
       `
@@ -76,8 +81,9 @@ id:string;
   });
 
   it("should allow for enums", async () => {
-    await ctx.emitExample(
-      
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/enums.md",
+
       "Enums are supported",
       `
 @zod enum Status {
@@ -93,7 +99,8 @@ Ugly,
     );
   });
   it("should allow for enums with values", async () => {
-    await ctx.emitExample(
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/enum-only.md",
       
       "Just an enum",
       `
@@ -107,7 +114,8 @@ Ugly,
     );
   });
   it("minimums can be used", async () => {
-    await ctx.emitExample(
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/minValue.md",
       
       "Minimums can be used",
       `
@@ -119,7 +127,8 @@ Ugly,
     );
   });
   it("format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2)", async () => {
-    await ctx.emitExample(
+    await ctx.emitExampleFile(
+      "../site/docs/zod/example/pattern-format.md",
       
       "Paterns and formats can be used",
       `
@@ -133,8 +142,9 @@ Ugly,
   });
 
   it("Allows for objects to be branded", async () =>
-    ctx.emitExample(
-      
+    ctx.emitExampleFile(
+      "../site/docs/zod/example/brand.md",
+
       "Brands are supported",
       `
       @zod @brand("Dog") model Dog {
@@ -149,7 +159,7 @@ Ugly,
 
   it("Can have default values", async () =>
     ctx.emitExampleFile(
-      "./docs/default-values.md",
+      "../site/docs/zod/example/default-value.md",
       "Using the default syntax a property can have a default value",
       `
         @zod enum Status {

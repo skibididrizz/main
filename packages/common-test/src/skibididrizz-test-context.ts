@@ -5,7 +5,7 @@ import {
   TypeSpecTestLibrary,
 } from "@typespec/compiler/testing";
 import ts from "typescript";
-
+import { resolve } from "node:path";
 import { expect, assert } from "vitest";
 
 const niceString = (v: string) =>
@@ -120,6 +120,7 @@ export class SkibididrizzTestContext {
     doc: string,
     code: string,
   ) {
+    const site = resolve(require.resolve("@skibididrizz/site/package.json"), "..");
     const [result] = await this._snapshotEmittedTypescript( code);
     expect(`
 ${doc}
@@ -132,7 +133,7 @@ ${Object.entries(result)
   .map(([k, v]) => `## ${k}\n\`\`\`tsx\n${v}\`\`\``)
   .join("\n\n")}
          
-`).toMatchSnapshot(fileName);
+`).toMatchFileSnapshot(`${site}/${fileName}`);
   }
 }
 

@@ -7,7 +7,8 @@ describe("examples", () => {
   beforeEach(() => (ctx = new SkibididrizzTestContext(DrizzleTestLibrary)));
 
   it("Create a simple model", () =>
-    ctx.emitExample(
+    ctx.emitExampleFile(
+      "../site/docs/drizzle/example/model.md",
       
       `
       This example shows how to use create a model with a uuid primary key.
@@ -22,7 +23,9 @@ a table to be in included in the database.`,
     ));
 
   it("Naming columns and tables", () =>
-    ctx.emitExample(
+    ctx.emitExampleFile(
+      "docs/zod/example/naming.md",
+
       
       `
  By default it uses the model name, however passing a string to [@table](/docs/drizzle/api/decorators#@Drizzle.table) will 
@@ -41,8 +44,9 @@ a table to be in included in the database.`,
     ));
 
   it("Simple example using @default", () =>
-    ctx.emitExample(
-      
+    ctx.emitExampleFile(
+      "docs/zod/example/default-value.md",
+
       `
 For default values for columns use [@default](/docs/drizzle/api/decorators#@Drizzle.default).   This can
 take a string with an SQL query or a literal.   All strings get evaluated as SQL so you will
@@ -59,7 +63,9 @@ need to escape them to use a literal.
     ));
 
   it("Many-to-one", () =>
-    ctx.emitExample( `
+    ctx.emitExampleFile(
+      "docs/zod/example/many-to-one.md",
+      `
 This example shows how to use a many-to-one relationship.   Notice how the relation is marked
 with [@relation](/docs/drizzle/api/decorators#@Drizzle.relation).  
 Fields map to the local fields of the model, relations map to the foreign key(s) in the other model.
@@ -83,7 +89,8 @@ Fields map to the local fields of the model, relations map to the foreign key(s)
     ));
 
   it("Configure namespaces", () =>
-    ctx.emitExample(
+    ctx.emitExampleFile(
+      "docs/zod/example/namespaces-config.md",
       
       `
 Using [@config](/docs/drizzle/api/decorators#@Drizzle.config) you can configure the dialect and namespace.  You
