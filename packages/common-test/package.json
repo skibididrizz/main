@@ -1,5 +1,5 @@
 {
-    "name": "@skibididrizz/common",
+    "name": "@skibididrizz/common-test",
     "version": "0.1.14",
     "type": "module",
     "main": "dist/src/index.js",

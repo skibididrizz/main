@@ -1,5 +1,5 @@
-import { describe, it, beforeEach } from "node:test";
-import { SkibididrizzTestContext } from "@skibididrizz/common";
+import {describe, it, beforeEach} from "vitest";
+import { SkibididrizzTestContext } from "@skibididrizz/common-test";
 import { DrizzleTestLibrary } from "../src/testing/index.js";
 
 describe("drizzle", () => {
@@ -8,33 +8,27 @@ describe("drizzle", () => {
   beforeEach(async () => {
     ctx = new SkibididrizzTestContext(DrizzleTestLibrary);
   });
-  it("should work with timestamps", async (t) => {
+  it("should work with timestamps", async () => {
     await ctx.snapshotEmittedTypescript(
-      t,
-      `
-    @table model Time {
+      `@table model Time {
       timestamp1:Date;
       @default("now()") timestamp2:Date;
-    };
-    `,
+    };`,
     );
   });
-  it("should work with defaults", async (t) => {
+  it("should work with defaults", async () => {
     await ctx.snapshotEmittedTypescript(
-      t,
-      `
-    @table model Uuid {
+      `@table model Uuid {
       @default(int32(42)) int1:integer; 
       @default("'42'::integer'") int2:integer;
       @uuid(true) uuid1: string;
       @uuid @default("gen_random_uuid()")  uuid2: string;
-    };
-    `,
+    };`,
     );
   });
-  it("should work with indexes and unique email", async (t) => {
+  it("should work with indexes and unique email", async () => {
     await ctx.snapshotEmittedTypescript(
-      t,
+      
       `
     @table model User {
       @id id: integer;
@@ -44,9 +38,9 @@ describe("drizzle", () => {
     `,
     );
   });
-  it("should work with indexes unique with sql", async (t) => {
+  it("should work with indexes unique with sql", async () => {
     await ctx.snapshotEmittedTypescript(
-      t,
+      
       `
     @table model User {
       @id id: integer;
@@ -56,9 +50,9 @@ describe("drizzle", () => {
     `,
     );
   });
-  it("should handle multiple relationships", async (t) => {
+  it("should handle multiple relationships", async () => {
     await ctx.snapshotEmittedTypescript(
-      t,
+      
       `
         @table model User {
           @id id: integer;
@@ -81,9 +75,9 @@ describe("drizzle", () => {
         `,
     );
   });
-  it("should work with composite keys", async (t) => {
+  it("should work with composite keys", async () => {
     await ctx.snapshotEmittedTypescript(
-      t,
+      
       `
         @table model User {
           @id id: integer;
@@ -103,9 +97,9 @@ describe("drizzle", () => {
         `,
     );
   });
-  it("should work with enums", async (t) => {
+  it("should work with enums", async () => {
     const result = await ctx.snapshotEmittedTypescript(
-      t,
+      
       `
         enum State {
           do,
@@ -120,9 +114,9 @@ describe("drizzle", () => {
         `,
     );
   });
-  it("should parse base objects", async (t) => {
-    const result = await ctx.snapshotEmittedTypescript(
-      t,
+  it("should parse base objects", async () => {
+    await ctx.snapshotEmittedTypescript(
+      
       `model BaseModel {
           @uuid @id id: string; 
         };
@@ -140,9 +134,9 @@ describe("drizzle", () => {
         `,
     );
   });
-  it("should parse objects", async (t) => {
-    const result = await ctx.snapshotEmittedTypescript(
-      t,
+  it("should parse objects", async () => {
+    await ctx.snapshotEmittedTypescript(
+      
       `
         @table("users") model User {
           @id _id: numeric;    
@@ -175,9 +169,9 @@ describe("drizzle", () => {
         `,
     );
   });
-  it("use the relation decorator", async (t) => {
-    const [code, diagnostics] = await ctx.snapshotEmittedTypescript(
-      t,
+  it("use the relation decorator", async () => {
+    await ctx.snapshotEmittedTypescript(
+      
       `@table("users") model User {
           @uuid @id id: string; 
           @unique email: string;
@@ -199,9 +193,9 @@ describe("drizzle", () => {
         `,
     );
   });
-  it("should work with default values", async (t) => {
-    const [code, diagnostics] = await ctx.snapshotEmittedTypescript(
-      t,
+  it("should work with default values", async () => {
+    await ctx.snapshotEmittedTypescript(
+      
       `@table("ex") model ExampleDefaultValue {
          name?: string = "foo";
          count:int32 = 1;

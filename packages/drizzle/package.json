@@ -26,6 +26,7 @@
     "@typespec/compiler": "*"
   },
   "devDependencies": {
+    "@skibididrizz/common-test": "workspace:^",
     "@skibididrizz/drizzle": "^workspace:",
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -37,7 +38,8 @@
     "prettier": "^3.0.3",
     "rimraf": "^5.0.7",
     "tsx": "^4.15.6",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.2",
+    "vitest": "^2.0.3"
   },
   "scripts": {
     "envo": "env",
@@ -45,9 +47,9 @@
     "build": "tsc && $npm_execpath run build:tsp && $npm_execpath run format",
     "watch": "tsc --watch",
     "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
-    "test:watch": "tsx --experimental-test-snapshots --test-update-snapshots --watch --test ./test/**/*.test.ts --test-only",
-    "test": "tsx  --experimental-test-snapshots --test ./test/**/*.test.ts",
-    "test:snapshot": "tsx --experimental-test-snapshots --test-update-snapshots --test ./test/**/*.test.ts",
+    "test:watch": "vitest --watch --test ./test/**/*.test.ts",
+    "test": "vitest ./test/**/*.test.ts",
+    "test:snapshot": "vitest --update ./test/**/*.test.ts",
     "lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",
     "lint:fix": "eslint . --report-unused-disable-directives --fix",
     "format": "prettier .  --write",

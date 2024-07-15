@@ -184,7 +184,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
           selfRef = selfRef || new ObjectBuilder();
           selfRef.set(
             index.name,
-            `${idxType}("${camelToSnake(index.name)}")${index.sql ? `.on(sql\`${index.sql}\`)` : `.on(table.${prop.name})`}`,
+            `${idxType}("${camelToSnake(index.name)}")${index.sql ? `.on(${sql(index.sql)})` : `.on(table.${prop.name})`}`,
           );
         }
       }
@@ -319,7 +319,7 @@ export class DrizzleEmitter extends TypeScriptEmitter {
       if (def) {
         if (typeof def === "string") {
           this.addImport("drizzle-orm", "sql");
-          typeSb.push(`.default(sql\`${def}\`)`);
+          typeSb.push(`.default(${sql(def)})`);
         } else {
           typeSb.push(`.default(${def})`);
         }
@@ -493,3 +493,5 @@ ${doc
 function isModel(v: Type): v is Model {
   return v.kind === "Model";
 }
+
+const sql = (v = "") => "sql`" + v.replaceAll("$", "$") + "`";

@@ -1,5 +1,5 @@
-import { describe, it, beforeEach } from "node:test";
-import { SkibididrizzTestContext } from "@skibididrizz/common";
+import { describe, it, beforeEach } from "vitest";
+import { SkibididrizzTestContext } from "@skibididrizz/common-test";
 import { ZodTestLibrary } from "../src/testing/index.js";
 
 describe("zod", () => {
@@ -9,9 +9,9 @@ describe("zod", () => {
     ctx = new SkibididrizzTestContext(ZodTestLibrary);
   });
 
-  it("plain", async (t) => {
+  it("plain", async () => {
     await ctx.emitExample(
-      t,
+      
       "A simple example numbers and optional",
       `
 @zod model User {
@@ -21,9 +21,9 @@ describe("zod", () => {
 }`,
     );
   });
-  it("plain with arrays", async (t) => {
+  it("plain with arrays", async () => {
     await ctx.emitExample(
-      t,
+      
       "Handles arrays",
       `
 @zod model User {
@@ -32,9 +32,9 @@ describe("zod", () => {
 }`,
     );
   });
-  it("nested object", async (t) => {
+  it("nested object", async () => {
     await ctx.emitExample(
-      t,
+      
       "Can reference other models",
       `@zod model Blog {
   id: string;
@@ -47,9 +47,9 @@ describe("zod", () => {
 }`,
     );
   });
-  it("should allow for extension object", async (t) => {
+  it("should allow for extension object", async () => {
     await ctx.emitExample(
-      t,
+      
       "Inheritance is supported",
       `@zod model Animal {
   baseId: string;
@@ -60,9 +60,9 @@ describe("zod", () => {
     );
   });
 
-  it("should allow for unions object", async (t) => {
+  it("should allow for unions object", async () => {
     await ctx.emitExample(
-      t,
+      
       "Unions are supported",
       `
 @zod model Stuff {
@@ -75,9 +75,9 @@ id:string;
     );
   });
 
-  it("should allow for enums", async (t) => {
+  it("should allow for enums", async () => {
     await ctx.emitExample(
-      t,
+      
       "Enums are supported",
       `
 @zod enum Status {
@@ -92,9 +92,9 @@ Ugly,
 `,
     );
   });
-  it("should allow for enums with values", async (t) => {
+  it("should allow for enums with values", async () => {
     await ctx.emitExample(
-      t,
+      
       "Just an enum",
       `
 @zod enum Foo {
@@ -106,9 +106,9 @@ Ugly,
 `,
     );
   });
-  it("minimums can be used", async (t) => {
+  it("minimums can be used", async () => {
     await ctx.emitExample(
-      t,
+      
       "Minimums can be used",
       `
 @zod model User {
@@ -118,9 +118,9 @@ Ugly,
 `,
     );
   });
-  it("format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2)", async (t) => {
+  it("format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2)", async () => {
     await ctx.emitExample(
-      t,
+      
       "Paterns and formats can be used",
       `
 @zod model User {
@@ -132,9 +132,9 @@ Ugly,
     );
   });
 
-  it("Allows for objects to be branded", async (t) =>
+  it("Allows for objects to be branded", async () =>
     ctx.emitExample(
-      t,
+      
       "Brands are supported",
       `
       @zod @brand("Dog") model Dog {
@@ -147,9 +147,9 @@ Ugly,
       `,
     ));
 
-  it("Can have default values", async (t) =>
-    ctx.emitExample(
-      t,
+  it("Can have default values", async () =>
+    ctx.emitExampleFile(
+      "./docs/default-values.md",
       "Using the default syntax a property can have a default value",
       `
         @zod enum Status {
