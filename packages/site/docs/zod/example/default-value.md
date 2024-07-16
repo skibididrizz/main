@@ -1,34 +1,38 @@
 
-
-For default values for columns use [@default](/docs/drizzle/api/decorators#@Drizzle.default).   This can
-take a string with an SQL query or a literal.   All strings get evaluated as SQL so you will
-need to escape them to use a literal.
-
+Using the default syntax a property can have a default value
 
 ```tsp
 
-@table model Stuff {
-     @id id: numeric;
-     @default("now()") createdDate: Date;
-     @default(int32(42)) answer:int32;
-};
-            
-            
+        @zod enum Status {
+          Good,
+          Bad,
+          Ugly,
+        }
+        
+        @zod model Dog {
+          status:Status = Status.Good;
+          name:string = "Fido";
+          age:int32 = 10;
+        }
+        
 ```
 
-## schema.ts
+## zod.ts
 ```tsx
-import { pgTable, serial, timestamp, integer } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import * as z from "zod";
 
-export const StuffTable = pgTable("Stuff", {
-  id: serial("id").primaryKey(),
-  createdDate: timestamp("createdDate")
-    .notNull()
-    .default(sql`now()`),
-  answer: integer("answer").notNull().default(42),
+export const Dog = z.shape({
+  status: z.lazy(() => Status).default(() => Status.Good),
+  name: z.string().default("Fido"),
+  age: z.number().default(10),
 });
+export type Dog = z.infer<typeof Dog>;
 
-export type Stuff = typeof StuffTable.$inferSelect; // return type when queried
+export const Status = z.nativeEnum({
+  Good: "Good",
+  Bad: "Bad",
+  Ugly: "Ugly",
+});
+export type Status = z.infer<typeof Status>;
 ```
          

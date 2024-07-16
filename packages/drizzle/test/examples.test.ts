@@ -8,7 +8,7 @@ describe("examples", () => {
 
   it("Create a simple model", () =>
     ctx.emitExampleFile(
-      "../site/docs/drizzle/example/model.md",
+      "docs/drizzle/example/model.md",
       
       `
       This example shows how to use create a model with a uuid primary key.
@@ -24,7 +24,7 @@ a table to be in included in the database.`,
 
   it("Naming columns and tables", () =>
     ctx.emitExampleFile(
-      "docs/zod/example/naming.md",
+      "docs/drizzle/example/naming.md",
 
       
       `
@@ -45,7 +45,7 @@ a table to be in included in the database.`,
 
   it("Simple example using @default", () =>
     ctx.emitExampleFile(
-      "docs/zod/example/default-value.md",
+      "docs/drizzle/example/default-value.md",
 
       `
 For default values for columns use [@default](/docs/drizzle/api/decorators#@Drizzle.default).   This can
@@ -64,7 +64,7 @@ need to escape them to use a literal.
 
   it("Many-to-one", () =>
     ctx.emitExampleFile(
-      "docs/zod/example/many-to-one.md",
+      "docs/drizzle/example/many-to-one.md",
       `
 This example shows how to use a many-to-one relationship.   Notice how the relation is marked
 with [@relation](/docs/drizzle/api/decorators#@Drizzle.relation).  
@@ -90,7 +90,7 @@ Fields map to the local fields of the model, relations map to the foreign key(s)
 
   it("Configure namespaces", () =>
     ctx.emitExampleFile(
-      "docs/zod/example/namespaces-config.md",
+      "docs/drizzle/example/namespaces-config.md",
       
       `
 Using [@config](/docs/drizzle/api/decorators#@Drizzle.config) you can configure the dialect and namespace.  You
