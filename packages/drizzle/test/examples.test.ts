@@ -1,15 +1,17 @@
+import { describe, it, beforeEach } from "vitest";
 import { SkibididrizzTestContext } from "@skibididrizz/common-test";
 import { DrizzleTestLibrary } from "../src/testing/index.js";
-import {describe, it, beforeEach} from "vitest";
 
 describe("examples", () => {
   let ctx: SkibididrizzTestContext;
-  beforeEach(() => (ctx = new SkibididrizzTestContext(DrizzleTestLibrary)));
 
+  beforeEach(async () => {
+    ctx = new SkibididrizzTestContext(DrizzleTestLibrary);
+  });
   it("Create a simple model", () =>
     ctx.emitExampleFile(
       "docs/drizzle/example/model.md",
-      
+
       `
       This example shows how to use create a model with a uuid primary key.
 Notice how description is optional. [@table](/docs/drizzle/api/decorators#@Drizzle.table) will mark
@@ -26,7 +28,6 @@ a table to be in included in the database.`,
     ctx.emitExampleFile(
       "docs/drizzle/example/naming.md",
 
-      
       `
  By default it uses the model name, however passing a string to [@table](/docs/drizzle/api/decorators#@Drizzle.table) will 
  use that as the table name.    
@@ -91,7 +92,7 @@ Fields map to the local fields of the model, relations map to the foreign key(s)
   it("Configure namespaces", () =>
     ctx.emitExampleFile(
       "docs/drizzle/example/namespaces-config.md",
-      
+
       `
 Using [@config](/docs/drizzle/api/decorators#@Drizzle.config) you can configure the dialect and namespace.  You
 can also specify the output file.   This is still a experimental feature.  They are all experimental

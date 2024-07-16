@@ -1,4 +1,4 @@
-import {describe, it, beforeEach} from "vitest";
+import { describe, it, beforeEach } from "vitest";
 import { SkibididrizzTestContext } from "@skibididrizz/common-test";
 import { DrizzleTestLibrary } from "../src/testing/index.js";
 
@@ -28,7 +28,6 @@ describe("drizzle", () => {
   });
   it("should work with indexes and unique email", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `
     @table model User {
       @id id: integer;
@@ -40,7 +39,6 @@ describe("drizzle", () => {
   });
   it("should work with indexes unique with sql", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `
     @table model User {
       @id id: integer;
@@ -52,7 +50,6 @@ describe("drizzle", () => {
   });
   it("should handle multiple relationships", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `
         @table model User {
           @id id: integer;
@@ -77,7 +74,6 @@ describe("drizzle", () => {
   });
   it("should work with composite keys", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `
         @table model User {
           @id id: integer;
@@ -99,7 +95,6 @@ describe("drizzle", () => {
   });
   it("should work with enums", async () => {
     const result = await ctx.snapshotEmittedTypescript(
-      
       `
         enum State {
           do,
@@ -116,7 +111,6 @@ describe("drizzle", () => {
   });
   it("should parse base objects", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `model BaseModel {
           @uuid @id id: string; 
         };
@@ -136,7 +130,6 @@ describe("drizzle", () => {
   });
   it("should parse objects", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `
         @table("users") model User {
           @id _id: numeric;    
@@ -171,7 +164,6 @@ describe("drizzle", () => {
   });
   it("use the relation decorator", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `@table("users") model User {
           @uuid @id id: string; 
           @unique email: string;
@@ -195,7 +187,6 @@ describe("drizzle", () => {
   });
   it("should work with default values", async () => {
     await ctx.snapshotEmittedTypescript(
-      
       `@table("ex") model ExampleDefaultValue {
          name?: string = "foo";
          count:int32 = 1;
