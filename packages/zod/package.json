@@ -1,6 +1,6 @@
 {
   "name": "@skibididrizz/zod",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "type": "module",
   "main": "dist/src/index.js",
   "tspMain": "lib/main.tsp",
@@ -43,6 +43,6 @@
     "lint:fix": "eslint . --report-unused-disable-directives --fix",
     "format": "prettier .  --write",
     "format:check": "prettier --check ."
-    },
+  },
   "private": true
 }
