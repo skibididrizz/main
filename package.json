@@ -18,7 +18,6 @@
     "snapshot": "yarn workspaces foreach -A run test:snapshot",
     "$version": "yarn workspace foreach -A version --new-version $npm_package_version",
     "release": "yarn build && yarn site && yarn bump ${0}",
-    "docs": "yarn workspaces foreach -A run docs",
     "site": "yarn workspace @skibididrizz/site build-site"
   }
 }
