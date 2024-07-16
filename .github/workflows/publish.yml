@@ -3,7 +3,10 @@ on:
   push:
     tags:
       - 'v*.*.*'
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}      
 jobs:
+    
   build:
     runs-on: ubuntu-latest
     steps:
@@ -17,20 +20,22 @@ jobs:
           scope: '@octocat'
       - name: Setup Yarn    
         run: yarn set version 4.3.1 --yarn-path
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Run Yarn
         run: yarn 
       - name: Install Token Fix
         run: yarn fix
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Skibididrizz    
-        run: yarn workspace @skibididrizz/drizzle build       
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish to npm
-        run: yarn npm login --always-auth && yarn workspace @skibididrizz/drizzle npm publish --access public
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: yarn build       
+      - name: Login to npm
+        run: yarn npm login --always-auth
+      - name: Publish  @skibididrizz/common
+        run:  yarn workspace @skibididrizz/common npm publish --access public
+      - name: Publish @skibididrizz/common-test
+        run: yarn workspace @skibididrizz/common-test npm publish --access public 
+      - name: Publish @skibididrizz/drizzle
+        run: yarn workspace @skibididrizz/drizzle npm publish --access public 
+      - name: Publish @skibididrizz/zod
+        run: yarn workspace @skibididrizz/zod npm publish --access public
+
+
         
