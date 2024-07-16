@@ -1,6 +1,6 @@
 {
   "name": "@skibididrizz/zod",
-  "version": "0.1.0",
+  "version": "0.1.17",
   "type": "module",
   "main": "dist/src/index.js",
   "tspMain": "lib/main.tsp",

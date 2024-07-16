@@ -1,6 +1,6 @@
 {
   "name": "@skibididrizz/example",
-  "version": "0.1.14",
+  "version": "0.1.17",
   "packageManager": "yarn@4.3.1",
   "private": true,
   "tspMain": "./lib/schema.tsp",
