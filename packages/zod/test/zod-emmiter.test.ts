@@ -11,8 +11,8 @@ describe("zod", () => {
 
   it("plain", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/simple.md",
-      
+      "docs/zod/example/simple.md",
+
       "A simple example numbers and optional",
       `
 @zod model User {
@@ -24,7 +24,7 @@ describe("zod", () => {
   });
   it("plain with arrays", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/arrays.md",
+      "docs/zod/example/arrays.md",
 
       "Handles arrays",
       `
@@ -36,7 +36,7 @@ describe("zod", () => {
   });
   it("nested object", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/reference-model.md",
+      "docs/zod/example/reference-model.md",
 
       "Can reference other models",
       `@zod model Blog {
@@ -52,8 +52,8 @@ describe("zod", () => {
   });
   it("should allow for extension object", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/extends.md",
-      
+      "docs/zod/example/extends.md",
+
       "Inheritance is supported",
       `@zod model Animal {
   baseId: string;
@@ -66,8 +66,8 @@ describe("zod", () => {
 
   it("should allow for unions object", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/unions.md",
-      
+      "docs/zod/example/unions.md",
+
       "Unions are supported",
       `
 @zod model Stuff {
@@ -82,7 +82,7 @@ id:string;
 
   it("should allow for enums", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/enums.md",
+      "docs/zod/example/enums.md",
 
       "Enums are supported",
       `
@@ -100,8 +100,8 @@ Ugly,
   });
   it("should allow for enums with values", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/enum-only.md",
-      
+      "docs/zod/example/enum-only.md",
+
       "Just an enum",
       `
 @zod enum Foo {
@@ -115,8 +115,8 @@ Ugly,
   });
   it("minimums can be used", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/minValue.md",
-      
+      "docs/zod/example/minValue.md",
+
       "Minimums can be used",
       `
 @zod model User {
@@ -128,8 +128,8 @@ Ugly,
   });
   it("format can be used (uuid|email|url|date|datetime|time|ip|cuid|nanoid|cuid|cuid2)", async () => {
     await ctx.emitExampleFile(
-      "../site/docs/zod/example/pattern-format.md",
-      
+      "docs/zod/example/pattern-format.md",
+
       "Paterns and formats can be used",
       `
 @zod model User {
@@ -143,7 +143,7 @@ Ugly,
 
   it("Allows for objects to be branded", async () =>
     ctx.emitExampleFile(
-      "../site/docs/zod/example/brand.md",
+      "docs/zod/example/brand.md",
 
       "Brands are supported",
       `
@@ -159,7 +159,7 @@ Ugly,
 
   it("Can have default values", async () =>
     ctx.emitExampleFile(
-      "../site/docs/zod/example/default-value.md",
+      "docs/zod/example/default-value.md",
       "Using the default syntax a property can have a default value",
       `
         @zod enum Status {
@@ -174,5 +174,18 @@ Ugly,
           age:int32 = 10;
         }
         `,
+    ));
+
+  it("Can have custom error message", async () =>
+    ctx.emitExampleFile(
+      "docs/zod/example/error-message.md",
+      "Using [@message](https://github.com/colinhacks/zod#custom-error-messages) to customize error message",
+      `
+
+          @zod model Dog {
+            @Zod.error("Name is required") name:string = "Fido";
+            @Zod.error("Age must be greater than 10", "incorrect type") age:int32 = 10;
+          }
+          `,
     ));
 });

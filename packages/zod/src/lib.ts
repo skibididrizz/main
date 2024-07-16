@@ -10,6 +10,9 @@ export const $lib = createTypeSpecLibrary({
     brand: {
       description: "Make a model brand",
     },
+    error: {
+      description: "Make a model property error message",
+    },
   },
 });
 

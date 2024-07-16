@@ -29,7 +29,6 @@
     "@typespec/compiler": "latest",
     "eslint": "^8.45.0",
     "prettier": "^3.0.3",
-    "tsx": "^4.16.2",
     "typescript": "^5.5.3",
     "vitest": "^2.0.3"
   },
@@ -37,7 +36,7 @@
     "build:tsp": "tsp compile . --warn-as-error --import @typespec/library-linter --no-emit",
     "build": "tsc && $npm_execpath run build:tsp && $npm_execpath run format",
     "watch": "tsc --watch",
-    "test:watch": "vitest --watch --test ./test/**/*.test.ts",
+    "test:watch": "vitest --watch ./test/**/*.test.ts",
     "test": "vitest run ./test/**/*.test.ts",
     "test:snapshot": "vitest run --update ./test/**/*.test.ts",
     "lint": "eslint src/ test/ --report-unused-disable-directives --max-warnings=0",

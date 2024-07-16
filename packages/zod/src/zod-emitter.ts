@@ -140,8 +140,9 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     return this.emitter.result.declaration(model.name, strBuilder);
   }
 
-  typeToZod(type: Type) {
+  typeToZod(type: Type, error?: { message?: string; typeMessage?: string }) {
     const builder = new StringBuilder();
+    const errorStr = error ? `${JSON.stringify(error)}` : "";
     switch (type.kind) {
       case "Enum": {
         builder.push(`z.lazy(()=>${type.name})`);
@@ -155,7 +156,12 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
           arr.push(this.typeToZod(v.type));
         }
         union.pushStringBuilder(fromArrayBuilder(arr));
+        if (errorStr) {
+          union.push(",");
+          union.push(errorStr);
+        }
         union.push(")");
+
         builder.pushStringBuilder(union);
         break;
       }
@@ -165,7 +171,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
         if (zodType) {
           builder.push("z.");
           builder.push(zodType);
-          builder.push("()");
+          builder.push(`(${errorStr})`);
         } else {
           this.program.reportDiagnostic({
             message: `Type  ${type.name} is unknown.`,
@@ -181,7 +187,9 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
           const [arg] = type.templateMapper?.args ?? [];
           if (arg?.entityKind === "Type") {
             builder.pushStringBuilder(this.typeToZod(arg));
-            builder.push(".array()");
+            builder.push(
+              `.array(${errorStr}${errorStr ? `,${errorStr}` : ""})`,
+            );
           } else {
             this.program.reportDiagnostic({
               message: `Type  ${type.name} is unknown.`,
@@ -191,7 +199,9 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
             });
           }
         } else {
-          builder.push(`z.lazy(()=>${type.name})`);
+          builder.push(
+            `z.lazy(()=>(${type.name})${errorStr ? `,${errorStr}` : ""})`,
+          );
         }
         break;
       }
@@ -208,7 +218,7 @@ export type ${model.name} = z.infer<typeof ${model.name}>;
     return builder;
   }
   modelProperty(property: ModelProperty): EmitterOutput<string> {
-    const builder = this.typeToZod(property.type);
+    const builder = this.typeToZod(property.type, this.get(property, "error"));
     if (property.optional) {
       builder.push(".optional()");
     }

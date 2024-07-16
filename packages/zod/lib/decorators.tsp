@@ -12,3 +12,8 @@ extern dec zod(target: Model | Enum);
  * Mark a model with a brand.
  */
 extern dec brand(target:Model, brand:valueof string);
+
+/**
+ * Custom message for a invalid property.
+ */
+extern dec error(target:ModelProperty, message:valueof string, typeMessage?:valueof string);
