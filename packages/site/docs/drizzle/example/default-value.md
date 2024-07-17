@@ -10,7 +10,7 @@ need to escape them to use a literal.
 model Stuff {
   @id id: numeric;
   @default("now()") createdDate: Date;
-  @default(int32(42)) answer: int32;
+  answer: int32 = int32(42);
 }
 
 ```
