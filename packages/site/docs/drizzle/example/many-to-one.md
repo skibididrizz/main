@@ -7,20 +7,21 @@ Fields map to the local fields of the model, relations map to the foreign key(s)
 
 
 ```tsp
+@table
+model Blog {
+  @uuid @id id: string;
+  name: string;
+  @map("author_id") authorId: string;
+  @relation(#{ fields: "authorId" }) author: Author;
+}
 
-@table model Blog {
-    @uuid @id id: string;
-    name: string;
-    @map("author_id") authorId: string;
-    @relation(#{fields:"authorId"}) author: Author;
-};
+@table
+model Author {
+  @id id: string;
+  name: string;
+  blogs: Blog[];
+}
 
-@table model Author {
-    @id id: string;
-    name: string;
-    blogs:Blog[];
-};
-        
 ```
 
 ## schema.ts

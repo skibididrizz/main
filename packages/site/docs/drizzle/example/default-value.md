@@ -6,14 +6,13 @@ need to escape them to use a literal.
 
 
 ```tsp
+@table
+model Stuff {
+  @id id: numeric;
+  @default("now()") createdDate: Date;
+  @default(int32(42)) answer: int32;
+}
 
-@table model Stuff {
-     @id id: numeric;
-     @default("now()") createdDate: Date;
-     @default(int32(42)) answer:int32;
-};
-            
-            
 ```
 
 ## schema.ts

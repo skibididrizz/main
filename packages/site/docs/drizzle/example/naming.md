@@ -8,13 +8,17 @@
  
 
 ```tsp
+@table("blogs")
+model Blog {
+  @map("_id")
+  @uuid
+  @id
+  id: string;
 
-        @table("blogs") model Blog {
-        @map("_id") @uuid @id id: string;
-        @map("label") name: string;
-        @map("note") description?: string;
-        };      
-           
+  @map("label") name: string;
+  @map("note") description?: string;
+}
+
 ```
 
 ## schema.ts

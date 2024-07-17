@@ -6,27 +6,26 @@ features.
 
 
 ```tsp
+@config(#{ dialect: "sqlite" })
+namespace HelloSqLite {
+  @table
+  model NSBlog {
+    @uuid @id id: string;
+    name: string;
+    description?: string;
+  }
+}
 
-    @config(#{dialect:"sqlite"})
-    namespace HelloSqLite {
+@config(#{ dialect: "mysql" })
+namespace HelloMySql {
+  @table
+  model MyBlog {
+    @uuid @id id: string;
+    name: string;
+    description?: string;
+  }
+}
 
-    @table model NSBlog {
-        @uuid @id id: string;
-        name: string;
-        description?:string;
-      };
-    }
-
-    @config(#{dialect:"mysql"})
-    namespace HelloMySql {
-
-    @table model MyBlog {
-        @uuid @id id: string;
-        name: string;
-        description?:string;
-      };
-    }
-      
 ```
 
 ## schema.ts

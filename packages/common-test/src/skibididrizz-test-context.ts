@@ -1,4 +1,4 @@
-import { Diagnostic } from "@typespec/compiler";
+import { Diagnostic, formatTypeSpec } from "@typespec/compiler";
 import {
   createTestHost,
   createTestWrapper,
@@ -120,13 +120,15 @@ export class SkibididrizzTestContext {
     doc: string,
     code: string,
   ) {
+
+    const formattedCode = await formatTypeSpec(code);
     const site = resolve(require.resolve("@skibididrizz/site/package.json"), "..");
     const [result] = await this._snapshotEmittedTypescript( code);
     expect(`
 ${doc}
 
 \`\`\`tsp
-${code}
+${formattedCode}
 \`\`\`
 
 ${Object.entries(result)

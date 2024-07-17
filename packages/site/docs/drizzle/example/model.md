@@ -5,12 +5,13 @@ Notice how description is optional. [@table](/docs/drizzle/api/decorators#@Drizz
 a table to be in included in the database.
 
 ```tsp
-@table model Blog {
- @uuid @id id: string;
- name: string;
- description?: string;
- };      
-    
+@table
+model Blog {
+  @uuid @id id: string;
+  name: string;
+  description?: string;
+}
+
 ```
 
 ## schema.ts
