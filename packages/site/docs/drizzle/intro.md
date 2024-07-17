@@ -30,11 +30,11 @@ Then adding the following line to `package.json`
 
 Create a schema file in `./lib/schema.tsp`
 
-```
-@table("user") User {
+```tsp
+@table("users") 
+model User {
   @id id:numeric;
   name:string;
-
 }
 
 
