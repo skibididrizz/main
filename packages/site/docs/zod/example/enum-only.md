@@ -2,8 +2,8 @@
 Just an enum
 
 ```tsp
-
-@zod enum Foo {
+@zod
+enum Foo {
   One: 1,
   Ten: 10,
   Hundred: 100,

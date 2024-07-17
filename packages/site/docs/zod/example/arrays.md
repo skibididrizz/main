@@ -2,11 +2,12 @@
 Handles arrays
 
 ```tsp
-
-@zod model User {
-  id:string; 
-  items?:string[];
+@zod
+model User {
+  id: string;
+  items?: string[];
 }
+
 ```
 
 ## zod.ts

@@ -2,11 +2,10 @@
 Paterns and formats can be used
 
 ```tsp
-
-@zod model User {
-  @format("uuid") id:string;
-  @pattern("[^A-Z]*") name:string;
-
+@zod
+model User {
+  @format("uuid") id: string;
+  @pattern("[^A-Z]*") name: string;
 }
 
 ```

@@ -2,12 +2,15 @@
 Inheritance is supported
 
 ```tsp
-@zod model Animal {
+@zod
+model Animal {
   baseId: string;
-}      
-@zod model Dog extends Animal {
-  name?:string;
 }
+@zod
+model Dog extends Animal {
+  name?: string;
+}
+
 ```
 
 ## zod.ts

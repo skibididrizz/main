@@ -2,13 +2,14 @@
 Unions are supported
 
 ```tsp
-
-@zod model Stuff {
-id:string;
-};
-@zod model Idunno {
+@zod
+model Stuff {
+  id: string;
+}
+@zod
+model Idunno {
   baseId: string | int32 | int64 | Stuff;
-}      ;
+}
 
 ```
 

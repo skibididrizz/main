@@ -2,15 +2,16 @@
 Enums are supported
 
 ```tsp
-
-@zod enum Status {
-Good,
-Bad,
-Ugly,
-}    
-@zod model User {
-  id:string;
-  status:Status;
+@zod
+enum Status {
+  Good,
+  Bad,
+  Ugly,
+}
+@zod
+model User {
+  id: string;
+  status: Status;
 }
 
 ```

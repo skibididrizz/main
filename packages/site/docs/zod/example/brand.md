@@ -2,15 +2,17 @@
 Brands are supported
 
 ```tsp
+@zod
+@brand("Dog")
+model Dog {
+  name: string;
+}
+@zod
+@brand("Cat")
+model Cat {
+  name: string;
+}
 
-      @zod @brand("Dog") model Dog {
-        name:string;
-      }
-      @zod @brand("Cat") model Cat {
-        name:string;
-      }
-
-      
 ```
 
 ## zod.ts

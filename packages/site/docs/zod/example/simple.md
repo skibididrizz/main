@@ -2,12 +2,13 @@
 A simple example numbers and optional
 
 ```tsp
-
-@zod model User {
-  id:string; 
-  name?:string;
-  cool?:int32;
+@zod
+model User {
+  id: string;
+  name?: string;
+  cool?: int32;
 }
+
 ```
 
 ## zod.ts

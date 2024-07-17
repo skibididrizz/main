@@ -2,10 +2,10 @@
 Minimums can be used
 
 ```tsp
-
-@zod model User {
-  id:string;
-  @minValue(18) age:int32;
+@zod
+model User {
+  id: string;
+  @minValue(18) age: int32;
 }
 
 ```

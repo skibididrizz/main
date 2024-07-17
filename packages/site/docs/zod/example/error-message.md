@@ -2,13 +2,12 @@
 Using [@message](https://github.com/colinhacks/zod#custom-error-messages) to customize error message
 
 ```tsp
+@zod
+model Dog {
+  @Zod.error("Name is required") name: string = "Fido";
+  @Zod.error("Age must be greater than 10", "incorrect type") age: int32 = 10;
+}
 
-
-          @zod model Dog {
-            @Zod.error("Name is required") name:string = "Fido";
-            @Zod.error("Age must be greater than 10", "incorrect type") age:int32 = 10;
-          }
-          
 ```
 
 ## zod.ts

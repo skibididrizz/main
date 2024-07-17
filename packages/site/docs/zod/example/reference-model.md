@@ -2,15 +2,18 @@
 Can reference other models
 
 ```tsp
-@zod model Blog {
+@zod
+model Blog {
   id: string;
   owner?: User;
-}      
-  @zod model User {
-  id:string; 
-  name?:string;
-  cool?:int32;
 }
+@zod
+model User {
+  id: string;
+  name?: string;
+  cool?: int32;
+}
+
 ```
 
 ## zod.ts
