@@ -5164,26 +5164,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@skibididrizz/ui@workspace:packages/ui":
-  version: 0.0.0-use.local
-  resolution: "@skibididrizz/ui@workspace:packages/ui"
-  dependencies:
-    "@skibididrizz/common": "workspace:^"
-    "@skibididrizz/common-test": "workspace:^"
-    "@types/node": "npm:latest"
-    "@typescript-eslint/eslint-plugin": "npm:^6.0.0"
-    "@typescript-eslint/parser": "npm:^6.0.0"
-    "@typespec/compiler": "npm:latest"
-    eslint: "npm:^8.45.0"
-    prettier: "npm:^3.0.3"
-    typescript: "npm:^5.5.3"
-    vitest: "npm:^2.0.3"
-    zod: "npm:^3.23.8"
-  peerDependencies:
-    "@typespec/compiler": "*"
-  languageName: unknown
-  linkType: soft
-
 "@skibididrizz/zod@workspace:packages/zod":
   version: 0.0.0-use.local
   resolution: "@skibididrizz/zod@workspace:packages/zod"
